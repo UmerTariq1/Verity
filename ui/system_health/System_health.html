@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nexora KR - System Health</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-fixed-variant": "#005048",
+                    "inverse-primary": "#4fdbc8",
+                    "tertiary-fixed": "#e9ddff",
+                    "background": "#f8f9fb",
+                    "on-tertiary-fixed-variant": "#5516be",
+                    "on-primary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "outline": "#6c7a77",
+                    "on-tertiary": "#ffffff",
+                    "tertiary": "#6d3bd7",
+                    "surface-container-highest": "#e1e2e4",
+                    "tertiary-container": "#b192ff",
+                    "secondary": "#4648d4",
+                    "on-primary-container": "#00423b",
+                    "tertiary-fixed-dim": "#d0bcff",
+                    "primary-fixed": "#71f8e4",
+                    "error": "#ba1a1a",
+                    "outline-variant": "#bbcac6",
+                    "surface-variant": "#e1e2e4",
+                    "on-secondary-fixed": "#07006c",
+                    "on-secondary-container": "#fffbff",
+                    "surface-tint": "#006b5f",
+                    "primary-container": "#14b8a6",
+                    "on-primary-fixed": "#00201c",
+                    "secondary-fixed": "#e1e0ff",
+                    "on-tertiary-fixed": "#23005c",
+                    "on-surface": "#191c1e",
+                    "on-surface-variant": "#3c4947",
+                    "secondary-fixed-dim": "#c0c1ff",
+                    "primary": "#006b5f",
+                    "on-secondary": "#ffffff",
+                    "surface-container-low": "#f3f4f6",
+                    "inverse-on-surface": "#f0f1f3",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-container": "#4700aa",
+                    "on-background": "#191c1e",
+                    "surface-dim": "#d9dadc",
+                    "surface-bright": "#f8f9fb",
+                    "on-error": "#ffffff",
+                    "surface-container": "#edeef0",
+                    "inverse-surface": "#2e3132",
+                    "surface": "#f8f9fb",
+                    "secondary-container": "#6063ee",
+                    "on-secondary-fixed-variant": "#2f2ebe",
+                    "primary-fixed-dim": "#4fdbc8",
+                    "surface-container-high": "#e7e8ea",
+                    "surface-container-lowest": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .knowledge-leaf {
+            border-top-left-radius: 1.5rem;
+            border-bottom-right-radius: 1.5rem;
+            border-top-right-radius: 0.25rem;
+            border-bottom-left-radius: 0.25rem;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-headline { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-background selection:bg-tertiary-fixed-dim overflow-x-hidden">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full w-60 border-r-0 bg-white dark:bg-slate-900 hidden lg:flex flex-col z-40 transition-all duration-300 ease-in-out font-manrope text-sm font-medium tracking-tight">
+<div class="p-6 flex flex-col items-start gap-1">
+<h1 class="text-xl font-bold tracking-tighter text-teal-700 dark:text-teal-400">Nexora KR</h1>
+<p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Intelligent Retrieval</p>
+</div>
+<nav class="flex-1 px-4 mt-4 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-teal-600 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-teal-600 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">search</span>
+                Search
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-teal-600 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">book_2</span>
+                Library
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 border-l-4 border-teal-600 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">insights</span>
+                Analytics
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-teal-600 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+</nav>
+<div class="mt-auto p-4 flex flex-col gap-1 border-t border-slate-100 dark:border-slate-800">
+<button class="w-full mb-4 px-4 py-3 bg-gradient-to-br from-primary to-primary-container text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform shadow-lg shadow-primary/10">
+<span class="material-symbols-outlined" style="font-size: 1.2rem;">add_circle</span>
+                New Search
+            </button>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+                User Profile
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">logout</span>
+                Logout
+            </a>
+</div>
+</aside>
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 right-0 w-full lg:w-[calc(100%-240px)] h-16 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-md z-30 flex justify-between items-center px-6 transition-all duration-300 ease-in-out">
+<div class="flex items-center gap-4">
+<h2 class="text-lg font-extrabold text-teal-700 dark:text-teal-400 lg:hidden">Nexora KR</h2>
+<div class="hidden lg:flex items-center gap-2 text-on-surface-variant font-medium text-sm">
+<span class="text-slate-400">Admin</span>
+<span class="material-symbols-outlined text-[12px] text-slate-300">chevron_right</span>
+<span class="text-on-surface">System Health</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-slate-600 dark:text-slate-400 hover:text-teal-500 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-slate-800">
+<div class="text-right hidden sm:block">
+<p class="text-xs font-bold text-on-surface leading-none">Admin Panel</p>
+<p class="text-[10px] text-slate-400 font-medium">System Administrator</p>
+</div>
+<img alt="User Avatar" class="w-8 h-8 rounded-full border-2 border-primary/20 object-cover" data-alt="Close-up portrait of a professional male system administrator in a clean office setting, looking friendly and confident" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyjMSlJAGiSUF0a2vaxFScw0j0Dh9viy8a1yatyOjpM8fOokZKyCFFKGSW8_N-9nnhPPaNnygHdYeoM6kbhDhqOMj_RuGrNHu6DhRhGtiib8x9y_Dy-XCMP3VUwwckPqOoaU9wDcorcA6lgjrzqD4Q16ILXiAl6C5siwe1n_23nE7e3K7fE14jgKimTtAIhgPt_F7IkAFhv1zI27p5n_3yH2ApaEGxVQuZ2KX9TS_O6mhFA1EOHv7KkVUrhyURaEY6B3MgeWECuvk"/>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="pt-24 pb-12 lg:ml-60 px-6 min-h-screen bg-surface-container-low transition-all duration-300">
+<div class="max-w-[1100px] mx-auto">
+<!-- Page Title Section -->
+<div class="mb-10">
+<h3 class="text-3xl font-extrabold text-on-surface tracking-tight mb-2">System Diagnostics</h3>
+<p class="text-on-surface-variant max-w-2xl font-body">Real-time infrastructure health and retrieval engine performance metrics.</p>
+</div>
+<!-- Metrics Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<!-- Total Documents -->
+<div class="bg-surface-container-lowest rounded-xl p-6 border-l-4 border-primary transition-all duration-300 hover:translate-y-[-2px] flex flex-col justify-between">
+<div>
+<p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Total documents</p>
+<h4 class="text-3xl font-extrabold text-on-surface tracking-tighter">1,248,392</h4>
+</div>
+<div class="mt-4 flex items-center justify-between">
+<span class="text-xs font-medium text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                            +12%
+                        </span>
+<div class="h-6 w-16 bg-primary/5 rounded flex items-end gap-[1px] p-[2px]">
+<div class="w-full bg-primary/20 h-1/4 rounded-sm"></div>
+<div class="w-full bg-primary/30 h-2/4 rounded-sm"></div>
+<div class="w-full bg-primary/40 h-3/4 rounded-sm"></div>
+<div class="w-full bg-primary h-full rounded-sm"></div>
+</div>
+</div>
+</div>
+<!-- Total Chunks -->
+<div class="bg-surface-container-lowest rounded-xl p-6 border-l-4 border-secondary transition-all duration-300 hover:translate-y-[-2px] flex flex-col justify-between">
+<div>
+<p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Total chunks</p>
+<h4 class="text-3xl font-extrabold text-on-surface tracking-tighter">14,802,110</h4>
+</div>
+<div class="mt-4 flex items-center justify-between">
+<span class="text-xs font-medium text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                            +4.2%
+                        </span>
+<div class="h-6 w-16 bg-secondary/5 rounded flex items-end gap-[1px] p-[2px]">
+<div class="w-full bg-secondary h-full rounded-sm"></div>
+<div class="w-full bg-secondary/60 h-2/4 rounded-sm"></div>
+<div class="w-full bg-secondary/80 h-3/4 rounded-sm"></div>
+<div class="w-full bg-secondary/40 h-1/4 rounded-sm"></div>
+</div>
+</div>
+</div>
+<!-- Average Retrieval Score -->
+<div class="bg-surface-container-lowest rounded-xl p-6 border-l-4 border-tertiary transition-all duration-300 hover:translate-y-[-2px] flex flex-col justify-between">
+<div>
+<p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Avg. Retrieval Score</p>
+<h4 class="text-3xl font-extrabold text-on-surface tracking-tighter">0.942</h4>
+</div>
+<div class="mt-4 flex items-center justify-between">
+<span class="text-xs font-medium text-tertiary flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                            +0.015
+                        </span>
+<div class="h-6 w-16 bg-tertiary/5 rounded flex items-end gap-[1px] p-[2px]">
+<div class="w-full bg-tertiary/20 h-1/4 rounded-sm"></div>
+<div class="w-full bg-tertiary/60 h-3/4 rounded-sm"></div>
+<div class="w-full bg-tertiary h-full rounded-sm"></div>
+<div class="w-full bg-tertiary/80 h-2/4 rounded-sm"></div>
+</div>
+</div>
+</div>
+<!-- Queries Today -->
+<div class="bg-surface-container-lowest rounded-xl p-6 border-l-4 border-primary-container transition-all duration-300 hover:translate-y-[-2px] flex flex-col justify-between">
+<div>
+<p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Queries today</p>
+<h4 class="text-3xl font-extrabold text-on-surface tracking-tighter">42,501</h4>
+</div>
+<div class="mt-4 flex items-center justify-between">
+<span class="text-xs font-medium text-primary-container flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_flat</span>
+                            Stable
+                        </span>
+<div class="h-6 w-16 bg-primary-container/5 rounded flex items-end gap-[1px] p-[2px]">
+<div class="w-full bg-primary-container/40 h-2/4 rounded-sm"></div>
+<div class="w-full bg-primary-container/40 h-2/4 rounded-sm"></div>
+<div class="w-full bg-primary-container/40 h-2/4 rounded-sm"></div>
+<div class="w-full bg-primary-container/40 h-2/4 rounded-sm"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Index Status Section -->
+<div class="bg-surface-container-lowest rounded-xl p-8 mb-8 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-tertiary/5 to-transparent rounded-bl-full pointer-events-none"></div>
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+<div class="flex-1">
+<div class="flex items-center gap-4 mb-4">
+<h4 class="text-xl font-bold tracking-tight">Index status</h4>
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-[#D1FAE5] text-[#065F46] gap-1">
+<span class="w-2 h-2 rounded-full bg-[#10B981]"></span>
+                                Healthy
+                            </span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-4">
+<div class="flex flex-col gap-1">
+<span class="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Vector database</span>
+<p class="text-sm font-semibold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-tertiary">database</span>
+                                    Pinecone gcp-us-east1
+                                </p>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Last indexed timestamp</span>
+<p class="text-sm font-semibold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-tertiary">history</span>
+                                    Oct 24, 2023 - 14:32:01 UTC
+                                </p>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Vector count</span>
+<p class="text-sm font-semibold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-tertiary">data_array</span>
+                                    14,802,110 (1536d)
+                                </p>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Health status</span>
+<p class="text-sm font-semibold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-[#10B981]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                    Operational
+                                </p>
+</div>
+</div>
+</div>
+<div class="lg:border-l border-slate-100 lg:pl-12 flex flex-col gap-3">
+<button class="px-8 py-3 bg-tertiary text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-tertiary/20">
+<span class="material-symbols-outlined">refresh</span>
+                            Re-index all
+                        </button>
+<p class="text-[10px] text-center text-on-surface-variant font-medium">Last full re-index: 12 days ago</p>
+</div>
+</div>
+</div>
+<!-- Activity Feed Section -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden">
+<div class="px-8 py-6 border-b border-surface-container flex items-center justify-between bg-surface-container/20">
+<h4 class="text-lg font-bold tracking-tight">Recent activity feed</h4>
+<button class="text-xs font-bold text-tertiary hover:underline">View full logs</button>
+</div>
+<div class="divide-y divide-surface-container/50">
+<!-- Activity Item 1 -->
+<div class="px-8 py-4 flex items-center gap-6 hover:bg-surface-container-low transition-colors group">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">upload_file</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-semibold text-on-surface">Data Ingestion: <span class="font-normal text-on-surface-variant">corporate_policy_v2.pdf</span></p>
+<p class="text-xs text-on-surface-variant/70">1,240 chunks processed successfully</p>
+</div>
+<div class="text-right shrink-0">
+<p class="text-xs font-medium text-on-surface">2 mins ago</p>
+<p class="text-[10px] text-on-surface-variant/50 uppercase font-bold tracking-tighter">Event #9482</p>
+</div>
+</div>
+<!-- Activity Item 2 -->
+<div class="px-8 py-4 flex items-center gap-6 hover:bg-surface-container-low transition-colors group">
+<div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined text-[20px]">search_insights</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-semibold text-on-surface">High-Latency Query Detected</p>
+<p class="text-xs text-on-surface-variant/70">Query took 2.4s to respond (Target: &lt;1.0s)</p>
+</div>
+<div class="text-right shrink-0">
+<p class="text-xs font-medium text-on-surface">15 mins ago</p>
+<p class="text-[10px] text-on-surface-variant/50 uppercase font-bold tracking-tighter">Event #9481</p>
+</div>
+</div>
+<!-- Activity Item 3 -->
+<div class="px-8 py-4 flex items-center gap-6 hover:bg-surface-container-low transition-colors group">
+<div class="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary shrink-0">
+<span class="material-symbols-outlined text-[20px]">sync</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-semibold text-on-surface">Background Re-indexing</p>
+<p class="text-xs text-on-surface-variant/70">Batch process 42 started automatically</p>
+</div>
+<div class="text-right shrink-0">
+<p class="text-xs font-medium text-on-surface">42 mins ago</p>
+<p class="text-[10px] text-on-surface-variant/50 uppercase font-bold tracking-tighter">Event #9480</p>
+</div>
+</div>
+<!-- Skeleton Loader Simulation (Item 4) -->
+<div class="px-8 py-4 flex items-center gap-6 animate-pulse">
+<div class="w-10 h-10 rounded-full bg-surface-container-high shrink-0"></div>
+<div class="flex-1 space-y-2">
+<div class="h-3 w-48 bg-surface-container-high rounded"></div>
+<div class="h-2 w-32 bg-surface-container-high rounded"></div>
+</div>
+<div class="w-12 h-3 bg-surface-container-high rounded shrink-0"></div>
+</div>
+<!-- Activity Item 5 -->
+<div class="px-8 py-4 flex items-center gap-6 hover:bg-surface-container-low transition-colors group">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">upload_file</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-semibold text-on-surface">Data Ingestion: <span class="font-normal text-on-surface-variant">q3_financial_report_final.xlsx</span></p>
+<p class="text-xs text-on-surface-variant/70">8,412 chunks processed successfully</p>
+</div>
+<div class="text-right shrink-0">
+<p class="text-xs font-medium text-on-surface">2 hours ago</p>
+<p class="text-[10px] text-on-surface-variant/50 uppercase font-bold tracking-tighter">Event #9478</p>
+</div>
+</div>
+<!-- Activity Item 6 -->
+<div class="px-8 py-4 flex items-center gap-6 hover:bg-surface-container-low transition-colors group">
+<div class="w-10 h-10 rounded-full bg-on-error-container/10 flex items-center justify-center text-error shrink-0">
+<span class="material-symbols-outlined text-[20px]">warning</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-semibold text-on-surface">Namespace Conflict Resolved</p>
+<p class="text-xs text-on-surface-variant/70">Duplicate metadata entries merged in production index</p>
+</div>
+<div class="text-right shrink-0">
+<p class="text-xs font-medium text-on-surface">5 hours ago</p>
+<p class="text-[10px] text-on-surface-variant/50 uppercase font-bold tracking-tighter">Event #9477</p>
+</div>
+</div>
+</div>
+<div class="p-6 text-center bg-surface-container-low/30">
+<button class="text-sm font-bold text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-2 mx-auto">
+                        Show more activity
+                        <span class="material-symbols-outlined text-sm">keyboard_arrow_down</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Overlay/Modal Simulation (Confirmation) -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm pointer-events-none opacity-0 transition-opacity">
+<div class="bg-surface-container-lowest knowledge-leaf w-full max-w-md p-8 shadow-2xl scale-95 transition-transform">
+<div class="flex items-center gap-4 mb-6">
+<div class="w-12 h-12 rounded-xl bg-on-error-container/10 text-error flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl">report</span>
+</div>
+<div>
+<h5 class="text-xl font-bold tracking-tight">Are you absolutely sure?</h5>
+<p class="text-sm text-on-surface-variant font-medium">Full re-indexing will pause live search retrieval for ~10 minutes.</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-lg mb-8 border-l-4 border-error">
+<p class="text-xs text-on-surface-variant font-medium leading-relaxed">
+                    This action will clear the existing vector index for all 1.2M documents and rebuild it from the latest source chunks. This cannot be undone once started.
+                </p>
+</div>
+<div class="flex gap-4">
+<button class="flex-1 py-3 text-sm font-bold text-on-surface-variant bg-surface-container-high rounded-xl hover:bg-surface-container-highest transition-colors">Cancel</button>
+<button class="flex-1 py-3 text-sm font-bold text-white bg-error rounded-xl shadow-lg shadow-error/20 hover:scale-[1.02] active:scale-95 transition-all">Start re-indexing</button>
+</div>
+</div>
+</div>
+</body></html>

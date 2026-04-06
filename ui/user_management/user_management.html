@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nexora KR - User Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#005048",
+                        "inverse-primary": "#4fdbc8",
+                        "tertiary-fixed": "#e9ddff",
+                        "background": "#f8f9fb",
+                        "on-tertiary-fixed-variant": "#5516be",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "outline": "#6c7a77",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#6d3bd7",
+                        "surface-container-highest": "#e1e2e4",
+                        "tertiary-container": "#b192ff",
+                        "secondary": "#4648d4",
+                        "on-primary-container": "#00423b",
+                        "tertiary-fixed-dim": "#d0bcff",
+                        "primary-fixed": "#71f8e4",
+                        "error": "#ba1a1a",
+                        "outline-variant": "#bbcac6",
+                        "surface-variant": "#e1e2e4",
+                        "on-secondary-fixed": "#07006c",
+                        "on-secondary-container": "#fffbff",
+                        "surface-tint": "#006b5f",
+                        "primary-container": "#14b8a6",
+                        "on-primary-fixed": "#00201c",
+                        "secondary-fixed": "#e1e0ff",
+                        "on-tertiary-fixed": "#23005c",
+                        "on-surface": "#191c1e",
+                        "on-surface-variant": "#3c4947",
+                        "secondary-fixed-dim": "#c0c1ff",
+                        "primary": "#006b5f",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#f3f4f6",
+                        "inverse-on-surface": "#f0f1f3",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-container": "#4700aa",
+                        "on-background": "#191c1e",
+                        "surface-dim": "#d9dadc",
+                        "surface-bright": "#f8f9fb",
+                        "on-error": "#ffffff",
+                        "surface-container": "#edeef0",
+                        "inverse-surface": "#2e3132",
+                        "surface": "#f8f9fb",
+                        "secondary-container": "#6063ee",
+                        "on-secondary-fixed-variant": "#2f2ebe",
+                        "primary-fixed-dim": "#4fdbc8",
+                        "surface-container-high": "#e7e8ea",
+                        "surface-container-lowest": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .knowledge-leaf {
+            border-top-left-radius: 1.5rem;
+            border-bottom-right-radius: 1.5rem;
+            border-top-right-radius: 0.25rem;
+            border-bottom-left-radius: 0.25rem;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface overflow-x-hidden">
+<!-- SideNavBar Shell -->
+<aside class="hidden lg:flex flex-col h-screen z-40 fixed left-0 top-0 w-60 bg-white dark:bg-slate-900 transition-all duration-300 ease-in-out font-manrope text-sm font-medium tracking-tight">
+<div class="p-6">
+<div class="flex items-center gap-2 mb-8">
+<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-lg">terminal</span>
+</div>
+<div>
+<h1 class="text-xl font-bold tracking-tighter text-teal-700 dark:text-teal-400">Nexora KR</h1>
+<p class="text-[10px] text-on-surface-variant leading-none">Intelligent Retrieval</p>
+</div>
+</div>
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-teal-600 dark:hover:text-teal-400 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                    Dashboard
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-teal-600 dark:hover:text-teal-400 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">search</span>
+                    Search
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-teal-600 dark:hover:text-teal-400 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">book_2</span>
+                    Library
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-teal-600 dark:hover:text-teal-400 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">insights</span>
+                    Analytics
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 border-l-4 border-teal-600" href="#">
+<span class="material-symbols-outlined">settings</span>
+                    Settings
+                </a>
+</nav>
+</div>
+<div class="mt-auto p-4 border-t border-surface-container">
+<div class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-teal-600 transition-all duration-300 cursor-pointer">
+<span class="material-symbols-outlined">account_circle</span>
+                User Profile
+            </div>
+<div class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-error transition-all duration-300 cursor-pointer">
+<span class="material-symbols-outlined">logout</span>
+                Logout
+            </div>
+</div>
+</aside>
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 right-0 w-full lg:w-[calc(100%-240px)] h-16 z-30 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-md flex justify-between items-center px-6 font-manrope text-base">
+<h2 class="text-lg font-extrabold text-teal-700 dark:text-teal-400 lg:hidden">Nexora KR</h2>
+<div class="hidden lg:flex items-center gap-2">
+<span class="text-on-surface-variant font-medium">Settings</span>
+<span class="material-symbols-outlined text-outline-variant text-sm">chevron_right</span>
+<span class="text-on-surface font-bold">User Management</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="professional headshot of a tech administrator minimalist lighting clean background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4SvD8Vlz3_sqhApe5XdW4gSGdngCBi5pyhNeqF8eU69V3B5k46t_79pvjN-0wBKjHgxFjsrqf90y7SKEJ7tUNT3ptm8XHzOuoRYU_MuZ5sWa4SAVEL8vwBSD9j81WmQILbPFHpiPD049p4LXSXjDnCCtnpE6-sttOvpmDujDlJYHJ20_POVzn7CNuNTRaITqeuqW9ab9pZclqm-ORCeVYaH6kwAHauBjiZAKQYvqJWi_-oSB2boxGBxHo2bzAAxcu_vneDlqsroY"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-16 lg:pl-60 min-h-screen bg-surface-container-low">
+<div class="max-w-[1100px] mx-auto p-8">
+<!-- Page Header Actions -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+<div>
+<h1 class="text-3xl font-headline font-extrabold text-on-surface tracking-tight">Admin Console</h1>
+<p class="text-on-surface-variant font-body mt-1">Manage organizational access and user permissions.</p>
+</div>
+<button class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-br from-tertiary to-tertiary-container text-white font-semibold rounded-xl hover:scale-[1.02] transition-transform shadow-xl shadow-tertiary/10">
+<span class="material-symbols-outlined">person_add</span>
+                    Create user
+                </button>
+</div>
+<!-- Filter Bar -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex flex-col sm:flex-row gap-4 mb-6 items-center">
+<div class="relative flex-1 w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full h-12 pl-10 pr-4 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-tertiary/20 font-body text-sm" placeholder="Search by name or email..." type="text"/>
+</div>
+<div class="flex items-center gap-3 w-full sm:w-auto">
+<select class="h-12 px-4 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-tertiary/20 font-body text-sm text-on-surface-variant min-w-[140px]">
+<option>All Roles</option>
+<option>Administrator</option>
+<option>Editor</option>
+<option>Viewer</option>
+</select>
+</div>
+</div>
+<!-- Users Table Knowledge Leaves -->
+<div class="space-y-4">
+<!-- Table Head (Editorial Style) -->
+<div class="grid grid-cols-12 px-6 py-2 text-on-surface-variant text-[11px] font-bold uppercase tracking-widest">
+<div class="col-span-4">Name &amp; Email</div>
+<div class="col-span-2">Role</div>
+<div class="col-span-3">Last active</div>
+<div class="col-span-2">Status</div>
+<div class="col-span-1 text-right">Actions</div>
+</div>
+<!-- User Row 1 -->
+<div class="knowledge-leaf bg-surface-container-lowest hover:bg-surface-bright border-l-4 border-tertiary transition-all duration-300 group cursor-pointer">
+<div class="grid grid-cols-12 items-center px-6 py-5">
+<div class="col-span-4 flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container text-tertiary flex items-center justify-center font-bold">JD</div>
+<div>
+<div class="font-headline font-bold text-on-surface">Julianne Devis</div>
+<div class="text-xs text-on-surface-variant font-body">j.devis@nexora.io</div>
+</div>
+</div>
+<div class="col-span-2">
+<span class="px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed-variant text-[11px] font-bold rounded-full">Administrator</span>
+</div>
+<div class="col-span-3 text-sm text-on-surface-variant font-body">2 hours ago</div>
+<div class="col-span-2">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-teal-50 text-teal-700 text-[11px] font-bold rounded-full">
+<span class="w-1.5 h-1.5 bg-teal-500 rounded-full"></span>
+                                Active
+                            </span>
+</div>
+<div class="col-span-1 text-right">
+<span class="material-symbols-outlined text-outline-variant opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward_ios</span>
+</div>
+</div>
+</div>
+<!-- User Row 2 -->
+<div class="knowledge-leaf bg-surface-container-lowest hover:bg-surface-bright border-l-4 border-secondary transition-all duration-300 group cursor-pointer">
+<div class="grid grid-cols-12 items-center px-6 py-5">
+<div class="col-span-4 flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container text-secondary flex items-center justify-center font-bold">MK</div>
+<div>
+<div class="font-headline font-bold text-on-surface">Marcus Kael</div>
+<div class="text-xs text-on-surface-variant font-body">m.kael@nexora.io</div>
+</div>
+</div>
+<div class="col-span-2">
+<span class="px-3 py-1 bg-secondary-fixed text-on-secondary-fixed-variant text-[11px] font-bold rounded-full">Editor</span>
+</div>
+<div class="col-span-3 text-sm text-on-surface-variant font-body">Yesterday, 4:22 PM</div>
+<div class="col-span-2">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-teal-50 text-teal-700 text-[11px] font-bold rounded-full">
+<span class="w-1.5 h-1.5 bg-teal-500 rounded-full"></span>
+                                Active
+                            </span>
+</div>
+<div class="col-span-1 text-right">
+<span class="material-symbols-outlined text-outline-variant opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward_ios</span>
+</div>
+</div>
+</div>
+<!-- User Row 3 (Suspended) -->
+<div class="knowledge-leaf bg-surface-container-lowest hover:bg-surface-bright border-l-4 border-error/50 transition-all duration-300 group cursor-pointer opacity-75">
+<div class="grid grid-cols-12 items-center px-6 py-5">
+<div class="col-span-4 flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container text-outline flex items-center justify-center font-bold">SA</div>
+<div>
+<div class="font-headline font-bold text-on-surface">Sarah Alwan</div>
+<div class="text-xs text-on-surface-variant font-body">s.alwan@nexora.io</div>
+</div>
+</div>
+<div class="col-span-2">
+<span class="px-3 py-1 bg-surface-container-highest text-on-surface-variant text-[11px] font-bold rounded-full">Viewer</span>
+</div>
+<div class="col-span-3 text-sm text-on-surface-variant font-body">Oct 12, 2023</div>
+<div class="col-span-2">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-50 text-error text-[11px] font-bold rounded-full">
+<span class="w-1.5 h-1.5 bg-error rounded-full"></span>
+                                Suspended
+                            </span>
+</div>
+<div class="col-span-1 text-right">
+<span class="material-symbols-outlined text-outline-variant opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward_ios</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Side Slide-in Panel (User Details) -->
+<div class="fixed inset-0 z-50 pointer-events-none">
+<div class="absolute inset-0 bg-on-surface/20 backdrop-blur-sm pointer-events-auto transition-opacity opacity-0 hidden"></div>
+<div class="absolute right-0 top-0 h-full w-full max-w-md bg-surface-container-lowest shadow-2xl pointer-events-auto translate-x-full transition-transform duration-500 ease-out p-8">
+<div class="flex items-center justify-between mb-8">
+<h3 class="text-2xl font-headline font-extrabold text-on-surface">User Details</h3>
+<button class="w-10 h-10 rounded-full hover:bg-surface-container flex items-center justify-center text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="flex flex-col items-center mb-10 text-center">
+<div class="w-24 h-24 rounded-2xl bg-tertiary-fixed text-tertiary flex items-center justify-center font-bold text-3xl mb-4">JD</div>
+<h4 class="text-xl font-headline font-bold text-on-surface">Julianne Devis</h4>
+<p class="text-on-surface-variant font-body">j.devis@nexora.io</p>
+<div class="mt-4 px-4 py-1.5 bg-teal-50 text-teal-700 text-[11px] font-bold rounded-full uppercase tracking-widest">Active Account</div>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-10">
+<div class="p-4 bg-surface-container-low rounded-xl">
+<p class="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider mb-1">Total Queries</p>
+<p class="text-2xl font-headline font-extrabold text-on-surface">2,842</p>
+</div>
+<div class="p-4 bg-surface-container-low rounded-xl">
+<p class="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider mb-1">Current Role</p>
+<p class="text-lg font-headline font-extrabold text-tertiary">Admin</p>
+</div>
+</div>
+<div class="space-y-4">
+<p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest px-1">Management Actions</p>
+<button class="w-full flex items-center justify-between px-6 py-4 bg-surface-container hover:bg-surface-container-high rounded-xl transition-colors group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary">edit</span>
+<span class="font-body font-medium">Edit permissions</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between px-6 py-4 bg-surface-container hover:bg-surface-container-high rounded-xl transition-colors group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">lock_reset</span>
+<span class="font-body font-medium">Send password reset</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</button>
+<div class="pt-4 mt-4 border-t border-surface-container">
+<button class="w-full px-6 py-4 bg-rose-50 hover:bg-rose-100 text-error font-body font-bold rounded-xl transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">block</span>
+                        Suspend Julianne Devis
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Create User Modal -->
+<div class="fixed inset-0 z-[60] flex items-center justify-center pointer-events-none">
+<div class="absolute inset-0 bg-on-surface/40 backdrop-blur-md pointer-events-auto transition-opacity opacity-0 hidden"></div>
+<div class="relative w-full max-w-lg bg-surface-container-lowest rounded-xl shadow-2xl p-8 pointer-events-auto transform scale-95 opacity-0 hidden transition-all duration-300">
+<h3 class="text-2xl font-headline font-extrabold text-on-surface mb-2">Create New User</h3>
+<p class="text-on-surface-variant mb-8">Onboard a new member to the Nexora KR ecosystem.</p>
+<form class="space-y-6">
+<div class="space-y-2">
+<label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest px-1">Full Name</label>
+<input class="w-full h-12 px-4 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-tertiary/20" placeholder="e.g. John Doe" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest px-1">Email Address</label>
+<input class="w-full h-12 px-4 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-tertiary/20" placeholder="john@example.com" type="email"/>
+</div>
+<div class="space-y-2">
+<label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest px-1">Organization Role</label>
+<select class="w-full h-12 px-4 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-tertiary/20">
+<option>Viewer</option>
+<option>Editor</option>
+<option>Administrator</option>
+</select>
+</div>
+<div class="flex items-center gap-4 pt-4">
+<button class="flex-1 py-4 text-on-surface-variant font-bold hover:bg-surface-container rounded-xl transition-colors" type="button">Cancel</button>
+<button class="flex-[2] py-4 bg-tertiary text-white font-bold rounded-xl shadow-lg shadow-tertiary/20 hover:scale-[1.02] active:scale-95 transition-all" type="button">Create User Profile</button>
+</div>
+</form>
+</div>
+</div>
+<!-- Toast Notification -->
+<div class="fixed top-8 right-8 z-[70] pointer-events-none">
+<div class="bg-teal-600 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-4 transform translate-x-[calc(100%+32px)] transition-transform duration-500 pointer-events-auto">
+<div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<p class="font-headline font-bold leading-tight">Action Successful</p>
+<p class="text-xs text-white/80">User profile has been created and invitation sent.</p>
+</div>
+<button class="ml-4 text-white/60 hover:text-white">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+</div>
+</body></html>

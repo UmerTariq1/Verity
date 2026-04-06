@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nexora KR - Chat Intelligence</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-fixed-variant": "#005048",
+                    "inverse-primary": "#4fdbc8",
+                    "tertiary-fixed": "#e9ddff",
+                    "background": "#f8f9fb",
+                    "on-tertiary-fixed-variant": "#5516be",
+                    "on-primary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "outline": "#6c7a77",
+                    "on-tertiary": "#ffffff",
+                    "tertiary": "#6d3bd7",
+                    "surface-container-highest": "#e1e2e4",
+                    "tertiary-container": "#b192ff",
+                    "secondary": "#4648d4",
+                    "on-primary-container": "#00423b",
+                    "tertiary-fixed-dim": "#d0bcff",
+                    "primary-fixed": "#71f8e4",
+                    "error": "#ba1a1a",
+                    "outline-variant": "#bbcac6",
+                    "surface-variant": "#e1e2e4",
+                    "on-secondary-fixed": "#07006c",
+                    "on-secondary-container": "#fffbff",
+                    "surface-tint": "#006b5f",
+                    "primary-container": "#14b8a6",
+                    "on-primary-fixed": "#00201c",
+                    "secondary-fixed": "#e1e0ff",
+                    "on-tertiary-fixed": "#23005c",
+                    "on-surface": "#191c1e",
+                    "on-surface-variant": "#3c4947",
+                    "secondary-fixed-dim": "#c0c1ff",
+                    "primary": "#006b5f",
+                    "on-secondary": "#ffffff",
+                    "surface-container-low": "#f3f4f6",
+                    "inverse-on-surface": "#f0f1f3",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-container": "#4700aa",
+                    "on-background": "#191c1e",
+                    "surface-dim": "#d9dadc",
+                    "surface-bright": "#f8f9fb",
+                    "on-error": "#ffffff",
+                    "surface-container": "#edeef0",
+                    "inverse-surface": "#2e3132",
+                    "surface": "#f8f9fb",
+                    "secondary-container": "#6063ee",
+                    "on-secondary-fixed-variant": "#2f2ebe",
+                    "primary-fixed-dim": "#4fdbc8",
+                    "surface-container-high": "#e7e8ea",
+                    "surface-container-lowest": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+        .knowledge-leaf {
+            border-top-left-radius: 1.5rem;
+            border-bottom-right-radius: 1.5rem;
+            border-top-right-radius: 0.25rem;
+            border-bottom-left-radius: 0.25rem;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- SideNavBar Shell -->
+<aside class="hidden lg:flex flex-col h-screen z-40 fixed left-0 top-0 w-60 bg-white dark:bg-slate-900 font-manrope text-sm font-medium tracking-tight">
+<div class="p-6 flex items-center gap-3">
+<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-lg" data-icon="hub">hub</span>
+</div>
+<div>
+<h1 class="text-xl font-bold tracking-tighter text-teal-700 dark:text-teal-400">Nexora KR</h1>
+<p class="text-[10px] text-on-surface-variant/70 uppercase tracking-widest">Intelligent Retrieval</p>
+</div>
+</div>
+<nav class="flex-1 mt-4 px-2 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 border-l-4 border-teal-600 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-teal-600 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+                Search
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-teal-600 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="book_2">book_2</span>
+                Library
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-teal-600 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+                Analytics
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-teal-600 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Settings
+            </a>
+</nav>
+<div class="mt-auto p-4 border-t border-surface-container">
+<button class="w-full py-3 px-4 bg-primary text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-transform active:scale-95 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                New Search
+            </button>
+<div class="mt-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 text-slate-500 dark:text-slate-400 hover:text-teal-600 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+                    User Profile
+                </a>
+<a class="flex items-center gap-3 px-4 py-2 text-slate-500 dark:text-slate-400 hover:text-error transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+                    Logout
+                </a>
+</div>
+</div>
+</aside>
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 right-0 w-full lg:w-[calc(100%-240px)] h-16 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-md z-30 flex justify-between items-center px-6">
+<h1 class="text-lg font-extrabold text-teal-700 dark:text-teal-400 lg:hidden">Nexora KR</h1>
+<div class="flex items-center gap-4 ml-auto">
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-container-low rounded-full text-xs font-semibold text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                System: Active
+            </div>
+<button class="p-2 text-slate-600 hover:text-teal-500 transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<img alt="User Avatar" class="w-9 h-9 rounded-full object-cover ring-2 ring-primary/10" data-alt="professional portrait of a creative professional woman in a modern office environment with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0QKmlat28VD7bpId_PJK9QLwIqgu341XgTV23hZgofrcq1mKGmxICQo6GbCnksbSrUeWq4gXkJqFCzJoW-K2rQisFI2636galj19If48C8b5GWuBJ07Q-gNhTDwF9bWSxqboOSLOGQMadvvkCzFP0k9CKhtLzSGRnVfuj52OHwwhjQyaJcwA1Tey5wj1xXYMgvqnTHNxdJAUs5IaHgn90yUDnAa8LFRjXEPjM3pUV7R4baqB3nRU5HxWz3I47fpGyqe7R9BZ87b0"/>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="lg:ml-60 pt-16 h-screen flex flex-col bg-surface-container-low">
+<!-- Chat Layout -->
+<div class="flex-1 flex flex-col lg:flex-row overflow-hidden max-w-[1100px] mx-auto w-full">
+<!-- Sidebar (Desktop Left / Mobile Top) -->
+<div class="lg:w-80 w-full flex flex-col border-r-0 lg:border-r border-surface-container bg-surface-container-low overflow-y-auto hidden lg:flex">
+<div class="p-4 flex items-center justify-between">
+<span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Conversation history</span>
+<button class="p-1 hover:bg-surface-container-high rounded-lg transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
+</button>
+</div>
+<div class="px-3 space-y-2">
+<div class="p-3 bg-surface-container-lowest rounded-xl shadow-sm border-l-4 border-primary">
+<p class="text-sm font-semibold truncate text-on-surface">Analysis of Q3 Logistics...</p>
+<p class="text-[10px] text-on-surface-variant mt-1">2 mins ago</p>
+</div>
+<div class="p-3 hover:bg-surface-container-high rounded-xl transition-all cursor-pointer group">
+<p class="text-sm truncate text-on-surface-variant group-hover:text-on-surface transition-colors">Market Research: APAC 2024</p>
+<p class="text-[10px] text-on-surface-variant/60 mt-1">1 hour ago</p>
+</div>
+<div class="p-3 hover:bg-surface-container-high rounded-xl transition-all cursor-pointer group">
+<p class="text-sm truncate text-on-surface-variant group-hover:text-on-surface transition-colors">Employee Retention Pol...</p>
+<p class="text-[10px] text-on-surface-variant/60 mt-1">Yesterday</p>
+</div>
+</div>
+</div>
+<!-- Chat Panel -->
+<div class="flex-1 flex flex-col relative bg-surface-container-low">
+<!-- Chat Toolbar -->
+<div class="p-4 flex items-center justify-between z-10">
+<div class="flex items-center gap-2">
+<span class="text-sm font-headline font-bold text-on-primary-fixed-variant">Active Intelligence Session</span>
+</div>
+<button class="flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-error hover:bg-error-container/50 rounded-lg transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="delete_sweep">delete_sweep</span>
+                        Clear conversation
+                    </button>
+</div>
+<!-- Messages Area -->
+<div class="flex-1 overflow-y-auto px-6 space-y-8 pb-32 pt-4">
+<!-- User Message -->
+<div class="flex flex-col items-end">
+<div class="max-w-[80%] bg-secondary text-white px-6 py-4 rounded-[1.5rem] rounded-tr-none shadow-lg shadow-secondary/10">
+<p class="text-sm leading-relaxed">Can you summarize the main findings from the 2023 sustainability reports, specifically regarding supply chain emissions in Southeast Asia?</p>
+</div>
+<span class="text-[10px] text-on-surface-variant/60 mt-2 mr-2">10:42 AM</span>
+</div>
+<!-- AI Message (Standard) -->
+<div class="flex flex-col items-start">
+<div class="max-w-[90%] bg-surface-container-lowest p-6 rounded-xl border-l-4 border-primary shadow-sm knowledge-leaf">
+<p class="text-sm text-on-surface leading-relaxed">
+                                Based on the 2023 Sustainability Reports, the main findings regarding supply chain emissions in Southeast Asia indicate a <span class="font-bold text-primary">12% year-over-year increase</span>. This is primarily attributed to rapid manufacturing expansion and a lag in renewable energy adoption within Tier 2 and Tier 3 suppliers.
+                            </p>
+<!-- Sources Section -->
+<div class="mt-6 pt-6 border-t border-surface-container">
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="book">book</span>
+<span class="text-xs font-bold uppercase tracking-tighter text-on-surface-variant">Data Sources (3)</span>
+<span class="material-symbols-outlined text-on-surface-variant text-sm cursor-pointer ml-auto" data-icon="expand_more">expand_more</span>
+</div>
+<div class="flex flex-wrap gap-2">
+<div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-low hover:bg-surface-bright rounded-lg cursor-pointer transition-colors border border-outline-variant/10">
+<span class="text-[11px] font-medium text-on-surface-variant">Annual_Report_2023.pdf</span>
+<span class="text-[10px] bg-primary-container/20 text-primary px-1.5 rounded">p.45</span>
+<span class="text-[9px] font-bold text-teal-600 bg-teal-50 px-1 rounded-full">98% match</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-low hover:bg-surface-bright rounded-lg cursor-pointer transition-colors border border-outline-variant/10">
+<span class="text-[11px] font-medium text-on-surface-variant">SEA_Logistics_Matrix.xlsx</span>
+<span class="text-[10px] bg-primary-container/20 text-primary px-1.5 rounded">Sheet 2</span>
+<span class="text-[9px] font-bold text-teal-600 bg-teal-50 px-1 rounded-full">84% match</span>
+</div>
+</div>
+</div>
+<!-- Actions Row -->
+<div class="mt-6 flex items-center justify-between">
+<div class="flex items-center gap-1">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-lg transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="thumb_up">thumb_up</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error/10 rounded-lg transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="thumb_down">thumb_down</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-secondary hover:bg-secondary/10 rounded-lg transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+<button class="flex items-center gap-1.5 text-[11px] font-bold text-primary hover:bg-primary/5 px-3 py-1.5 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+                                    EXPORT AS .TXT
+                                </button>
+</div>
+</div>
+</div>
+<!-- AI Message (Low Confidence) -->
+<div class="flex flex-col items-start">
+<div class="max-w-[90%] bg-surface-container-lowest p-6 rounded-xl border-l-4 border-primary shadow-sm knowledge-leaf">
+<div class="mb-4 flex items-center gap-2 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-lg text-amber-800">
+<span class="material-symbols-outlined text-sm" data-icon="warning">warning</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Low confidence result</span>
+</div>
+<p class="text-sm text-on-surface leading-relaxed">
+                                I found limited specific documentation regarding the "Blue Harbor Protocol" for 2024. Preliminary data suggests it might involve updated maritime safety standards for deep-water ports, but I recommend checking the internal Port Authority portal for definitive guidelines.
+                            </p>
+<div class="mt-4 flex items-center gap-1">
+<button class="p-1.5 text-on-surface-variant hover:text-primary rounded-lg">
+<span class="material-symbols-outlined text-lg" data-icon="thumb_up">thumb_up</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-error rounded-lg">
+<span class="material-symbols-outlined text-lg" data-icon="thumb_down">thumb_down</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Input Area (Pinned Bottom) -->
+<div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-surface-container-low via-surface-container-low to-transparent">
+<div class="max-w-[900px] mx-auto space-y-3">
+<!-- Filter Pill -->
+<div class="flex justify-center">
+<div class="inline-flex items-center gap-3 bg-surface-container-lowest px-4 py-2 rounded-full shadow-sm border border-outline-variant/10">
+<div class="flex items-center gap-2">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase">From</label>
+<input class="text-xs bg-transparent border-none focus:ring-0 p-0 text-primary font-medium" type="date" value="2023-01-01"/>
+</div>
+<div class="w-px h-3 bg-surface-container-high"></div>
+<div class="flex items-center gap-2">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase">To</label>
+<input class="text-xs bg-transparent border-none focus:ring-0 p-0 text-primary font-medium" type="date" value="2023-12-31"/>
+</div>
+</div>
+</div>
+<!-- Main Input -->
+<div class="relative bg-surface-container-lowest rounded-2xl shadow-xl shadow-on-surface/5 flex items-end p-2 border border-outline-variant/20 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+<button class="p-3 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="attach_file">attach_file</span>
+</button>
+<textarea class="flex-1 bg-transparent border-none focus:ring-0 text-sm py-3 px-1 resize-none min-h-[48px] max-h-[120px] placeholder:text-on-surface-variant/50" placeholder="Ask about your knowledge repository..." rows="1"></textarea>
+<button class="m-1 p-3 bg-primary text-white rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/30 flex items-center justify-center">
+<span class="material-symbols-outlined font-bold" data-icon="send">send</span>
+</button>
+</div>
+<p class="text-[10px] text-center text-on-surface-variant/60">Press <span class="font-bold">Enter</span> to send, <span class="font-bold">Shift + Enter</span> for new line.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Simple Overlay / Clear Modal Mockup (Hidden by default) -->
+<div class="fixed inset-0 bg-on-surface/40 backdrop-blur-sm z-[100] hidden items-center justify-center">
+<div class="bg-surface-container-lowest p-8 rounded-2xl max-w-md w-full shadow-2xl">
+<h3 class="text-xl font-bold text-on-surface">Clear conversation?</h3>
+<p class="text-sm text-on-surface-variant mt-2 leading-relaxed">This will permanently delete the current active session and retrieval history. This action cannot be undone.</p>
+<div class="mt-8 flex gap-3">
+<button class="flex-1 py-3 text-sm font-bold text-on-surface-variant bg-surface-container-low rounded-xl hover:bg-surface-container-high transition-colors">Cancel</button>
+<button class="flex-1 py-3 text-sm font-bold text-white bg-error rounded-xl hover:bg-red-700 transition-colors">Clear History</button>
+</div>
+</div>
+</div>
+</body></html>

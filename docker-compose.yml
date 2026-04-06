@@ -1,0 +1,45 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Verity — docker-compose.yml
+# Skeleton created in Phase 1; completed with final service config in Phase 5.
+# Usage: docker compose up --build
+# ═══════════════════════════════════════════════════════════════════════════════
+
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: verity
+      POSTGRES_PASSWORD: verity
+      POSTGRES_DB: verity
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U verity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      # Override DATABASE_URL so the backend can reach the 'db' service by name
+      DATABASE_URL: postgresql://verity:verity@db:5432/verity
+    volumes:
+      - ./data:/app/data          # HR PDFs + manifest.json auto-ingested on startup
+      - chroma_data:/app/chroma_db
+    ports:
+      - "8000:8000"
+
+volumes:
+  postgres_data:
+  chroma_data:
