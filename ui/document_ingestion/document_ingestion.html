@@ -1,450 +1,398 @@
 <!DOCTYPE html>
-
-<html class="light" lang="en"><head>
+<html class="light" lang="en">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Nexora KR - Document Ingestion</title>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<title>Nexora KR - Library</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "on-primary-fixed-variant": "#005048",
-                    "inverse-primary": "#4fdbc8",
-                    "tertiary-fixed": "#e9ddff",
-                    "background": "#f8f9fb",
-                    "on-tertiary-fixed-variant": "#5516be",
-                    "on-primary": "#ffffff",
-                    "error-container": "#ffdad6",
-                    "outline": "#6c7a77",
-                    "on-tertiary": "#ffffff",
-                    "tertiary": "#6d3bd7",
-                    "surface-container-highest": "#e1e2e4",
-                    "tertiary-container": "#b192ff",
-                    "secondary": "#4648d4",
-                    "on-primary-container": "#00423b",
-                    "tertiary-fixed-dim": "#d0bcff",
-                    "primary-fixed": "#71f8e4",
-                    "error": "#ba1a1a",
-                    "outline-variant": "#bbcac6",
-                    "surface-variant": "#e1e2e4",
-                    "on-secondary-fixed": "#07006c",
-                    "on-secondary-container": "#fffbff",
-                    "surface-tint": "#006b5f",
-                    "primary-container": "#14b8a6",
-                    "on-primary-fixed": "#00201c",
-                    "secondary-fixed": "#e1e0ff",
-                    "on-tertiary-fixed": "#23005c",
-                    "on-surface": "#191c1e",
-                    "on-surface-variant": "#3c4947",
-                    "secondary-fixed-dim": "#c0c1ff",
-                    "primary": "#006b5f",
-                    "on-secondary": "#ffffff",
-                    "surface-container-low": "#f3f4f6",
-                    "inverse-on-surface": "#f0f1f3",
-                    "on-error-container": "#93000a",
-                    "on-tertiary-container": "#4700aa",
-                    "on-background": "#191c1e",
-                    "surface-dim": "#d9dadc",
-                    "surface-bright": "#f8f9fb",
-                    "on-error": "#ffffff",
-                    "surface-container": "#edeef0",
-                    "inverse-surface": "#2e3132",
-                    "surface": "#f8f9fb",
-                    "secondary-container": "#6063ee",
-                    "on-secondary-fixed-variant": "#2f2ebe",
-                    "primary-fixed-dim": "#4fdbc8",
-                    "surface-container-high": "#e7e8ea",
-                    "surface-container-lowest": "#ffffff"
-            },
-            "borderRadius": {
-                    "DEFAULT": "0.25rem",
-                    "lg": "0.5rem",
-                    "xl": "0.75rem",
-                    "full": "9999px"
-            },
-            "fontFamily": {
-                    "headline": ["Manrope"],
-                    "body": ["Inter"],
-                    "label": ["Inter"]
-            }
-          },
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "on-primary-fixed-variant": "#005048",
+          "tertiary-fixed": "#e9ddff",
+          "background": "#f8f9fb",
+          "on-tertiary-fixed-variant": "#5516be",
+          "on-primary": "#ffffff",
+          "error-container": "#ffdad6",
+          "outline": "#6c7a77",
+          "on-tertiary": "#ffffff",
+          "tertiary": "#6d3bd7",
+          "surface-container-highest": "#e1e2e4",
+          "tertiary-container": "#b192ff",
+          "secondary": "#4648d4",
+          "on-primary-container": "#00423b",
+          "tertiary-fixed-dim": "#d0bcff",
+          "primary-fixed": "#71f8e4",
+          "error": "#ba1a1a",
+          "outline-variant": "#bbcac6",
+          "surface-variant": "#e1e2e4",
+          "on-secondary-fixed": "#07006c",
+          "on-secondary-container": "#fffbff",
+          "surface-tint": "#006b5f",
+          "primary-container": "#14b8a6",
+          "on-primary-fixed": "#00201c",
+          "secondary-fixed": "#e1e0ff",
+          "on-tertiary-fixed": "#23005c",
+          "on-surface": "#191c1e",
+          "on-surface-variant": "#3c4947",
+          "secondary-fixed-dim": "#c0c1ff",
+          "primary": "#006b5f",
+          "on-secondary": "#ffffff",
+          "surface-container-low": "#f3f4f6",
+          "inverse-on-surface": "#f0f1f3",
+          "on-error-container": "#93000a",
+          "on-tertiary-container": "#4700aa",
+          "on-background": "#191c1e",
+          "surface-dim": "#d9dadc",
+          "surface-bright": "#f8f9fb",
+          "on-error": "#ffffff",
+          "surface-container": "#edeef0",
+          "inverse-surface": "#2e3132",
+          "surface": "#f8f9fb",
+          "secondary-container": "#6063ee",
+          "on-secondary-fixed-variant": "#2f2ebe",
+          "primary-fixed-dim": "#4fdbc8",
+          "surface-container-high": "#e7e8ea",
+          "surface-container-lowest": "#ffffff"
         },
+        borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+        fontFamily: { headline: ["Manrope"], body: ["Inter"], label: ["Inter"] }
       }
-    </script>
+    }
+  }
+</script>
 <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            display: inline-block;
-            vertical-align: middle;
-        }
-        .knowledge-leaf {
-            border-radius: 1.5rem 0.25rem 1.5rem 0.25rem;
-        }
-        .custom-dashed {
-            background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='12' ry='12' stroke='%23BBCAC6' stroke-width='2' stroke-dasharray='8%2c 12' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
-        }
-        .custom-dashed:hover {
-            background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='12' ry='12' stroke='%23006b5f' stroke-width='2' stroke-dasharray='8%2c 12' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
-        }
-    </style>
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  .knowledge-leaf {
+    border-top-left-radius: 1.5rem;
+    border-bottom-right-radius: 1.5rem;
+    border-top-right-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+  }
+  body { font-family: 'Inter', sans-serif; }
+  h1, h2, h3, h4 { font-family: 'Manrope', sans-serif; }
+</style>
 </head>
-<body class="bg-background font-body text-on-surface">
-<!-- SideNavBar (Shared Component) -->
-<aside class="hidden lg:flex flex-col h-screen z-40 fixed left-0 top-0 w-60 border-r-0 bg-white dark:bg-slate-900 transition-all duration-300 ease-in-out">
-<div class="p-6">
-<h1 class="text-xl font-bold tracking-tighter text-teal-700 dark:text-teal-400 font-headline">Nexora KR</h1>
-<p class="text-xs text-slate-500 font-medium">Intelligent Retrieval</p>
-</div>
-<nav class="flex-1 px-2 space-y-1">
-<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 font-manrope text-sm font-medium tracking-tight hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-teal-600 transition-all" href="#">
-<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-<span>Dashboard</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 font-manrope text-sm font-medium tracking-tight hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-teal-600 transition-all" href="#">
-<span class="material-symbols-outlined" data-icon="search">search</span>
-<span>Search</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 border-l-4 border-teal-600 font-manrope text-sm font-medium tracking-tight" href="#">
-<span class="material-symbols-outlined" data-icon="book_2">book_2</span>
-<span>Library</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 font-manrope text-sm font-medium tracking-tight hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-teal-600 transition-all" href="#">
-<span class="material-symbols-outlined" data-icon="insights">insights</span>
-<span>Analytics</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 font-manrope text-sm font-medium tracking-tight hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-teal-600 transition-all" href="#">
-<span class="material-symbols-outlined" data-icon="settings">settings</span>
-<span>Settings</span>
-</a>
-</nav>
-<div class="p-6 border-t border-slate-100 dark:border-slate-800">
-<div class="flex items-center gap-3 mb-6">
-<img alt="User Profile" class="w-8 h-8 rounded-full bg-slate-200" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCutpjcS787HPAxQx4jmG66SAH4UaNBhPmQe2TeSGlvL0DNu1t6f4-BTopFvDIN7DGf1C7AmeUPR_bPu348lLfGyz88zqABi-kQxUJZ5LR6auvmgw9AfeAru1Z0L0m1di98ZbxC3K4IxVgjrdB6zYNsNubwx11vQNE32H2izWk6i2npD_Lf_HlZ1krNopm5JmcVtaeOPNU34segn3acI2dDvPcYBl-2ZtPEghdLXp2XbrViYe9WwSMmOO_uW04cX2bFKdV2zJ_NXPI"/>
-<div class="overflow-hidden">
-<p class="text-xs font-bold truncate">Admin User</p>
-<p class="text-[10px] text-slate-500">Administrator</p>
-</div>
-</div>
-<button class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-tertiary text-on-tertiary rounded-xl text-xs font-bold hover:scale-[1.02] transition-transform shadow-lg shadow-tertiary/20">
-<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
-                New Search
-            </button>
-</div>
+<body class="bg-surface font-body text-on-surface overflow-x-hidden">
+
+<!-- SideNavBar -->
+<aside class="hidden lg:flex flex-col h-screen z-40 fixed left-0 top-0 w-60 bg-white dark:bg-slate-900 transition-all duration-300 ease-in-out font-manrope text-sm font-medium tracking-tight">
+  <div class="p-6">
+    <div class="flex items-center gap-2 mb-8">
+      <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+        <span class="material-symbols-outlined text-white text-lg">hub</span>
+      </div>
+      <div>
+        <h1 class="text-xl font-bold tracking-tighter text-teal-700 dark:text-teal-400">Nexora KR</h1>
+        <p class="text-[10px] text-on-surface-variant leading-none">Intelligent Retrieval</p>
+      </div>
+    </div>
+    <nav class="space-y-1">
+      <a data-nav="dashboard" href="#"
+         class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-teal-600 transition-all duration-300 rounded-lg">
+        <span class="material-symbols-outlined">dashboard</span> Dashboard
+      </a>
+      <a data-nav="search" href="#"
+         class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-teal-600 transition-all duration-300 rounded-lg">
+        <span class="material-symbols-outlined">search</span> Search
+      </a>
+      <a data-nav="library" data-admin-nav href="#"
+         class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-teal-600 transition-all duration-300 rounded-lg">
+        <span class="material-symbols-outlined">book_2</span> Library
+      </a>
+      <a data-nav="analytics" data-admin-nav href="#"
+         class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-teal-600 transition-all duration-300 rounded-lg">
+        <span class="material-symbols-outlined">insights</span> Analytics
+      </a>
+      <a data-nav="health" data-admin-nav href="#"
+         class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-teal-600 transition-all duration-300 rounded-lg">
+        <span class="material-symbols-outlined">monitor_heart</span> System Health
+      </a>
+      <a data-nav="users" data-admin-nav href="#"
+         class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-teal-600 transition-all duration-300 rounded-lg">
+        <span class="material-symbols-outlined">manage_accounts</span> Users
+      </a>
+    </nav>
+  </div>
+  <div class="mt-auto p-4 border-t border-surface-container space-y-1">
+    <a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 transition-all duration-300 cursor-pointer rounded-lg" href="#">
+      <span class="material-symbols-outlined">account_circle</span>
+      <span data-user-name class="text-sm font-medium truncate">Profile</span>
+    </a>
+    <span data-user-role class="block px-4 pb-1 text-[10px] uppercase font-bold text-on-surface-variant tracking-wider"></span>
+    <div data-logout
+         class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-error transition-all duration-300 cursor-pointer rounded-lg">
+      <span class="material-symbols-outlined">logout</span> Logout
+    </div>
+  </div>
 </aside>
-<!-- Main Content Wrapper -->
-<div class="lg:ml-60 min-h-screen flex flex-col">
-<!-- TopAppBar (Shared Component) -->
-<header class="fixed top-0 right-0 w-full lg:w-[calc(100%-240px)] h-16 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-md z-30 flex justify-between items-center px-6">
-<div class="flex items-center gap-4">
-<h2 class="text-lg font-extrabold text-teal-700 dark:text-teal-400 lg:hidden">Nexora KR</h2>
-<h2 class="font-headline font-bold text-on-surface text-xl">Document Ingestion</h2>
-</div>
-<div class="flex items-center gap-4">
-<button class="p-2 text-slate-600 dark:text-slate-400 hover:text-teal-500 transition-colors">
-<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
-</button>
-<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant">
-<img alt="User Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3FCraAAIzD6kQXBqscDmnI43bcv9Q8kJoczYeed_4xE8ZtplkjcoqJ1Ou3StBktpZ-oYINnyHtDmMdWbvO53W6j9wmDvWQy0ksRVo85dEr26qXkJwho6N-_HuJfrdv0dFBNcVgJlwRrHGVPVUchAj_MaDUDt7fyj389BzziC4RI8ZJnqghBAVVfeVXhbwW39comLtmLxptPm6hZ14qd55q5Fldf5RJWMjtdjKMbG4DZTnSJCgYAgV6538TrvDY69KdBuvEMccB44"/>
-</div>
-</div>
+
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 w-full lg:w-[calc(100%-240px)] h-16 z-30 bg-slate-50/80 backdrop-blur-md flex justify-between items-center px-6">
+  <h2 class="text-lg font-extrabold text-teal-700 dark:text-teal-400 lg:hidden">Nexora KR</h2>
+  <div class="hidden lg:flex items-center gap-2 text-sm font-medium">
+    <span class="text-slate-400">Admin</span>
+    <span class="material-symbols-outlined text-[12px] text-slate-300">chevron_right</span>
+    <span class="text-on-surface">Knowledge Library</span>
+  </div>
+  <div class="ml-auto flex items-center gap-4">
+    <button class="p-2 text-slate-600 hover:text-teal-500 transition-colors">
+      <span class="material-symbols-outlined">notifications</span>
+    </button>
+  </div>
 </header>
-<!-- Page Canvas -->
-<main class="mt-16 p-8 flex-1 bg-surface-container-low">
-<div class="max-w-[1100px] mx-auto space-y-8">
-<!-- Section: Ingestion Zone -->
-<section class="space-y-6">
-<!-- Drop Zone -->
-<div class="custom-dashed w-full h-48 flex flex-col items-center justify-center gap-3 transition-all duration-300 rounded-xl cursor-pointer group hover:bg-primary/5">
-<span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary transition-colors" data-icon="upload_file">upload_file</span>
-<div class="text-center">
-<p class="font-headline font-bold text-on-surface">Drop PDF files here or click to browse</p>
-<p class="text-sm text-on-surface-variant">Maximum file size: 50MB</p>
-</div>
-</div>
-<!-- Metadata Form -->
-<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-l-4 border-tertiary">
-<h3 class="font-headline font-bold text-on-surface mb-6 flex items-center gap-2">
-<span class="material-symbols-outlined text-tertiary" data-icon="label_important">label_important</span>
-                            Batch Metadata
-                        </h3>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-<div class="flex flex-col gap-2">
-<label class="font-label text-xs font-bold text-on-surface-variant uppercase tracking-wider">Category</label>
-<select class="h-12 px-4 rounded-xl bg-surface-container-low border-none focus:ring-2 focus:ring-primary/20 transition-all appearance-none cursor-pointer font-body text-sm">
-<option>Legal Compliance</option>
-<option>Internal Policy</option>
-<option>Market Intelligence</option>
-<option>Technical Specification</option>
-</select>
-</div>
-<div class="flex flex-col gap-2">
-<label class="font-label text-xs font-bold text-on-surface-variant uppercase tracking-wider">Owner Department</label>
-<input class="h-12 px-4 rounded-xl bg-surface-container-low border-none focus:ring-2 focus:ring-primary/20 transition-all font-body text-sm" placeholder="e.g. Legal &amp; Risk" type="text"/>
-</div>
-<div class="flex flex-col gap-2">
-<label class="font-label text-xs font-bold text-on-surface-variant uppercase tracking-wider">Effective Date</label>
-<input class="h-12 px-4 rounded-xl bg-surface-container-low border-none focus:ring-2 focus:ring-primary/20 transition-all font-body text-sm" type="date"/>
-</div>
-</div>
-<div class="mt-8 flex justify-end">
-<button class="px-8 py-3 bg-tertiary text-on-tertiary rounded-xl font-bold hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-tertiary/20 flex items-center gap-2">
-<span class="material-symbols-outlined" data-icon="cloud_upload">cloud_upload</span>
-                                Start Ingestion
-                            </button>
-</div>
-</div>
-</section>
-<!-- Section: Active Queue -->
-<section class="space-y-4">
-<div class="flex items-center justify-between">
-<h3 class="font-headline font-bold text-on-surface text-lg">Active Upload Queue</h3>
-<span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-bold">3 Files Active</span>
-</div>
-<div class="grid grid-cols-1 gap-4">
-<!-- Card 1: Processing -->
-<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm relative group">
-<div class="absolute top-0 left-0 h-1 w-full bg-surface-container">
-<div class="h-full bg-primary w-2/3 transition-all"></div>
-</div>
-<div class="p-4 flex items-center justify-between">
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
-<span class="material-symbols-outlined" data-icon="picture_as_pdf">picture_as_pdf</span>
-</div>
-<div>
-<p class="font-bold text-on-surface">annual_report_2023.pdf</p>
-<p class="text-xs text-on-surface-variant">4.2 MB • Legal Compliance</p>
-</div>
-</div>
-<div class="flex items-center gap-4">
-<span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-[10px] font-bold uppercase tracking-tight">Processing</span>
-<button class="text-outline hover:text-error transition-colors">
-<span class="material-symbols-outlined text-xl" data-icon="cancel">cancel</span>
-</button>
-</div>
-</div>
-</div>
-<!-- Card 2: Queued -->
-<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center justify-between shadow-sm">
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 bg-surface-container rounded-lg flex items-center justify-center text-outline">
-<span class="material-symbols-outlined" data-icon="picture_as_pdf">picture_as_pdf</span>
-</div>
-<div>
-<p class="font-bold text-on-surface">onboarding_v2.pdf</p>
-<p class="text-xs text-on-surface-variant">1.8 MB • HR Policy</p>
-</div>
-</div>
-<div class="flex items-center gap-4">
-<span class="px-3 py-1 bg-slate-100 text-slate-500 rounded-full text-[10px] font-bold uppercase tracking-tight">Queued</span>
-<button class="text-outline hover:text-error transition-colors">
-<span class="material-symbols-outlined text-xl" data-icon="delete">delete</span>
-</button>
-</div>
-</div>
-<!-- Card 3: Failed -->
-<div class="bg-surface-container-lowest border-2 border-error/10 rounded-xl p-4 flex items-center justify-between shadow-sm">
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 bg-error/10 rounded-lg flex items-center justify-center text-error">
-<span class="material-symbols-outlined" data-icon="error_outline">error_outline</span>
-</div>
-<div>
-<div class="flex items-center gap-2">
-<p class="font-bold text-on-surface">encrypted_contract.pdf</p>
-<span class="px-3 py-1 bg-error/10 text-error rounded-full text-[10px] font-bold uppercase tracking-tight">Failed</span>
-</div>
-<p class="text-xs text-error font-medium">Error: File is password protected.</p>
-</div>
-</div>
-<div class="flex items-center gap-3">
-<button class="px-4 py-2 bg-error text-white rounded-lg text-xs font-bold hover:bg-error/90 transition-all">
-                                    Retry
-                                </button>
-<button class="p-2 text-outline hover:text-error transition-colors">
-<span class="material-symbols-outlined text-xl" data-icon="close">close</span>
-</button>
-</div>
-</div>
-</div>
-</section>
-<!-- Section: Library Table -->
-<section class="space-y-6">
-<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-<h3 class="font-headline font-bold text-on-surface text-xl">Indexed Documents</h3>
-<div class="flex items-center gap-3">
-<div class="relative group">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant group-focus-within:text-primary" data-icon="search">search</span>
-<input class="h-10 pl-10 pr-4 rounded-full bg-surface-container border-none text-sm focus:ring-2 focus:ring-primary/20 w-64 transition-all" placeholder="Search by name..." type="text"/>
-</div>
-<button class="h-10 px-4 flex items-center gap-2 rounded-full bg-surface-container-lowest text-sm font-bold text-on-surface-variant hover:bg-surface-bright transition-colors">
-<span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
-                                Filter
-                            </button>
-</div>
-</div>
-<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
-<table class="w-full text-left border-collapse">
-<thead>
-<tr class="bg-surface-container-low/50">
-<th class="py-4 px-6">
-<input class="rounded text-tertiary focus:ring-tertiary border-outline-variant" type="checkbox"/>
-</th>
-<th class="py-4 px-6 font-headline font-bold text-xs uppercase tracking-widest text-on-surface-variant">Name</th>
-<th class="py-4 px-6 font-headline font-bold text-xs uppercase tracking-widest text-on-surface-variant">Category</th>
-<th class="py-4 px-6 font-headline font-bold text-xs uppercase tracking-widest text-on-surface-variant">Owner</th>
-<th class="py-4 px-6 font-headline font-bold text-xs uppercase tracking-widest text-on-surface-variant text-center">Chunks</th>
-<th class="py-4 px-6 font-headline font-bold text-xs uppercase tracking-widest text-on-surface-variant">Status</th>
-<th class="py-4 px-6 text-right"></th>
-</tr>
-</thead>
-<tbody class="divide-y divide-surface-container-low">
-<!-- Row 1 -->
-<tr class="hover:bg-surface-bright transition-colors group">
-<td class="py-4 px-6">
-<input class="rounded text-tertiary focus:ring-tertiary border-outline-variant" type="checkbox"/>
-</td>
-<td class="py-4 px-6">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-primary" data-icon="description">description</span>
-<span class="font-bold text-on-surface">compliance_matrix_v4.pdf</span>
-</div>
-</td>
-<td class="py-4 px-6 text-sm">Regulatory</td>
-<td class="py-4 px-6 text-sm">Legal &amp; GRC</td>
-<td class="py-4 px-6 text-center">
-<span class="px-2 py-1 bg-surface-container rounded-lg text-xs font-bold">124</span>
-</td>
-<td class="py-4 px-6">
-<span class="flex items-center gap-1.5 text-xs font-bold text-primary">
-<span class="h-2 w-2 rounded-full bg-primary"></span>
-                                            Indexed
-                                        </span>
-</td>
-<td class="py-4 px-6 text-right space-x-2">
-<button class="p-2 text-outline-variant hover:text-tertiary transition-colors" title="Re-index">
-<span class="material-symbols-outlined text-lg" data-icon="refresh">refresh</span>
-</button>
-<button class="p-2 text-outline-variant hover:text-error transition-colors" title="Delete">
-<span class="material-symbols-outlined text-lg" data-icon="delete">delete</span>
-</button>
-</td>
-</tr>
-<!-- Row 2 -->
-<tr class="hover:bg-surface-bright transition-colors group">
-<td class="py-4 px-6">
-<input class="rounded text-tertiary focus:ring-tertiary border-outline-variant" type="checkbox"/>
-</td>
-<td class="py-4 px-6">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-primary" data-icon="description">description</span>
-<span class="font-bold text-on-surface">marketing_strategy_q4.docx</span>
-</div>
-</td>
-<td class="py-4 px-6 text-sm">Strategy</td>
-<td class="py-4 px-6 text-sm">Marketing</td>
-<td class="py-4 px-6 text-center">
-<span class="px-2 py-1 bg-surface-container rounded-lg text-xs font-bold">88</span>
-</td>
-<td class="py-4 px-6">
-<span class="flex items-center gap-1.5 text-xs font-bold text-primary">
-<span class="h-2 w-2 rounded-full bg-primary"></span>
-                                            Indexed
-                                        </span>
-</td>
-<td class="py-4 px-6 text-right space-x-2">
-<button class="p-2 text-outline-variant hover:text-tertiary transition-colors" title="Re-index">
-<span class="material-symbols-outlined text-lg" data-icon="refresh">refresh</span>
-</button>
-<button class="p-2 text-outline-variant hover:text-error transition-colors" title="Delete">
-<span class="material-symbols-outlined text-lg" data-icon="delete">delete</span>
-</button>
-</td>
-</tr>
-<!-- Row 3 -->
-<tr class="hover:bg-surface-bright transition-colors group">
-<td class="py-4 px-6">
-<input class="rounded text-tertiary focus:ring-tertiary border-outline-variant" type="checkbox"/>
-</td>
-<td class="py-4 px-6">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-primary" data-icon="description">description</span>
-<span class="font-bold text-on-surface">api_endpoint_v3.pdf</span>
-</div>
-</td>
-<td class="py-4 px-6 text-sm">Tech Docs</td>
-<td class="py-4 px-6 text-sm">Engineering</td>
-<td class="py-4 px-6 text-center">
-<span class="px-2 py-1 bg-surface-container rounded-lg text-xs font-bold">215</span>
-</td>
-<td class="py-4 px-6">
-<span class="flex items-center gap-1.5 text-xs font-bold text-primary">
-<span class="h-2 w-2 rounded-full bg-primary"></span>
-                                            Indexed
-                                        </span>
-</td>
-<td class="py-4 px-6 text-right space-x-2">
-<button class="p-2 text-outline-variant hover:text-tertiary transition-colors" title="Re-index">
-<span class="material-symbols-outlined text-lg" data-icon="refresh">refresh</span>
-</button>
-<button class="p-2 text-outline-variant hover:text-error transition-colors" title="Delete">
-<span class="material-symbols-outlined text-lg" data-icon="delete">delete</span>
-</button>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="p-6 bg-surface-container-low/30 border-t border-surface-container-low flex items-center justify-between">
-<div class="flex items-center gap-2">
-<button class="px-4 py-2 bg-error/10 text-error rounded-xl text-xs font-bold hover:bg-error/20 transition-all">
-                                    Delete Selected
-                                </button>
-<button class="px-4 py-2 bg-tertiary/10 text-tertiary rounded-xl text-xs font-bold hover:bg-tertiary/20 transition-all">
-                                    Bulk Re-index
-                                </button>
-</div>
-<div class="flex items-center gap-4 text-xs font-bold text-on-surface-variant">
-<span>Showing 1-10 of 248 items</span>
-<div class="flex gap-1">
-<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-surface-container hover:bg-primary/10 transition-colors">
-<span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
-</button>
-<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-white">1</button>
-<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-surface-container hover:bg-primary/10 transition-colors">2</button>
-<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-surface-container hover:bg-primary/10 transition-colors">3</button>
-<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-surface-container hover:bg-primary/10 transition-colors">
-<span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
-</button>
-</div>
-</div>
-</div>
-</div>
-</section>
-</div>
+
+<!-- Main Content -->
+<main class="pt-16 lg:pl-60 min-h-screen bg-surface-container-low">
+  <div class="max-w-[1100px] mx-auto p-8 space-y-8">
+
+    <!-- Page Header -->
+    <div>
+      <h1 class="text-3xl font-extrabold text-on-surface tracking-tight">Knowledge Library</h1>
+      <p class="text-on-surface-variant mt-1">Stage files then click "Start Ingestion" to index them into the RAG system.</p>
+    </div>
+
+    <!-- Upload Zone -->
+    <div class="bg-surface-container-lowest rounded-xl p-8 border-2 border-dashed border-outline-variant hover:border-primary/50 transition-all group">
+      <!-- Drop Zone -->
+      <div id="drop-zone"
+           class="flex flex-col items-center justify-center py-12 text-center cursor-pointer"
+           role="button" tabindex="0">
+        <div class="w-20 h-20 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+          <span class="material-symbols-outlined text-4xl">cloud_upload</span>
+        </div>
+        <h3 class="text-xl font-bold text-on-surface mb-2">Drop files here</h3>
+        <p class="text-on-surface-variant text-sm max-w-md">Drag &amp; drop PDF or TXT files, or click to browse. Files will be staged for review before ingestion.</p>
+        <button id="browse-btn"
+                class="mt-6 px-8 py-3 bg-gradient-to-r from-primary to-primary-container text-white font-bold rounded-xl hover:scale-[1.02] active:scale-95 transition-all shadow-md shadow-primary/20">
+          Browse files
+        </button>
+        <input id="file-input" type="file" multiple accept=".pdf,.txt" class="hidden"/>
+      </div>
+
+      <!-- Staged Files Queue (initially hidden) -->
+      <div id="staged-zone" class="hidden">
+        <div class="flex items-center justify-between mb-4">
+          <h4 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant">Staged Files</h4>
+          <div class="flex items-center gap-3">
+            <button id="add-more-btn"
+                    class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-primary hover:bg-primary/5 rounded-lg transition-colors">
+              <span class="material-symbols-outlined text-[18px]">add</span> Add more
+            </button>
+            <button id="clear-queue-btn"
+                    class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-error hover:bg-error/5 rounded-lg transition-colors">
+              <span class="material-symbols-outlined text-[18px]">clear_all</span> Clear all
+            </button>
+          </div>
+        </div>
+        <div id="staged-list" class="space-y-3 mb-6"></div>
+        <button id="start-ingestion-btn"
+                class="w-full py-4 bg-gradient-to-r from-tertiary to-tertiary-container text-white font-extrabold rounded-2xl hover:scale-[1.01] active:scale-95 transition-all shadow-xl shadow-tertiary/20 flex items-center justify-center gap-3 text-lg">
+          <span class="material-symbols-outlined">auto_awesome</span>
+          <span id="ingestion-btn-label">Start Ingestion</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Indexed Documents Table -->
+    <div class="bg-surface-container-lowest rounded-xl overflow-hidden">
+      <div class="px-8 py-5 border-b border-surface-container flex items-center justify-between">
+        <h4 class="text-lg font-bold text-on-surface">Indexed Documents</h4>
+        <span id="doc-count-badge"
+              class="px-3 py-1 bg-teal-50 text-teal-700 text-[11px] font-extrabold rounded-full">Loading…</span>
+      </div>
+      <div id="doc-table" class="divide-y divide-surface-container min-h-[80px]">
+        <div class="px-8 py-6 text-sm text-on-surface-variant animate-pulse">Loading documents…</div>
+      </div>
+    </div>
+  </div>
 </main>
-</div>
-<!-- Confirmation Modal (Hidden state via opacity/pointer-events simulated) -->
-<!-- This is included for UI design demonstration -->
-<div class="fixed inset-0 bg-on-surface/40 backdrop-blur-sm z-50 flex items-center justify-center pointer-events-none opacity-0">
-<div class="bg-surface-container-lowest knowledge-leaf p-8 max-w-md w-full shadow-2xl">
-<div class="flex flex-col items-center text-center gap-4">
-<div class="w-16 h-16 rounded-full bg-error/10 flex items-center justify-center text-error mb-2">
-<span class="material-symbols-outlined text-3xl" data-icon="warning">warning</span>
-</div>
-<h4 class="font-headline font-extrabold text-2xl text-on-surface">Confirm Deletion</h4>
-<p class="text-on-surface-variant leading-relaxed">
-                    This action will permanently remove <span class="font-bold">compliance_matrix_v4.pdf</span> and all its indexed chunks from the knowledge retrieval system. This cannot be undone.
-                </p>
-<div class="flex gap-3 w-full mt-6">
-<button class="flex-1 px-6 py-3 rounded-xl border border-outline-variant font-bold text-on-surface-variant hover:bg-surface-container-low transition-colors">Cancel</button>
-<button class="flex-1 px-6 py-3 rounded-xl bg-error text-white font-bold shadow-lg shadow-error/20 hover:scale-[1.02] active:scale-95 transition-all">Confirm Delete</button>
-</div>
-</div>
-</div>
-</div>
-</body></html>
+
+<!-- Shared JS -->
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/toast.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  if (!guardAdmin()) return;
+  wireNav("library");
+
+  const fileInput        = document.getElementById("file-input");
+  const browseBtn        = document.getElementById("browse-btn");
+  const addMoreBtn       = document.getElementById("add-more-btn");
+  const clearQueueBtn    = document.getElementById("clear-queue-btn");
+  const startIngestionBtn= document.getElementById("start-ingestion-btn");
+  const stagedZone       = document.getElementById("staged-zone");
+  const dropZoneContent  = document.getElementById("drop-zone");
+  const stagedList       = document.getElementById("staged-list");
+  const docTable         = document.getElementById("doc-table");
+  const docCountBadge    = document.getElementById("doc-count-badge");
+  const ingestionLabel   = document.getElementById("ingestion-btn-label");
+
+  // Staging array — upload only happens when "Start Ingestion" is clicked.
+  let stagedFiles = [];
+
+  // Browse button opens file picker.
+  browseBtn.addEventListener("click", () => fileInput.click());
+  addMoreBtn.addEventListener("click", () => fileInput.click());
+
+  fileInput.addEventListener("change", () => {
+    stageFiles(Array.from(fileInput.files));
+    fileInput.value = "";  // reset so the same file can be added again if cleared.
+  });
+
+  // Drag & drop.
+  const dropZone = document.querySelector(".bg-surface-container-lowest.border-dashed");
+  ["dragenter","dragover"].forEach(evt =>
+    dropZone.addEventListener(evt, (e) => { e.preventDefault(); dropZone.classList.add("border-primary"); })
+  );
+  ["dragleave","drop"].forEach(evt =>
+    dropZone.addEventListener(evt, (e) => { e.preventDefault(); dropZone.classList.remove("border-primary"); })
+  );
+  dropZone.addEventListener("drop", (e) => {
+    stageFiles(Array.from(e.dataTransfer.files));
+  });
+
+  function stageFiles(files) {
+    const allowed = files.filter(f => f.name.match(/\.(pdf|txt)$/i));
+    if (!allowed.length) {
+      showToast("Only PDF and TXT files are supported.", "warning");
+      return;
+    }
+    // Avoid duplicates by name.
+    allowed.forEach(f => {
+      if (!stagedFiles.find(s => s.name === f.name)) stagedFiles.push(f);
+    });
+    renderQueue();
+  }
+
+  function renderQueue() {
+    if (!stagedFiles.length) {
+      stagedZone.classList.add("hidden");
+      dropZoneContent.classList.remove("hidden");
+      return;
+    }
+    dropZoneContent.classList.add("hidden");
+    stagedZone.classList.remove("hidden");
+    stagedList.innerHTML = stagedFiles.map((f, idx) => `
+      <div class="knowledge-leaf bg-surface-container-low flex items-center gap-4 p-4 border-l-4 border-secondary">
+        <span class="material-symbols-outlined text-secondary">description</span>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-semibold text-on-surface truncate">${escHtml(f.name)}</p>
+          <p class="text-[10px] text-on-surface-variant">${formatSize(f.size)}</p>
+        </div>
+        <button class="remove-staged text-error hover:bg-error/10 p-2 rounded-lg transition-colors" data-idx="${idx}">
+          <span class="material-symbols-outlined text-[18px]">remove_circle_outline</span>
+        </button>
+      </div>`).join("");
+
+    stagedList.querySelectorAll(".remove-staged").forEach(btn => {
+      btn.addEventListener("click", () => {
+        stagedFiles.splice(Number(btn.dataset.idx), 1);
+        renderQueue();
+      });
+    });
+  }
+
+  clearQueueBtn.addEventListener("click", () => {
+    stagedFiles = [];
+    renderQueue();
+  });
+
+  startIngestionBtn.addEventListener("click", async () => {
+    if (!stagedFiles.length) return;
+    startIngestionBtn.disabled = true;
+    ingestionLabel.textContent = "Uploading…";
+
+    let successCount = 0;
+    let failCount    = 0;
+
+    for (const file of stagedFiles) {
+      const fd = new FormData();
+      fd.append("file", file);
+      try {
+        const token = localStorage.getItem("verity_token");
+        const res   = await fetch("http://localhost:8000/api/v1/documents/upload", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: fd,
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || "Upload failed");
+        }
+        successCount++;
+      } catch (err) {
+        failCount++;
+        showToast(`Failed: ${file.name}`, "error", err.message);
+      }
+    }
+
+    if (successCount > 0) {
+      showToast(`${successCount} file(s) uploaded and queued for ingestion.`, "success");
+      stagedFiles = [];
+      renderQueue();
+      loadDocuments();
+    }
+    if (failCount > 0 && successCount === 0) {
+      showToast("All uploads failed.", "error");
+    }
+
+    startIngestionBtn.disabled = false;
+    ingestionLabel.textContent = "Start Ingestion";
+  });
+
+  // Load indexed documents.
+  async function loadDocuments() {
+    docTable.innerHTML = `<div class="px-8 py-6 text-sm text-on-surface-variant animate-pulse">Loading documents…</div>`;
+    try {
+      const data = await apiFetch("/documents");
+      const docs = Array.isArray(data) ? data : (data?.items || []);
+      docCountBadge.textContent = `${docs.length} document${docs.length !== 1 ? "s" : ""}`;
+
+      if (!docs.length) {
+        docTable.innerHTML = `
+          <div class="px-8 py-12 text-center text-on-surface-variant">
+            <span class="material-symbols-outlined text-3xl mb-2 block">inventory_2</span>
+            <p class="text-sm">No documents indexed yet.</p>
+          </div>`;
+        return;
+      }
+
+      docTable.innerHTML = docs.map(d => `
+        <div class="flex items-center gap-4 px-8 py-5 hover:bg-surface-bright transition-colors group">
+          <span class="material-symbols-outlined text-secondary">picture_as_pdf</span>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-on-surface truncate">${escHtml(d.file_name || d.name || "Unknown")}</p>
+            <p class="text-[10px] text-on-surface-variant">${d.chunk_count ?? "?"} chunks · ${d.created_at ? new Date(d.created_at).toLocaleDateString() : ""}</p>
+          </div>
+          <span class="px-3 py-1 text-[10px] font-bold ${d.status === "ready" ? "bg-teal-50 text-teal-700" : "bg-amber-50 text-amber-700"} rounded-full capitalize">${d.status || "—"}</span>
+        </div>`).join("");
+    } catch (err) {
+      docTable.innerHTML = `<div class="px-8 py-6 text-sm text-error">Failed to load: ${escHtml(err.message)}</div>`;
+    }
+  }
+
+  function formatSize(bytes) {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / 1024 / 1024).toFixed(1) + " MB";
+  }
+
+  function escHtml(t) {
+    const d = document.createElement("div");
+    d.textContent = String(t ?? "");
+    return d.innerHTML;
+  }
+
+  loadDocuments();
+});
+</script>
+</body>
+</html>

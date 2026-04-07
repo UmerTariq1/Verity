@@ -1,5 +1,6 @@
 """Query routes.
 
+GET  /api/v1/query/history              — current user's own query history
 POST /api/v1/query                      — hybrid RAG query
 POST /api/v1/query/{log_id}/feedback    — thumbs up/down on a previous answer
 """
@@ -18,6 +19,7 @@ from app.database import get_db
 from app.models import PolicyDocument, QueryLog, User
 from app.retrieval.hybrid_retriever import retrieve
 from app.retrieval.query_router import route_query
+from app.schemas.log import LogSummary, UserHistoryResponse
 from app.schemas.query import FeedbackRequest, QueryRequest, QueryResponse, SourceChunk
 
 logger = logging.getLogger(__name__)
@@ -70,6 +72,36 @@ def _build_gpt_answer(query: str, sources: list[SourceChunk]) -> str:
             "I was unable to generate an answer at this time. "
             "Please review the source excerpts below."
         )
+
+
+@router.get("/history", response_model=UserHistoryResponse)
+def query_history(
+    page: int = 1,
+    size: int = 20,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> UserHistoryResponse:
+    """Return the current user's own query history, newest first."""
+    stmt = select(QueryLog).where(QueryLog.user_id == current_user.id)
+
+    total = db.execute(
+        select(func.count()).select_from(stmt.subquery())
+    ).scalar_one()
+
+    logs = db.execute(
+        stmt.order_by(QueryLog.created_at.desc())
+        .offset((page - 1) * size)
+        .limit(size)
+    ).scalars().all()
+
+    items = []
+    for log in logs:
+        summary = LogSummary.model_validate(log)
+        summary.user_name = current_user.name
+        summary.user_email = current_user.email
+        items.append(summary)
+
+    return UserHistoryResponse(items=items, total=total, page=page, size=size)
 
 
 @router.post("", response_model=QueryResponse)

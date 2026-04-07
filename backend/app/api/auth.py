@@ -10,10 +10,10 @@ from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_current_user
-from app.core.security import create_access_token, verify_password
+from app.core.security import create_access_token, hash_password, verify_password
 from app.database import get_db
 from app.models import User
-from app.schemas.auth import LoginRequest, MeResponse, TokenResponse
+from app.schemas.auth import LoginRequest, MeResponse, RegisterRequest, TokenResponse
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -48,6 +48,40 @@ def login(body: LoginRequest, db: Session = Depends(get_db)) -> TokenResponse:
     )
     db.commit()
 
+    return TokenResponse(
+        access_token=token,
+        user_id=user.id,
+        name=user.name,
+        role=user.role,
+    )
+
+
+@router.post("/register", response_model=TokenResponse, status_code=201)
+def register(body: RegisterRequest, db: Session = Depends(get_db)) -> TokenResponse:
+    """Register a new user account (role: user). Raises 409 if email is taken."""
+    existing = db.execute(
+        select(User).where(User.email == body.email)
+    ).scalar_one_or_none()
+
+    if existing is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"Email '{body.email}' is already registered",
+        )
+
+    user = User(
+        name=body.name,
+        email=body.email,
+        password_hash=hash_password(body.password),
+        role="user",
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    token = create_access_token(
+        {"sub": user.email, "role": user.role, "uid": str(user.id)}
+    )
     return TokenResponse(
         access_token=token,
         user_id=user.id,

@@ -1,11 +1,28 @@
+from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 from typing import Literal
 
+# Resolve .env relative to THIS package, not the shell cwd — otherwise
+# `uvicorn` from `backend/` never sees repo-root `.env` and CORS_* edits there
+# are silently ignored.
+_BACKEND_ROOT = Path(__file__).resolve().parent.parent
+
+
+def _dotenv_files() -> tuple[str, ...] | None:
+    paths: list[Path] = []
+    primary = _BACKEND_ROOT / ".env"
+    secondary = _BACKEND_ROOT.parent / ".env"
+    if primary.is_file():
+        paths.append(primary)
+    if secondary.is_file() and secondary.resolve() != primary.resolve():
+        paths.append(secondary)
+    return tuple(str(p) for p in paths) if paths else None
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=_dotenv_files(),
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra="ignore",

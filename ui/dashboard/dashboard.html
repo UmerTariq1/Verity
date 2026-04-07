@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nexora KR - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "on-primary-fixed-variant": "#005048",
+          "inverse-primary": "#4fdbc8",
+          "tertiary-fixed": "#e9ddff",
+          "background": "#f8f9fb",
+          "on-tertiary-fixed-variant": "#5516be",
+          "on-primary": "#ffffff",
+          "error-container": "#ffdad6",
+          "outline": "#6c7a77",
+          "on-tertiary": "#ffffff",
+          "tertiary": "#6d3bd7",
+          "surface-container-highest": "#e1e2e4",
+          "tertiary-container": "#b192ff",
+          "secondary": "#4648d4",
+          "on-primary-container": "#00423b",
+          "tertiary-fixed-dim": "#d0bcff",
+          "primary-fixed": "#71f8e4",
+          "error": "#ba1a1a",
+          "outline-variant": "#bbcac6",
+          "surface-variant": "#e1e2e4",
+          "on-secondary-fixed": "#07006c",
+          "on-secondary-container": "#fffbff",
+          "surface-tint": "#006b5f",
+          "primary-container": "#14b8a6",
+          "on-primary-fixed": "#00201c",
+          "secondary-fixed": "#e1e0ff",
+          "on-tertiary-fixed": "#23005c",
+          "on-surface": "#191c1e",
+          "on-surface-variant": "#3c4947",
+          "secondary-fixed-dim": "#c0c1ff",
+          "primary": "#006b5f",
+          "on-secondary": "#ffffff",
+          "surface-container-low": "#f3f4f6",
+          "inverse-on-surface": "#f0f1f3",
+          "on-error-container": "#93000a",
+          "on-tertiary-container": "#4700aa",
+          "on-background": "#191c1e",
+          "surface-dim": "#d9dadc",
+          "surface-bright": "#f8f9fb",
+          "on-error": "#ffffff",
+          "surface-container": "#edeef0",
+          "inverse-surface": "#2e3132",
+          "surface": "#f8f9fb",
+          "secondary-container": "#6063ee",
+          "on-secondary-fixed-variant": "#2f2ebe",
+          "primary-fixed-dim": "#4fdbc8",
+          "surface-container-high": "#e7e8ea",
+          "surface-container-lowest": "#ffffff"
+        },
+        borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+        fontFamily: { headline: ["Manrope"], body: ["Inter"], label: ["Inter"] }
+      }
+    }
+  }
+</script>
+<style>
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  body { font-family: 'Inter', sans-serif; }
+  h1, h2, h3, h4 { font-family: 'Manrope', sans-serif; }
+  .knowledge-leaf {
+    border-top-left-radius: 1.5rem;
+    border-bottom-right-radius: 1.5rem;
+    border-top-right-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+  }
+</style>
+</head>
+<body class="bg-background text-on-surface">
+
+<!-- SideNavBar -->
+<aside class="hidden lg:flex flex-col h-screen z-40 fixed left-0 top-0 w-60 bg-white dark:bg-slate-900 font-manrope text-sm font-medium tracking-tight">
+  <div class="p-6 flex items-center gap-3">
+    <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
+      <span class="material-symbols-outlined text-lg">hub</span>
+    </div>
+    <div>
+      <h1 class="text-xl font-bold tracking-tighter text-teal-700">Nexora KR</h1>
+      <p class="text-[10px] text-on-surface-variant/70 uppercase tracking-widest">Intelligent Retrieval</p>
+    </div>
+  </div>
+  <nav class="flex-1 mt-4 px-2 space-y-1">
+    <a data-nav="dashboard" href="#"
+       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-teal-600 transition-all duration-300 ease-in-out">
+      <span class="material-symbols-outlined">dashboard</span> Dashboard
+    </a>
+    <a data-nav="search" href="#"
+       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-teal-600 transition-all duration-300 ease-in-out">
+      <span class="material-symbols-outlined">search</span> Search
+    </a>
+    <a data-nav="library" data-admin-nav href="#"
+       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-teal-600 transition-all duration-300 ease-in-out">
+      <span class="material-symbols-outlined">book_2</span> Library
+    </a>
+    <a data-nav="analytics" data-admin-nav href="#"
+       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-teal-600 transition-all duration-300 ease-in-out">
+      <span class="material-symbols-outlined">insights</span> Analytics
+    </a>
+    <a data-nav="health" data-admin-nav href="#"
+       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-teal-600 transition-all duration-300 ease-in-out">
+      <span class="material-symbols-outlined">monitor_heart</span> System Health
+    </a>
+    <a data-nav="users" data-admin-nav href="#"
+       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-teal-600 transition-all duration-300 ease-in-out">
+      <span class="material-symbols-outlined">manage_accounts</span> Users
+    </a>
+  </nav>
+  <div class="mt-auto p-4 border-t border-surface-container space-y-1">
+    <a class="flex items-center gap-3 px-4 py-2 text-slate-500 hover:text-teal-600 transition-colors cursor-pointer"
+       href="#">
+      <span class="material-symbols-outlined">account_circle</span>
+      <span data-user-name>Profile</span>
+    </a>
+    <a data-logout href="#"
+       class="flex items-center gap-3 px-4 py-2 text-slate-500 hover:text-error transition-colors cursor-pointer">
+      <span class="material-symbols-outlined">logout</span> Logout
+    </a>
+  </div>
+</aside>
+
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 w-full lg:w-[calc(100%-240px)] h-16 bg-slate-50/80 backdrop-blur-md z-30 flex justify-between items-center px-6">
+  <h2 class="text-lg font-extrabold text-teal-700 lg:hidden">Nexora KR</h2>
+  <div class="hidden lg:flex items-center gap-2">
+    <h2 class="text-xl font-bold text-on-surface font-headline">Dashboard</h2>
+  </div>
+  <div class="flex items-center gap-4 ml-auto">
+    <div class="flex items-center gap-2 px-3 py-1 bg-surface-container-low rounded-full text-xs font-semibold text-on-surface-variant">
+      <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+      System: Active
+    </div>
+    <button class="p-2 text-slate-600 hover:text-teal-500 transition-colors">
+      <span class="material-symbols-outlined">notifications</span>
+    </button>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="lg:ml-60 pt-16 min-h-screen bg-surface-container-low">
+  <div class="max-w-[1100px] mx-auto p-8 space-y-8">
+
+    <!-- Welcome / Page Header -->
+    <div>
+      <h3 id="welcome-title" class="text-3xl font-extrabold text-on-surface tracking-tight mb-1">Welcome back</h3>
+      <p id="welcome-sub" class="text-on-surface-variant">Your Nexora KR overview.</p>
+    </div>
+
+    <!-- ADMIN VIEW -->
+    <div id="admin-view" class="hidden space-y-8">
+      <!-- Metrics Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-surface-container-lowest rounded-xl p-6 border-l-4 border-primary">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Total Documents</p>
+          <h4 id="m-total-docs" class="text-3xl font-extrabold text-on-surface tracking-tighter">—</h4>
+          <p class="text-xs text-on-surface-variant mt-2">indexed in system</p>
+        </div>
+        <div class="bg-surface-container-lowest rounded-xl p-6 border-l-4 border-secondary">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Queries Today</p>
+          <h4 id="m-queries-today" class="text-3xl font-extrabold text-on-surface tracking-tighter">—</h4>
+          <p class="text-xs text-on-surface-variant mt-2">across all users</p>
+        </div>
+        <div class="bg-surface-container-lowest rounded-xl p-6 border-l-4 border-tertiary">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Avg Relevance</p>
+          <h4 id="m-avg-relevance" class="text-3xl font-extrabold text-on-surface tracking-tighter">—</h4>
+          <p class="text-xs text-on-surface-variant mt-2">cross-encoder score</p>
+        </div>
+        <div class="bg-surface-container-lowest rounded-xl p-6 border-l-4 border-primary-container">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Index Status</p>
+          <h4 id="m-index-status" class="text-2xl font-extrabold text-on-surface tracking-tighter capitalize">—</h4>
+          <p id="m-vector-store" class="text-xs text-on-surface-variant mt-2">—</p>
+        </div>
+      </div>
+
+      <!-- Quick Access Cards -->
+      <div>
+        <h4 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-4">Quick Access</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <a data-nav="library" href="#"
+             class="knowledge-leaf bg-surface-container-lowest p-6 border-l-4 border-primary hover:bg-surface-bright transition-all group cursor-pointer">
+            <span class="material-symbols-outlined text-primary text-3xl mb-3 block">book_2</span>
+            <p class="font-bold text-on-surface">Library</p>
+            <p class="text-xs text-on-surface-variant mt-1">Upload &amp; manage documents</p>
+          </a>
+          <a data-nav="analytics" href="#"
+             class="knowledge-leaf bg-surface-container-lowest p-6 border-l-4 border-secondary hover:bg-surface-bright transition-all group cursor-pointer">
+            <span class="material-symbols-outlined text-secondary text-3xl mb-3 block">insights</span>
+            <p class="font-bold text-on-surface">Analytics</p>
+            <p class="text-xs text-on-surface-variant mt-1">Query logs &amp; usage stats</p>
+          </a>
+          <a data-nav="users" href="#"
+             class="knowledge-leaf bg-surface-container-lowest p-6 border-l-4 border-tertiary hover:bg-surface-bright transition-all group cursor-pointer">
+            <span class="material-symbols-outlined text-tertiary text-3xl mb-3 block">manage_accounts</span>
+            <p class="font-bold text-on-surface">Users</p>
+            <p class="text-xs text-on-surface-variant mt-1">Manage access &amp; roles</p>
+          </a>
+          <a data-nav="health" href="#"
+             class="knowledge-leaf bg-surface-container-lowest p-6 border-l-4 border-error hover:bg-surface-bright transition-all group cursor-pointer">
+            <span class="material-symbols-outlined text-error text-3xl mb-3 block">monitor_heart</span>
+            <p class="font-bold text-on-surface">System Health</p>
+            <p class="text-xs text-on-surface-variant mt-1">Infrastructure diagnostics</p>
+          </a>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="bg-surface-container-lowest rounded-xl overflow-hidden">
+        <div class="px-8 py-5 border-b border-surface-container flex items-center justify-between">
+          <h4 class="text-lg font-bold text-on-surface">Recent Activity</h4>
+          <a data-nav="analytics" href="#" class="text-xs font-bold text-tertiary hover:underline">View all logs →</a>
+        </div>
+        <div id="activity-feed" class="divide-y divide-surface-container/50 min-h-[80px]">
+          <div class="px-8 py-6 text-sm text-on-surface-variant animate-pulse">Loading activity…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USER VIEW -->
+    <div id="user-view" class="hidden space-y-8">
+      <!-- CTA Card -->
+      <div class="knowledge-leaf bg-gradient-to-br from-primary to-primary-container text-white p-8 flex flex-col md:flex-row items-start md:items-center gap-6">
+        <div class="flex-1">
+          <h4 class="text-2xl font-extrabold mb-2">Ask the Knowledge Base</h4>
+          <p class="text-white/80 text-sm">Query HR policies instantly using Nexora's hybrid AI retrieval system.</p>
+        </div>
+        <a data-nav="search" href="#"
+           class="px-8 py-3 bg-white text-primary font-bold rounded-xl hover:scale-[1.02] transition-transform shadow-lg whitespace-nowrap">
+          Start a Query
+        </a>
+      </div>
+
+      <!-- Recent Queries -->
+      <div>
+        <h4 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-4">Your Recent Queries</h4>
+        <div id="user-history" class="space-y-3">
+          <div class="text-sm text-on-surface-variant animate-pulse">Loading your query history…</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Shared JS -->
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/toast.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  if (!guardAuth()) return;
+  wireNav("dashboard");
+
+  const user = getUser();
+  const isAdmin = user?.role === "admin";
+
+  // Personalise header.
+  document.getElementById("welcome-title").textContent = `Welcome back, ${user?.name || ""}`;
+
+  if (isAdmin) {
+    document.getElementById("admin-view").classList.remove("hidden");
+    document.getElementById("welcome-sub").textContent = "System overview and administrative controls.";
+    loadAdminDashboard();
+  } else {
+    document.getElementById("user-view").classList.remove("hidden");
+    document.getElementById("welcome-sub").textContent = "Your personal query history and quick access to Search.";
+    loadUserDashboard();
+  }
+
+  async function loadAdminDashboard() {
+    // Load metrics.
+    try {
+      const h = await apiFetch("/health");
+      if (h) {
+        document.getElementById("m-total-docs").textContent    = h.total_documents ?? "—";
+        document.getElementById("m-queries-today").textContent = h.queries_today ?? "—";
+        document.getElementById("m-avg-relevance").textContent = h.avg_relevance_score != null
+          ? (applyScoreSigmoid(h.avg_relevance_score) * 100).toFixed(1) + "%" : "—";
+        document.getElementById("m-index-status").textContent  = h.index_status ?? "—";
+        document.getElementById("m-vector-store").textContent  = h.vector_store_type ?? "—";
+      }
+    } catch { /* non-critical */ }
+
+    // Load activity.
+    const feed = document.getElementById("activity-feed");
+    try {
+      const act = await apiFetch("/health/activity");
+      if (act && act.events && act.events.length) {
+        const iconMap  = { ingestion: "upload_file", query: "search_insights", reindex: "sync", error: "warning" };
+        const colorMap = { ingestion: "text-primary bg-primary/10", query: "text-secondary bg-secondary/10", reindex: "text-tertiary bg-tertiary/10", error: "text-error bg-error/10" };
+        feed.innerHTML = act.events.slice(0, 8).map(evt => {
+          const type  = evt.event_type || "query";
+          const icon  = iconMap[type] || "bolt";
+          const color = colorMap[type] || colorMap.query;
+          return `
+            <div class="px-8 py-4 flex items-center gap-4 hover:bg-surface-container-low transition-colors">
+              <div class="w-9 h-9 rounded-full ${color} flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[18px]">${icon}</span>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-on-surface truncate">${escH(evt.description || evt.event_type)}</p>
+                ${evt.detail ? `<p class="text-xs text-on-surface-variant/70">${escH(evt.detail)}</p>` : ""}
+              </div>
+              <p class="text-xs text-on-surface-variant shrink-0">${evt.created_at ? new Date(evt.created_at).toLocaleTimeString() : ""}</p>
+            </div>`;
+        }).join("");
+      } else {
+        feed.innerHTML = `<div class="px-8 py-6 text-sm text-on-surface-variant">No recent activity.</div>`;
+      }
+    } catch {
+      feed.innerHTML = `<div class="px-8 py-6 text-sm text-on-surface-variant">Could not load activity.</div>`;
+    }
+  }
+
+  async function loadUserDashboard() {
+    const container = document.getElementById("user-history");
+    try {
+      const data = await apiFetch("/query/history?size=5");
+      if (!data || !data.items.length) {
+        container.innerHTML = `
+          <div class="knowledge-leaf bg-surface-container-lowest p-6 text-center text-on-surface-variant">
+            <span class="material-symbols-outlined text-3xl mb-2 block text-outline-variant">chat_bubble_outline</span>
+            <p class="text-sm">No queries yet. <a class="text-primary font-bold hover:underline" data-nav="search" href="#">Start your first search →</a></p>
+          </div>`;
+        wireNav("dashboard");
+        return;
+      }
+      container.innerHTML = data.items.map(q => `
+        <div class="knowledge-leaf bg-surface-container-lowest p-5 border-l-4 border-primary hover:bg-surface-bright transition-all cursor-pointer group"
+             data-query="${escAttr(q.query_text)}">
+          <p class="text-sm font-semibold text-on-surface truncate group-hover:text-primary transition-colors">${escH(q.query_text)}</p>
+          <div class="flex items-center gap-3 mt-2">
+            <span class="text-[10px] text-on-surface-variant">${new Date(q.created_at).toLocaleString()}</span>
+            ${q.feedback ? `<span class="text-[10px] font-bold ${q.feedback === "positive" ? "text-teal-600" : "text-error"}">${q.feedback === "positive" ? "👍 Helpful" : "👎 Inaccurate"}</span>` : ""}
+          </div>
+        </div>`).join("");
+
+      // Clicking a history entry navigates to search with the query pre-filled.
+      container.querySelectorAll("[data-query]").forEach(card => {
+        card.addEventListener("click", () => {
+          localStorage.setItem("verity_prefill_query", card.dataset.query);
+          window.location.href = "../chat_interface/chat_interface.html";
+        });
+      });
+    } catch (err) {
+      container.innerHTML = `<p class="text-sm text-on-surface-variant">Could not load history: ${escH(err.message)}</p>`;
+    }
+  }
+
+  function escH(t) {
+    const d = document.createElement("div");
+    d.textContent = String(t ?? "");
+    return d.innerHTML;
+  }
+  function escAttr(t) {
+    return String(t).replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+});
+</script>
+</body>
+</html>

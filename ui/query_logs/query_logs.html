@@ -1,425 +1,473 @@
 <!DOCTYPE html>
-
-<html class="light" lang="en"><head>
+<html class="light" lang="en">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Nexora KR - Query Logs (Admin)</title>
+<title>Nexora KR - Analytics (Admin)</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "on-primary-fixed-variant": "#005048",
-                        "inverse-primary": "#4fdbc8",
-                        "tertiary-fixed": "#e9ddff",
-                        "background": "#f8f9fb",
-                        "on-tertiary-fixed-variant": "#5516be",
-                        "on-primary": "#ffffff",
-                        "error-container": "#ffdad6",
-                        "outline": "#6c7a77",
-                        "on-tertiary": "#ffffff",
-                        "tertiary": "#6d3bd7",
-                        "surface-container-highest": "#e1e2e4",
-                        "tertiary-container": "#b192ff",
-                        "secondary": "#4648d4",
-                        "on-primary-container": "#00423b",
-                        "tertiary-fixed-dim": "#d0bcff",
-                        "primary-fixed": "#71f8e4",
-                        "error": "#ba1a1a",
-                        "outline-variant": "#bbcac6",
-                        "surface-variant": "#e1e2e4",
-                        "on-secondary-fixed": "#07006c",
-                        "on-secondary-container": "#fffbff",
-                        "surface-tint": "#006b5f",
-                        "primary-container": "#14b8a6",
-                        "on-primary-fixed": "#00201c",
-                        "secondary-fixed": "#e1e0ff",
-                        "on-tertiary-fixed": "#23005c",
-                        "on-surface": "#191c1e",
-                        "on-surface-variant": "#3c4947",
-                        "secondary-fixed-dim": "#c0c1ff",
-                        "primary": "#006b5f",
-                        "on-secondary": "#ffffff",
-                        "surface-container-low": "#f3f4f6",
-                        "inverse-on-surface": "#f0f1f3",
-                        "on-error-container": "#93000a",
-                        "on-tertiary-container": "#4700aa",
-                        "on-background": "#191c1e",
-                        "surface-dim": "#d9dadc",
-                        "surface-bright": "#f8f9fb",
-                        "on-error": "#ffffff",
-                        "surface-container": "#edeef0",
-                        "inverse-surface": "#2e3132",
-                        "surface": "#f8f9fb",
-                        "secondary-container": "#6063ee",
-                        "on-secondary-fixed-variant": "#2f2ebe",
-                        "primary-fixed-dim": "#4fdbc8",
-                        "surface-container-high": "#e7e8ea",
-                        "surface-container-lowest": "#ffffff"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "fontFamily": {
-                        "headline": ["Manrope"],
-                        "body": ["Inter"],
-                        "label": ["Inter"]
-                    }
-                },
-            },
-        }
-    </script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "on-primary-fixed-variant": "#005048",
+          "tertiary-fixed": "#e9ddff",
+          "background": "#f8f9fb",
+          "on-tertiary-fixed-variant": "#5516be",
+          "on-primary": "#ffffff",
+          "error-container": "#ffdad6",
+          "outline": "#6c7a77",
+          "on-tertiary": "#ffffff",
+          "tertiary": "#6d3bd7",
+          "surface-container-highest": "#e1e2e4",
+          "tertiary-container": "#b192ff",
+          "secondary": "#4648d4",
+          "on-primary-container": "#00423b",
+          "primary-fixed": "#71f8e4",
+          "error": "#ba1a1a",
+          "outline-variant": "#bbcac6",
+          "surface-variant": "#e1e2e4",
+          "on-secondary-fixed": "#07006c",
+          "primary-container": "#14b8a6",
+          "on-primary-fixed": "#00201c",
+          "secondary-fixed": "#e1e0ff",
+          "on-surface": "#191c1e",
+          "on-surface-variant": "#3c4947",
+          "secondary-fixed-dim": "#c0c1ff",
+          "primary": "#006b5f",
+          "on-secondary": "#ffffff",
+          "surface-container-low": "#f3f4f6",
+          "inverse-on-surface": "#f0f1f3",
+          "on-error-container": "#93000a",
+          "on-background": "#191c1e",
+          "surface-dim": "#d9dadc",
+          "surface-bright": "#f8f9fb",
+          "on-error": "#ffffff",
+          "surface-container": "#edeef0",
+          "inverse-surface": "#2e3132",
+          "surface": "#f8f9fb",
+          "secondary-container": "#6063ee",
+          "primary-fixed-dim": "#4fdbc8",
+          "surface-container-high": "#e7e8ea",
+          "surface-container-lowest": "#ffffff"
+        },
+        borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+        fontFamily: { headline: ["Manrope"], body: ["Inter"], label: ["Inter"] }
+      }
+    }
+  }
+</script>
 <style>
-        body { font-family: 'Inter', sans-serif; }
-        h1, h2, h3, h4 { font-family: 'Manrope', sans-serif; }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        /* Custom scrollbar for clean UI */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #e1e2e4; border-radius: 10px; }
-        
-        .leaf-card {
-            border-top-left-radius: 1.5rem;
-            border-bottom-right-radius: 1.5rem;
-            border-top-right-radius: 0.25rem;
-            border-bottom-left-radius: 0.25rem;
-        }
-    </style>
+  body { font-family: 'Inter', sans-serif; }
+  h1, h2, h3, h4 { font-family: 'Manrope', sans-serif; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #e1e2e4; border-radius: 10px; }
+  .leaf-card {
+    border-top-left-radius: 1.5rem;
+    border-bottom-right-radius: 1.5rem;
+    border-top-right-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+  }
+</style>
 </head>
 <body class="bg-background text-on-surface">
-<!-- SideNavBar Shell -->
-<aside class="fixed left-0 top-0 h-full w-60 border-r-0 bg-white dark:bg-slate-900 hidden lg:flex flex-col z-40 transition-all duration-300 ease-in-out font-manrope text-sm font-medium tracking-tight">
-<div class="p-6">
-<div class="flex items-center gap-3 mb-8">
-<div class="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center text-white font-extrabold text-xl">N</div>
-<div>
-<h1 class="text-xl font-bold tracking-tighter text-teal-700 dark:text-teal-400 leading-none">Nexora KR</h1>
-<p class="text-[10px] text-slate-400 font-normal">Intelligent Retrieval</p>
-</div>
-</div>
-<nav class="space-y-1">
-<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-teal-600 dark:hover:text-teal-400 transition-all duration-300" href="#">
-<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-                    Dashboard
-                </a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-teal-600 dark:hover:text-teal-400 transition-all duration-300" href="#">
-<span class="material-symbols-outlined" data-icon="search">search</span>
-                    Search
-                </a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-teal-600 dark:hover:text-teal-400 transition-all duration-300" href="#">
-<span class="material-symbols-outlined" data-icon="book_2">book_2</span>
-                    Library
-                </a>
-<!-- Active State: Analytics/Logs -->
-<a class="flex items-center gap-3 px-4 py-3 bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 border-l-4 border-teal-600 transition-all duration-300" href="#">
-<span class="material-symbols-outlined" data-icon="insights">insights</span>
-                    Analytics
-                </a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-teal-600 dark:hover:text-teal-400 transition-all duration-300" href="#">
-<span class="material-symbols-outlined" data-icon="settings">settings</span>
-                    Settings
-                </a>
-</nav>
-</div>
-<div class="mt-auto p-4 space-y-1 border-t border-slate-100 dark:border-slate-800">
-<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all" href="#">
-<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
-                User Profile
-            </a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all" href="#">
-<span class="material-symbols-outlined" data-icon="logout">logout</span>
-                Logout
-            </a>
-</div>
+
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-60 bg-white dark:bg-slate-900 hidden lg:flex flex-col z-40 transition-all duration-300 ease-in-out font-manrope text-sm font-medium tracking-tight">
+  <div class="p-6">
+    <div class="flex items-center gap-3 mb-8">
+      <div class="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center text-white font-extrabold">
+        <span class="material-symbols-outlined text-lg">hub</span>
+      </div>
+      <div>
+        <h1 class="text-xl font-bold tracking-tighter text-teal-700 dark:text-teal-400 leading-none">Nexora KR</h1>
+        <p class="text-[10px] text-slate-400 font-normal">Intelligent Retrieval</p>
+      </div>
+    </div>
+    <nav class="space-y-1">
+      <a data-nav="dashboard" href="#"
+         class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-teal-600 transition-all duration-300 rounded-lg">
+        <span class="material-symbols-outlined">dashboard</span> Dashboard
+      </a>
+      <a data-nav="search" href="#"
+         class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-teal-600 transition-all duration-300 rounded-lg">
+        <span class="material-symbols-outlined">search</span> Search
+      </a>
+      <a data-nav="library" data-admin-nav href="#"
+         class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-teal-600 transition-all duration-300 rounded-lg">
+        <span class="material-symbols-outlined">book_2</span> Library
+      </a>
+      <a data-nav="analytics" data-admin-nav href="#"
+         class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-teal-600 transition-all duration-300 rounded-lg">
+        <span class="material-symbols-outlined">insights</span> Analytics
+      </a>
+      <a data-nav="health" data-admin-nav href="#"
+         class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-teal-600 transition-all duration-300 rounded-lg">
+        <span class="material-symbols-outlined">monitor_heart</span> System Health
+      </a>
+      <a data-nav="users" data-admin-nav href="#"
+         class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-teal-600 transition-all duration-300 rounded-lg">
+        <span class="material-symbols-outlined">manage_accounts</span> Users
+      </a>
+    </nav>
+  </div>
+  <div class="mt-auto p-4 space-y-1 border-t border-slate-100">
+    <a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 transition-all rounded-lg cursor-pointer" href="#">
+      <span class="material-symbols-outlined">account_circle</span>
+      <span data-user-name>Profile</span>
+    </a>
+    <a data-logout href="#"
+       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 transition-all cursor-pointer rounded-lg">
+      <span class="material-symbols-outlined">logout</span> Logout
+    </a>
+  </div>
 </aside>
-<!-- Main Content Canvas -->
+
+<!-- Main Content -->
 <main class="lg:ml-60 min-h-screen transition-all duration-300">
-<!-- TopAppBar -->
-<header class="fixed top-0 right-0 w-full lg:w-[calc(100%-240px)] h-16 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-md z-30 font-manrope text-base">
-<div class="flex justify-between items-center px-6 max-w-[1100px] mx-auto w-full h-full">
-<div class="flex items-center gap-4">
-<span class="text-lg font-extrabold text-teal-700 dark:text-teal-400 lg:hidden">Nexora KR</span>
-<h2 class="text-on-surface font-bold text-xl tracking-tight">Admin Retrieval Logs</h2>
-</div>
-<div class="flex items-center gap-4">
-<button class="p-2 text-slate-600 dark:text-slate-400 hover:text-teal-500 transition-colors">
-<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
-</button>
-<div class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden ring-2 ring-teal-600/20">
-<img alt="User Avatar" class="w-full h-full object-cover" data-alt="portrait of a professional male administrator in his 40s wearing glasses and a crisp white shirt, clean studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7wGJeHrMxjk0qt5EPB6uydE8pw_8XLAqHQXVObuoL98iW4Yf7O8hsemX7277VU9Wt71dMsxXmD7q7pK1ZhJQhVygeFF95615mUOsIh5bOQY2hX2sYdzmjM5QZFOtZnJ7we2b-RBgUzvUWGnA181JZiaw0hBg34CRfZhKGlPI5_y6lwIbr0p2LcxRPsnyGgJ-gWN3B4xGbdhOe6MZdHeqPsDh1-w8pkQ2EbOH-f0mJ2xgJ1tTa-tCKY2-E_VDIkUi7JLxnhYKkyok"/>
-</div>
-</div>
-</div>
-</header>
-<!-- Content Area -->
-<div class="pt-24 pb-12 px-6 bg-surface-container-low min-h-screen">
-<div class="max-w-[1100px] mx-auto space-y-6">
-<!-- Stats / Quick Look Bento Grid -->
-<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-<div class="bg-surface-container-lowest p-5 rounded-xl border-l-4 border-primary">
-<p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">Total Queries</p>
-<h3 class="text-2xl font-extrabold mt-1">12,482</h3>
-<div class="mt-2 flex items-center gap-1 text-teal-600 text-xs font-medium">
-<span class="material-symbols-outlined text-[14px]">trending_up</span> 12% vs last week
-                        </div>
-</div>
-<div class="bg-surface-container-lowest p-5 rounded-xl border-l-4 border-secondary">
-<p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">Avg Relevance</p>
-<h3 class="text-2xl font-extrabold mt-1">94.2%</h3>
-<div class="mt-2 flex items-center gap-1 text-secondary text-xs font-medium">
-<span class="material-symbols-outlined text-[14px]">verified</span> Exceptional
-                        </div>
-</div>
-<div class="bg-surface-container-lowest p-5 rounded-xl border-l-4 border-tertiary">
-<p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">Latency</p>
-<h3 class="text-2xl font-extrabold mt-1">1.2s</h3>
-<div class="mt-2 flex items-center gap-1 text-tertiary text-xs font-medium">
-<span class="material-symbols-outlined text-[14px]">bolt</span> -200ms optimization
-                        </div>
-</div>
-<div class="bg-surface-container-lowest p-5 rounded-xl border-l-4 border-error">
-<p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">Negative Feedback</p>
-<h3 class="text-2xl font-extrabold mt-1">0.4%</h3>
-<div class="mt-2 flex items-center gap-1 text-error text-xs font-medium">
-<span class="material-symbols-outlined text-[14px]">priority_high</span> 2 items flagged
-                        </div>
-</div>
-</div>
-<!-- Main Query Log Section -->
-<div class="bg-surface-container-lowest rounded-xl p-2 md:p-6 shadow-[0px_20px_40px_rgba(25,28,30,0.06)]">
-<!-- Filters & Actions -->
-<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-<div class="flex flex-wrap items-center gap-3">
-<div class="relative group">
-<label class="block text-[10px] font-bold text-on-surface-variant uppercase mb-1 ml-1">Search User</label>
-<div class="flex items-center bg-surface-container px-3 py-2 rounded-lg gap-2 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
-<span class="material-symbols-outlined text-slate-400 text-[20px]" data-icon="person_search">person_search</span>
-<input class="bg-transparent border-none focus:ring-0 text-sm w-40 placeholder:text-slate-400" placeholder="Search users..." type="text"/>
-</div>
-</div>
-<div class="relative group">
-<label class="block text-[10px] font-bold text-on-surface-variant uppercase mb-1 ml-1">Date Range</label>
-<div class="flex items-center bg-surface-container px-3 py-2 rounded-lg gap-2 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
-<span class="material-symbols-outlined text-slate-400 text-[20px]" data-icon="calendar_today">calendar_today</span>
-<select class="bg-transparent border-none focus:ring-0 text-sm pr-8 appearance-none">
-<option>Last 24 Hours</option>
-<option>Last 7 Days</option>
-<option>Custom Range</option>
-</select>
-</div>
-</div>
-<div class="relative group">
-<label class="block text-[10px] font-bold text-on-surface-variant uppercase mb-1 ml-1">Feedback</label>
-<div class="flex items-center bg-surface-container px-3 py-2 rounded-lg gap-2 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
-<span class="material-symbols-outlined text-slate-400 text-[20px]" data-icon="filter_list">filter_list</span>
-<select class="bg-transparent border-none focus:ring-0 text-sm pr-8 appearance-none">
-<option>All Feedback</option>
-<option>Positive</option>
-<option>Negative</option>
-<option>None</option>
-</select>
-</div>
-</div>
-</div>
-<div class="self-end md:self-auto">
-<button class="bg-gradient-to-br from-tertiary to-tertiary-container text-white px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all shadow-md shadow-tertiary/20">
-<span class="material-symbols-outlined text-[20px]" data-icon="download">download</span>
-                                Export CSV
-                            </button>
-</div>
-</div>
-<!-- Enhanced Table -->
-<div class="overflow-x-auto">
-<table class="w-full text-left border-collapse">
-<thead>
-<tr class="text-on-surface-variant text-[11px] font-bold uppercase tracking-widest bg-surface-container/50">
-<th class="px-4 py-4 rounded-tl-lg">User</th>
-<th class="px-4 py-4">Timestamp</th>
-<th class="px-4 py-4">Query</th>
-<th class="px-4 py-4 text-center">Chunks</th>
-<th class="px-4 py-4">Feedback</th>
-<th class="px-4 py-4 rounded-tr-lg"></th>
-</tr>
-</thead>
-<tbody class="divide-y divide-surface-container">
-<!-- Row 1: Expanded Sample -->
-<tr class="hover:bg-surface-bright group cursor-pointer transition-colors bg-surface-bright">
-<td class="px-4 py-5">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 rounded-full bg-secondary-fixed text-secondary font-bold text-[10px] flex items-center justify-center">JD</div>
-<div class="flex flex-col">
-<span class="text-sm font-semibold">Jane Doe</span>
-<span class="text-[10px] text-slate-400">Marketing Lead</span>
-</div>
-</div>
-</td>
-<td class="px-4 py-5 text-sm text-slate-500">2023-11-20 14:23:01</td>
-<td class="px-4 py-5 text-sm font-medium text-on-surface truncate max-w-[200px]">How does the new tax regulation affect Q4 projections for European markets?</td>
-<td class="px-4 py-5 text-center">
-<span class="inline-flex items-center justify-center px-2 py-1 bg-teal-50 text-teal-700 rounded-md font-bold text-xs">8</span>
-</td>
-<td class="px-4 py-5">
-<div class="flex items-center gap-1 text-teal-600 bg-teal-50 px-2 py-1 rounded-full w-fit">
-<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">thumb_up</span>
-<span class="text-[10px] font-bold">HELPFUL</span>
-</div>
-</td>
-<td class="px-4 py-5 text-right">
-<span class="material-symbols-outlined text-slate-300 group-hover:text-tertiary transition-colors rotate-180">expand_more</span>
-</td>
-</tr>
-<!-- Inline Expansion Content for Row 1 -->
-<tr class="bg-surface-container-lowest">
-<td class="p-0" colspan="6">
-<div class="px-6 py-8 border-t border-b border-surface-container bg-surface-container-low/30 space-y-6">
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-<!-- Left: Full Query & Response -->
-<div class="space-y-4">
-<div>
-<h4 class="text-[10px] font-extrabold uppercase text-on-surface-variant mb-2 tracking-widest">Full Query Input</h4>
-<div class="leaf-card bg-white p-5 text-sm leading-relaxed text-on-surface shadow-sm border-l-4 border-primary">
-                                                            "How does the new tax regulation affect Q4 projections for European markets, specifically focusing on the manufacturing sector and corporate entities based in Germany?"
-                                                        </div>
-</div>
-<div>
-<h4 class="text-[10px] font-extrabold uppercase text-on-surface-variant mb-2 tracking-widest">AI Generated Response</h4>
-<div class="leaf-card bg-white p-5 text-sm leading-relaxed text-on-surface shadow-sm border-l-4 border-tertiary">
-                                                            The European Union's 2024 Tax Reform Directive (ETRD-24) introduces a base erosion measure that impacts German manufacturing firms with cross-border subsidiaries. Your Q4 projections should account for a 2.4% increase in compliance overhead. Analysis of retrieved documents suggests...
-                                                        </div>
-</div>
-</div>
-<!-- Right: Chunks -->
-<div class="space-y-4">
-<h4 class="text-[10px] font-extrabold uppercase text-on-surface-variant mb-2 tracking-widest">Retrieved Knowledge Chunks (8)</h4>
-<div class="space-y-3 max-h-[400px] overflow-y-auto pr-2">
-<div class="flex flex-col gap-2 p-3 bg-white rounded-lg shadow-sm">
-<div class="flex justify-between items-center">
-<span class="text-[10px] font-bold text-slate-400">DOC: TAX_REG_2024.pdf • p.42</span>
-<span class="bg-teal-50 text-teal-700 text-[10px] px-2 py-0.5 rounded font-bold uppercase">Relevance: 0.98</span>
-</div>
-<p class="text-xs text-slate-600 italic">"...German domestic entities will transition to the new ledger standard by Oct 15..."</p>
-</div>
-<div class="flex flex-col gap-2 p-3 bg-white rounded-lg shadow-sm">
-<div class="flex justify-between items-center">
-<span class="text-[10px] font-bold text-slate-400">DOC: Q4_STRATEGY_DE.docx • p.12</span>
-<span class="bg-teal-50 text-teal-700 text-[10px] px-2 py-0.5 rounded font-bold uppercase">Relevance: 0.89</span>
-</div>
-<p class="text-xs text-slate-600 italic">"...current forecast assumes 5% margin growth, excluding recent regulatory changes in Berlin..."</p>
-</div>
-<div class="flex flex-col gap-2 p-3 bg-white rounded-lg shadow-sm">
-<div class="flex justify-between items-center">
-<span class="text-[10px] font-bold text-slate-400">DOC: EU_DIRECTIVE_77.pdf • p.5</span>
-<span class="bg-amber-50 text-amber-700 text-[10px] px-2 py-0.5 rounded font-bold uppercase">Relevance: 0.72</span>
-</div>
-<p class="text-xs text-slate-600 italic">"...general taxation principles for manufacturing sectors across the Schengen zone..."</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</td>
-</tr>
-<!-- Row 2: Standard Row -->
-<tr class="hover:bg-surface-bright group cursor-pointer transition-colors">
-<td class="px-4 py-5">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 rounded-full bg-tertiary-fixed text-tertiary font-bold text-[10px] flex items-center justify-center">MS</div>
-<div class="flex flex-col">
-<span class="text-sm font-semibold">Mark Smith</span>
-<span class="text-[10px] text-slate-400">Product Manager</span>
-</div>
-</div>
-</td>
-<td class="px-4 py-5 text-sm text-slate-500">2023-11-20 14:15:45</td>
-<td class="px-4 py-5 text-sm font-medium text-on-surface truncate max-w-[200px]">Define the current API rate limiting policy for external partners.</td>
-<td class="px-4 py-5 text-center">
-<span class="inline-flex items-center justify-center px-2 py-1 bg-teal-50 text-teal-700 rounded-md font-bold text-xs">4</span>
-</td>
-<td class="px-4 py-5">
-<div class="flex items-center gap-1 text-slate-400 bg-slate-50 px-2 py-1 rounded-full w-fit">
-<span class="material-symbols-outlined text-[16px]">chat_bubble_outline</span>
-<span class="text-[10px] font-bold">NONE</span>
-</div>
-</td>
-<td class="px-4 py-5 text-right">
-<span class="material-symbols-outlined text-slate-300 group-hover:text-tertiary transition-colors">expand_more</span>
-</td>
-</tr>
-<!-- Row 3: Negative Feedback -->
-<tr class="hover:bg-surface-bright group cursor-pointer transition-colors">
-<td class="px-4 py-5">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 rounded-full bg-error-container text-error font-bold text-[10px] flex items-center justify-center">RL</div>
-<div class="flex flex-col">
-<span class="text-sm font-semibold">Rita Lopez</span>
-<span class="text-[10px] text-slate-400">UX Researcher</span>
-</div>
-</div>
-</td>
-<td class="px-4 py-5 text-sm text-slate-500">2023-11-20 13:58:22</td>
-<td class="px-4 py-5 text-sm font-medium text-on-surface truncate max-w-[200px]">Summary of last month's user interview transcripts for Project Zenith.</td>
-<td class="px-4 py-5 text-center">
-<span class="inline-flex items-center justify-center px-2 py-1 bg-error-container text-error rounded-md font-bold text-xs">2</span>
-</td>
-<td class="px-4 py-5">
-<div class="flex items-center gap-1 text-error bg-error-container px-2 py-1 rounded-full w-fit">
-<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">thumb_down</span>
-<span class="text-[10px] font-bold">INACCURATE</span>
-</div>
-</td>
-<td class="px-4 py-5 text-right">
-<span class="material-symbols-outlined text-slate-300 group-hover:text-tertiary transition-colors">expand_more</span>
-</td>
-</tr>
-<!-- Row 4: Skeleton Loader Simulation -->
-<tr class="opacity-50 pointer-events-none">
-<td class="px-4 py-5">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 rounded-full bg-slate-100"></div>
-<div class="flex flex-col gap-1">
-<div class="h-3 w-20 bg-slate-100 rounded"></div>
-<div class="h-2 w-12 bg-slate-50 rounded"></div>
-</div>
-</div>
-</td>
-<td class="px-4 py-5"><div class="h-3 w-24 bg-slate-100 rounded"></div></td>
-<td class="px-4 py-5"><div class="h-3 w-40 bg-slate-100 rounded"></div></td>
-<td class="px-4 py-5"><div class="h-3 w-6 mx-auto bg-slate-100 rounded"></div></td>
-<td class="px-4 py-5"><div class="h-5 w-16 bg-slate-100 rounded-full"></div></td>
-<td class="px-4 py-5"></td>
-</tr>
-</tbody>
-</table>
-</div>
-<!-- Pagination -->
-<div class="mt-8 flex items-center justify-between">
-<p class="text-xs text-on-surface-variant font-medium">Showing 1 to 10 of 12,482 entries</p>
-<div class="flex gap-2">
-<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-surface-container text-slate-500 hover:bg-slate-200 transition-colors">
-<span class="material-symbols-outlined text-[18px]">chevron_left</span>
-</button>
-<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-tertiary text-white font-bold text-xs">1</button>
-<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-surface-container text-slate-600 hover:bg-slate-200 font-bold text-xs">2</button>
-<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-surface-container text-slate-600 hover:bg-slate-200 font-bold text-xs">3</button>
-<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-surface-container text-slate-500 hover:bg-slate-200 transition-colors">
-<span class="material-symbols-outlined text-[18px]">chevron_right</span>
-</button>
-</div>
-</div>
-</div>
-</div>
-</div>
+  <!-- TopAppBar -->
+  <header class="fixed top-0 right-0 w-full lg:w-[calc(100%-240px)] h-16 bg-slate-50/80 backdrop-blur-md z-30 font-manrope text-base">
+    <div class="flex justify-between items-center px-6 max-w-[1100px] mx-auto w-full h-full">
+      <div class="flex items-center gap-4">
+        <span class="text-lg font-extrabold text-teal-700 dark:text-teal-400 lg:hidden">Nexora KR</span>
+        <h2 class="text-on-surface font-bold text-xl tracking-tight hidden lg:block">Admin Analytics</h2>
+      </div>
+      <div class="flex items-center gap-4">
+        <button class="p-2 text-slate-600 hover:text-teal-500 transition-colors">
+          <span class="material-symbols-outlined">notifications</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Content Area -->
+  <div class="pt-24 pb-12 px-6 bg-surface-container-low min-h-screen">
+    <div class="max-w-[1100px] mx-auto space-y-6">
+
+      <!-- Stats Bento Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-surface-container-lowest p-5 rounded-xl border-l-4 border-primary">
+          <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">Total Queries</p>
+          <h3 id="stat-total-queries" class="text-2xl font-extrabold mt-1">—</h3>
+          <div class="mt-2 flex items-center gap-1 text-teal-600 text-xs font-medium">
+            <span class="material-symbols-outlined text-[14px]">today</span>
+            <span id="stat-today">— today</span>
+          </div>
+        </div>
+        <div class="bg-surface-container-lowest p-5 rounded-xl border-l-4 border-secondary">
+          <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">Avg Relevance</p>
+          <h3 id="stat-avg-relevance" class="text-2xl font-extrabold mt-1">—</h3>
+          <div class="mt-2 flex items-center gap-1 text-secondary text-xs font-medium">
+            <span class="material-symbols-outlined text-[14px]">verified</span> Cross-encoder score
+          </div>
+        </div>
+        <div class="bg-surface-container-lowest p-5 rounded-xl border-l-4 border-tertiary">
+          <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">Index Status</p>
+          <h3 id="stat-index-status" class="text-2xl font-extrabold mt-1 capitalize">—</h3>
+          <div class="mt-2 flex items-center gap-1 text-tertiary text-xs font-medium">
+            <span class="material-symbols-outlined text-[14px]">database</span>
+            <span id="stat-vector-store">—</span>
+          </div>
+        </div>
+        <div class="bg-surface-container-lowest p-5 rounded-xl border-l-4 border-error">
+          <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">Total Documents</p>
+          <h3 id="stat-total-docs" class="text-2xl font-extrabold mt-1">—</h3>
+          <div class="mt-2 flex items-center gap-1 text-error text-xs font-medium">
+            <span class="material-symbols-outlined text-[14px]">description</span> indexed in system
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Log Section -->
+      <div class="bg-surface-container-lowest rounded-xl p-4 md:p-6 shadow-[0px_20px_40px_rgba(25,28,30,0.06)]">
+        <!-- Filters & Export -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+          <div class="flex flex-wrap items-end gap-3">
+            <div>
+              <label class="block text-[10px] font-bold text-on-surface-variant uppercase mb-1 ml-1">Search User</label>
+              <div class="flex items-center bg-surface-container px-3 py-2 rounded-lg gap-2 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+                <span class="material-symbols-outlined text-slate-400 text-[20px]">person_search</span>
+                <input id="log-search" class="bg-transparent border-none focus:ring-0 text-sm w-40 placeholder:text-slate-400"
+                       placeholder="Name or email…" type="text"/>
+              </div>
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-on-surface-variant uppercase mb-1 ml-1">Date Range</label>
+              <div class="flex items-center bg-surface-container px-3 py-2 rounded-lg gap-2 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+                <span class="material-symbols-outlined text-slate-400 text-[20px]">calendar_today</span>
+                <select id="log-date-range" class="bg-transparent border-none focus:ring-0 text-sm pr-8 appearance-none">
+                  <option value="">All Time</option>
+                  <option value="24h">Last 24 Hours</option>
+                  <option value="7d">Last 7 Days</option>
+                  <option value="30d">Last 30 Days</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-on-surface-variant uppercase mb-1 ml-1">Feedback</label>
+              <div class="flex items-center bg-surface-container px-3 py-2 rounded-lg gap-2 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+                <span class="material-symbols-outlined text-slate-400 text-[20px]">filter_list</span>
+                <select id="log-feedback" class="bg-transparent border-none focus:ring-0 text-sm pr-8 appearance-none">
+                  <option value="">All Feedback</option>
+                  <option value="positive">Positive</option>
+                  <option value="negative">Negative</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <button id="export-csv-btn"
+                  class="bg-gradient-to-br from-tertiary to-tertiary-container text-white px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all shadow-md shadow-tertiary/20 self-end">
+            <span class="material-symbols-outlined text-[20px]">download</span>
+            Export CSV
+          </button>
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="text-on-surface-variant text-[11px] font-bold uppercase tracking-widest bg-surface-container/50">
+                <th class="px-4 py-4 rounded-tl-lg">User</th>
+                <th class="px-4 py-4">Timestamp</th>
+                <th class="px-4 py-4">Query</th>
+                <th class="px-4 py-4 text-center">Chunks</th>
+                <th class="px-4 py-4">Feedback</th>
+                <th class="px-4 py-4 rounded-tr-lg"></th>
+              </tr>
+            </thead>
+            <tbody id="logs-tbody" class="divide-y divide-surface-container">
+              <!-- populated by script -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="mt-8 flex items-center justify-between">
+          <p id="logs-pagination-info" class="text-xs text-on-surface-variant font-medium">Loading…</p>
+          <div id="logs-pagination" class="flex gap-2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </main>
-<!-- Contextual FAB - Restricted for Admin Insights context if needed, but per instruction suppressed on Details -->
-<!-- We skip FAB here as this is a dashboard/log view focused on analysis -->
-</body></html>
+
+<!-- Shared JS -->
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/toast.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  if (!guardAdmin()) return;
+  wireNav("analytics");
+
+  // Load health stats.
+  try {
+    const h = await apiFetch("/health");
+    if (h) {
+      document.getElementById("stat-total-queries").textContent  = h.total_documents != null ? "—" : "—";
+      // Use queries_today for total; backend only has queries_today not total_queries.
+      document.getElementById("stat-today").textContent          = `${h.queries_today ?? 0} today`;
+      document.getElementById("stat-total-queries").textContent  = h.queries_today ?? "—";
+      document.getElementById("stat-avg-relevance").textContent  = h.avg_relevance_score != null
+        ? (applyScoreSigmoid(h.avg_relevance_score) * 100).toFixed(1) + "%" : "—";
+      document.getElementById("stat-index-status").textContent   = h.index_status ?? "—";
+      document.getElementById("stat-vector-store").textContent   = h.vector_store_type ?? "—";
+      document.getElementById("stat-total-docs").textContent     = h.total_documents ?? "—";
+    }
+  } catch { /* stats non-critical */ }
+
+  const logsTbody    = document.getElementById("logs-tbody");
+  const paginInfo    = document.getElementById("logs-pagination-info");
+  const paginDiv     = document.getElementById("logs-pagination");
+  const searchInput  = document.getElementById("log-search");
+  const dateSelect   = document.getElementById("log-date-range");
+  const feedbackSel  = document.getElementById("log-feedback");
+  const exportBtn    = document.getElementById("export-csv-btn");
+
+  let currentPage  = 1;
+  const PAGE_SIZE  = 10;
+  let searchTimeout = null;
+
+  loadLogs();
+
+  searchInput.addEventListener("input", () => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => { currentPage = 1; loadLogs(); }, 400);
+  });
+  dateSelect.addEventListener("change",  () => { currentPage = 1; loadLogs(); });
+  feedbackSel.addEventListener("change", () => { currentPage = 1; loadLogs(); });
+
+  exportBtn.addEventListener("click", async () => {
+    exportBtn.disabled = true;
+    try {
+      const blob = await apiFetch("/logs/export");
+      if (blob) downloadBlob(blob, "verity-query-logs.csv");
+    } catch (err) {
+      showToast("Export failed", "error", err.message);
+    } finally {
+      exportBtn.disabled = false;
+    }
+  });
+
+  async function loadLogs() {
+    const params = new URLSearchParams({ page: currentPage, size: PAGE_SIZE });
+    const search    = searchInput.value.trim();
+    const feedback  = feedbackSel.value;
+    const dateRange = dateSelect.value;
+
+    // user_search supports name/email substring (backend updated).
+    if (search)   params.set("user_search", search);
+    if (feedback) params.set("feedback", feedback);
+    if (dateRange) {
+      const now  = new Date();
+      const from = new Date(now);
+      if (dateRange === "24h") from.setDate(now.getDate() - 1);
+      if (dateRange === "7d")  from.setDate(now.getDate() - 7);
+      if (dateRange === "30d") from.setDate(now.getDate() - 30);
+      params.set("date_from", from.toISOString().split("T")[0]);
+    }
+
+    logsTbody.innerHTML = skelRows(4);
+    try {
+      const data = await apiFetch(`/logs?${params}`);
+      if (!data) return;
+      renderLogs(data.items || []);
+      renderPagination(data.total || 0, data.page || 1, data.size || PAGE_SIZE);
+    } catch (err) {
+      logsTbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-on-surface-variant">${escH(err.message)}</td></tr>`;
+    }
+  }
+
+  function renderLogs(logs) {
+    if (!logs.length) {
+      logsTbody.innerHTML = `<tr><td colspan="6" class="text-center py-12 text-on-surface-variant">No logs found.</td></tr>`;
+      return;
+    }
+    logsTbody.innerHTML = "";
+
+    const fbBadge = {
+      positive: `<div class="flex items-center gap-1 text-teal-600 bg-teal-50 px-2 py-1 rounded-full w-fit"><span class="material-symbols-outlined text-[16px]" style="font-variation-settings:'FILL' 1;">thumb_up</span><span class="text-[10px] font-bold">HELPFUL</span></div>`,
+      negative: `<div class="flex items-center gap-1 text-error bg-error-container px-2 py-1 rounded-full w-fit"><span class="material-symbols-outlined text-[16px]" style="font-variation-settings:'FILL' 1;">thumb_down</span><span class="text-[10px] font-bold">INACCURATE</span></div>`,
+      none:     `<div class="flex items-center gap-1 text-slate-400 bg-slate-50 px-2 py-1 rounded-full w-fit"><span class="material-symbols-outlined text-[16px]">chat_bubble_outline</span><span class="text-[10px] font-bold">NONE</span></div>`,
+    };
+
+    logs.forEach((log) => {
+      const userName  = log.user_name || "Unknown";
+      const userEmail = log.user_email || "";
+      const initials  = userName.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
+
+      const row = document.createElement("tr");
+      row.className = "hover:bg-surface-bright group cursor-pointer transition-colors";
+      row.innerHTML = `
+        <td class="px-4 py-5">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-secondary-fixed text-secondary font-bold text-[10px] flex items-center justify-center">${escH(initials)}</div>
+            <div class="flex flex-col">
+              <span class="text-sm font-semibold">${escH(userName)}</span>
+              <span class="text-[10px] text-slate-400">${escH(userEmail)}</span>
+            </div>
+          </div>
+        </td>
+        <td class="px-4 py-5 text-sm text-slate-500">${new Date(log.created_at).toLocaleString()}</td>
+        <td class="px-4 py-5 text-sm font-medium text-on-surface truncate max-w-[200px]">${escH(log.query_text)}</td>
+        <td class="px-4 py-5 text-center">
+          <span class="inline-flex items-center justify-center px-2 py-1 bg-teal-50 text-teal-700 rounded-md font-bold text-xs">${(log.retrieved_chunk_ids || []).length}</span>
+        </td>
+        <td class="px-4 py-5">${fbBadge[log.feedback] || fbBadge.none}</td>
+        <td class="px-4 py-5 text-right">
+          <span class="expand-icon material-symbols-outlined text-slate-300 group-hover:text-tertiary transition-colors">expand_more</span>
+        </td>
+      `;
+
+      const expandRow = document.createElement("tr");
+      expandRow.className = "bg-surface-container-lowest hidden";
+      expandRow.innerHTML = `<td colspan="6" class="p-0"><div class="expand-content px-6 py-6 border-t border-b border-surface-container bg-surface-container-low/30 text-sm text-on-surface-variant">Loading…</div></td>`;
+
+      logsTbody.appendChild(row);
+      logsTbody.appendChild(expandRow);
+
+      row.addEventListener("click", async () => {
+        const isOpen = !expandRow.classList.contains("hidden");
+        // Collapse all others.
+        logsTbody.querySelectorAll("tr.bg-surface-container-lowest").forEach(r => r.classList.add("hidden"));
+        if (isOpen) return;
+
+        expandRow.classList.remove("hidden");
+        expandRow.querySelector(".expand-content").innerHTML = `
+          <div class="animate-pulse space-y-2">
+            <div class="h-3 bg-surface-container-high rounded w-2/3"></div>
+            <div class="h-3 bg-surface-container-high rounded w-full"></div>
+          </div>`;
+
+        try {
+          const detail = await apiFetch(`/logs/${log.id}`);
+          if (!detail) return;
+          const chunks = detail.chunk_snippets || [];
+          expandRow.querySelector(".expand-content").innerHTML = `
+            <div class="space-y-4">
+              <div>
+                <p class="text-[10px] font-extrabold uppercase text-on-surface-variant mb-2 tracking-widest">Full Query</p>
+                <div class="leaf-card bg-white p-4 text-sm text-on-surface shadow-sm border-l-4 border-primary rounded-xl">"${escH(detail.query_text)}"</div>
+              </div>
+              ${chunks.length ? `
+              <div>
+                <p class="text-[10px] font-extrabold uppercase text-on-surface-variant mb-2 tracking-widest">Retrieved Chunks (${chunks.length})</p>
+                <div class="space-y-2 max-h-[300px] overflow-y-auto pr-2">
+                  ${chunks.map(c => `
+                    <div class="flex flex-col gap-1 p-3 bg-white rounded-lg shadow-sm">
+                      <span class="text-[10px] font-bold text-slate-400">${escH(c.file_name || "—")} • p.${c.page_number ?? "?"}</span>
+                      <p class="text-xs text-slate-600 italic">"${escH((c.text_snippet || "").slice(0, 200))}…"</p>
+                    </div>`).join("")}
+                </div>
+              </div>` : `<p class="text-xs text-slate-400">No chunk data available.</p>`}
+            </div>`;
+        } catch (err) {
+          expandRow.querySelector(".expand-content").textContent = "Failed to load: " + err.message;
+        }
+      });
+    });
+  }
+
+  function renderPagination(total, page, size) {
+    const totalPages = Math.max(1, Math.ceil(total / size));
+    const from = total ? (page - 1) * size + 1 : 0;
+    const to   = Math.min(page * size, total);
+    paginInfo.textContent = `Showing ${from}–${to} of ${total} entries`;
+    paginDiv.innerHTML = "";
+
+    const mkBtn = (label, targetPage, active, disabled) => {
+      const btn = document.createElement("button");
+      btn.className = `w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold transition-colors ${active ? "bg-tertiary text-white" : "bg-surface-container text-slate-600 hover:bg-slate-200"}`;
+      btn.innerHTML  = label;
+      btn.disabled   = disabled;
+      if (!disabled && !active) btn.addEventListener("click", () => { currentPage = targetPage; loadLogs(); });
+      return btn;
+    };
+    paginDiv.appendChild(mkBtn('<span class="material-symbols-outlined text-[18px]">chevron_left</span>', page - 1, false, page <= 1));
+    for (let i = Math.max(1, page - 2); i <= Math.min(totalPages, page + 2); i++) {
+      paginDiv.appendChild(mkBtn(i, i, i === page, false));
+    }
+    paginDiv.appendChild(mkBtn('<span class="material-symbols-outlined text-[18px]">chevron_right</span>', page + 1, false, page >= totalPages));
+  }
+
+  function skelRows(n) {
+    return Array.from({length: n}, () =>
+      `<tr class="animate-pulse">${Array(6).fill('<td class="px-4 py-5"><div class="h-3 bg-surface-container-high rounded w-3/4"></div></td>').join("")}</tr>`
+    ).join("");
+  }
+
+  function escH(t) {
+    const d = document.createElement("div");
+    d.textContent = String(t ?? "");
+    return d.innerHTML;
+  }
+});
+</script>
+</body>
+</html>

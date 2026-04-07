@@ -30,7 +30,7 @@ The FastAPI app and `docker compose` backend service are completed in **Phase 5*
 3. In **`backend/`**: create/activate a venv, `pip install -r requirements.txt`, `alembic upgrade head`, `python seed.py`.
 4. Run ingestion and BM25 build as in **DEV_SETUP.md** (Chroma persists under `backend/chroma_db/` by default).
 
-### After Phase 5 (full stack)
+### Full stack (current)
 
 ```bash
 # 1. Copy environment and fill in keys (repo root or as documented in DEV_SETUP)
@@ -43,12 +43,30 @@ docker compose up --build
 docker compose exec backend python seed.py
 
 # 4. Open the frontend — serve ui/ with any static server (e.g. VS Code Live Server)
+#    Navigate to ui/login_page/login_page.html
+#
 #    Default credentials:
 #      Admin:  admin@verity.internal / Admin1234!
 #      User:   user@verity.internal  / User1234!
+#
+#    Or sign up for a new account:
+#      Open ui/signup_page/signup_page.html (linked from the login page)
 ```
 
-> **Note:** The `data/` folder contains Nexora HR policy PDFs and `manifest.json`. Ingestion requires a valid `OPENAI_API_KEY`. After ingest, **`build_bm25_index()`** must run (manually until Phase 5 wires it into app startup) so BM25 participates in hybrid retrieval alongside dense search and the cross-encoder re-ranker.
+> **Note:** The `data/` folder contains Nexora HR policy PDFs and `manifest.json`. Ingestion requires a valid `OPENAI_API_KEY`. After ingest, **`build_bm25_index()`** runs automatically on app startup to ensure BM25 participates in hybrid retrieval.
+
+### Frontend Page Structure
+
+| Page | Path | Access |
+|------|------|--------|
+| Login | `ui/login_page/login_page.html` | Public |
+| Sign Up | `ui/signup_page/signup_page.html` | Public |
+| Dashboard | `ui/dashboard/dashboard.html` | All users (role-based view) |
+| Search | `ui/chat_interface/chat_interface.html` | All users |
+| Library | `ui/document_ingestion/document_ingestion.html` | Admin only |
+| Analytics | `ui/query_logs/query_logs.html` | Admin only |
+| System Health | `ui/system_health/System_health.html` | Admin only |
+| Users | `ui/user_management/user_management.html` | Admin only |
 
 ---
 

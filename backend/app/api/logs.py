@@ -63,28 +63,17 @@ def _fetch_chunk_snippets(chunk_ids: list[str]) -> list[LogChunkSnippet]:
         return []
 
 
-def _build_log_filter(
-    stmt,
-    user_id: str,
-    date_from: date | None,
-    date_to: date | None,
-    feedback: str,
-):
-    """Apply optional filters to a QueryLog select statement."""
-    if user_id:
-        stmt = stmt.where(QueryLog.user_id == user_id)
-    if date_from:
-        stmt = stmt.where(QueryLog.created_at >= date_from)
-    if date_to:
-        stmt = stmt.where(QueryLog.created_at <= date_to)
-    if feedback:
-        stmt = stmt.where(QueryLog.feedback == feedback)
-    return stmt
+def _row_to_summary(log: QueryLog, user: User | None) -> LogSummary:
+    """Convert a QueryLog ORM row plus its associated User into a LogSummary."""
+    data = LogSummary.model_validate(log)
+    data.user_name = user.name if user else None
+    data.user_email = user.email if user else None
+    return data
 
 
 @router.get("", response_model=LogListResponse)
 def list_logs(
-    user_id: str = "",
+    user_search: str = "",
     date_from: date | None = None,
     date_to: date | None = None,
     feedback: str = "",
@@ -93,31 +82,42 @@ def list_logs(
     _: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> LogListResponse:
-    """Return a paginated list of query logs with optional filters."""
-    base_stmt = select(QueryLog)
-    base_stmt = _build_log_filter(base_stmt, user_id, date_from, date_to, feedback)
+    """Return a paginated list of query logs with optional filters.
+
+    user_search filters by user name or email (case-insensitive substring match).
+    """
+    stmt = select(QueryLog, User).join(User, QueryLog.user_id == User.id, isouter=True)
+
+    if user_search:
+        term = f"%{user_search}%"
+        stmt = stmt.where(
+            User.name.ilike(term) | User.email.ilike(term)
+        )
+    if date_from:
+        stmt = stmt.where(QueryLog.created_at >= date_from)
+    if date_to:
+        stmt = stmt.where(QueryLog.created_at <= date_to)
+    if feedback:
+        stmt = stmt.where(QueryLog.feedback == feedback)
 
     total = db.execute(
-        select(func.count()).select_from(base_stmt.subquery())
+        select(func.count()).select_from(stmt.subquery())
     ).scalar_one()
 
-    items = db.execute(
-        base_stmt.order_by(QueryLog.created_at.desc())
+    rows = db.execute(
+        stmt.order_by(QueryLog.created_at.desc())
         .offset((page - 1) * size)
         .limit(size)
-    ).scalars().all()
+    ).all()
 
-    return LogListResponse(
-        items=[LogSummary.model_validate(log) for log in items],
-        total=total,
-        page=page,
-        size=size,
-    )
+    items = [_row_to_summary(log, user) for log, user in rows]
+
+    return LogListResponse(items=items, total=total, page=page, size=size)
 
 
 @router.get("/export")
 def export_logs(
-    user_id: str = "",
+    user_search: str = "",
     date_from: date | None = None,
     date_to: date | None = None,
     feedback: str = "",
@@ -125,26 +125,40 @@ def export_logs(
     db: Session = Depends(get_db),
 ) -> StreamingResponse:
     """Stream all matching query logs as a CSV download."""
-    stmt = select(QueryLog)
-    stmt = _build_log_filter(stmt, user_id, date_from, date_to, feedback)
-    logs = db.execute(stmt.order_by(QueryLog.created_at.desc())).scalars().all()
+    stmt = select(QueryLog, User).join(User, QueryLog.user_id == User.id, isouter=True)
+
+    if user_search:
+        term = f"%{user_search}%"
+        stmt = stmt.where(
+            User.name.ilike(term) | User.email.ilike(term)
+        )
+    if date_from:
+        stmt = stmt.where(QueryLog.created_at >= date_from)
+    if date_to:
+        stmt = stmt.where(QueryLog.created_at <= date_to)
+    if feedback:
+        stmt = stmt.where(QueryLog.feedback == feedback)
+
+    rows = db.execute(stmt.order_by(QueryLog.created_at.desc())).all()
 
     def _generate():
         buffer = io.StringIO()
         writer = csv.writer(buffer)
         writer.writerow([
-            "id", "user_id", "query_text", "retrieved_chunk_ids",
-            "relevance_scores", "date_filter_from", "date_filter_to",
-            "feedback", "response_latency_ms", "created_at",
+            "id", "user_id", "user_name", "user_email", "query_text",
+            "retrieved_chunk_ids", "relevance_scores", "date_filter_from",
+            "date_filter_to", "feedback", "response_latency_ms", "created_at",
         ])
         yield buffer.getvalue()
 
-        for log in logs:
+        for log, user in rows:
             buffer = io.StringIO()
             writer = csv.writer(buffer)
             writer.writerow([
                 str(log.id),
                 str(log.user_id),
+                user.name if user else "",
+                user.email if user else "",
                 log.query_text,
                 ",".join(log.retrieved_chunk_ids or []),
                 ",".join(str(s) for s in (log.relevance_scores or [])),
@@ -170,14 +184,16 @@ def get_log(
     db: Session = Depends(get_db),
 ) -> LogDetail:
     """Return full log detail including live chunk text snippets from Chroma."""
-    log = db.execute(
-        select(QueryLog).where(QueryLog.id == log_id)
-    ).scalar_one_or_none()
+    row = db.execute(
+        select(QueryLog, User)
+        .join(User, QueryLog.user_id == User.id, isouter=True)
+        .where(QueryLog.id == log_id)
+    ).one_or_none()
 
-    if log is None:
+    if row is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Log not found")
 
+    log, user = row
     snippets = _fetch_chunk_snippets(log.retrieved_chunk_ids or [])
-
-    summary = LogSummary.model_validate(log)
+    summary = _row_to_summary(log, user)
     return LogDetail(**summary.model_dump(), chunk_snippets=snippets)

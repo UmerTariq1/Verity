@@ -16,6 +16,8 @@ class LogChunkSnippet(BaseModel):
 class LogSummary(BaseModel):
     id: uuid.UUID
     user_id: uuid.UUID
+    user_name: str | None = None
+    user_email: str | None = None
     query_text: str
     retrieved_chunk_ids: list[str] | None
     relevance_scores: list[float] | None
@@ -34,6 +36,13 @@ class LogDetail(LogSummary):
 
 
 class LogListResponse(BaseModel):
+    items: list[LogSummary]
+    total: int
+    page: int
+    size: int
+
+
+class UserHistoryResponse(BaseModel):
     items: list[LogSummary]
     total: int
     page: int

@@ -111,7 +111,7 @@
 </div>
 <!-- Login Card -->
 <div class="surface-container-lowest glass-card rounded-2xl p-8 shadow-2xl shadow-on-surface/5 border border-white/50">
-<form class="space-y-6">
+<form id="login-form" class="space-y-6">
 <!-- Email Input -->
 <div class="space-y-2">
 <label class="block text-sm font-semibold text-on-surface-variant ml-1" for="email">Email address</label>
@@ -126,45 +126,117 @@
 <button class="text-xs font-bold text-primary hover:text-primary-container transition-colors" type="button">Forgot password?</button>
 </div>
 <div class="relative group">
-<input class="w-full h-12 px-4 rounded-2xl bg-surface-container-low border-2 border-error/20 focus:ring-2 focus:ring-error/20 transition-all text-on-surface placeholder:text-outline/50" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+<input class="w-full h-12 px-4 rounded-2xl bg-surface-container-low border-0 focus:ring-2 focus:ring-primary/20 transition-all text-on-surface placeholder:text-outline/50" id="password" name="password" placeholder="••••••••" required="" type="password"/>
 <button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant hover:text-primary transition-colors" type="button">
 <span class="material-symbols-outlined text-[20px]" data-icon="visibility_off">visibility_off</span>
 </button>
 </div>
 </div>
-<!-- Sign In Button (Loading State) -->
+<!-- Sign In Button -->
 <div class="pt-2">
-<button class="w-full h-12 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold rounded-2xl flex items-center justify-center gap-3 shadow-md shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all duration-300" type="submit">
-<svg class="animate-spin h-5 w-5 text-white" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<button id="login-btn" class="w-full h-12 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold rounded-2xl flex items-center justify-center gap-3 shadow-md shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all duration-300" type="submit">
+<svg id="login-spinner" class="animate-spin h-5 w-5 text-white hidden" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-<path class="opacity-75" d="4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
+<path class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
 </svg>
-<span>Signing in...</span>
+<span id="login-btn-text">Sign in</span>
 </button>
 </div>
 <!-- Error Alert Card -->
-<div class="bg-error-container/50 border border-error/10 rounded-2xl p-4 flex items-start gap-3">
+<div id="error-card" class="hidden bg-error-container/50 border border-error/10 rounded-2xl p-4 flex items-start gap-3">
 <span class="material-symbols-outlined text-error" data-icon="error_outline">error_outline</span>
 <div class="space-y-1">
 <p class="text-sm font-bold text-on-error-container">Authentication failed</p>
-<p class="text-xs text-on-error-container/80">Please check your password and try again.</p>
+<p id="error-msg" class="text-xs text-on-error-container/80">Please check your password and try again.</p>
 </div>
 </div>
 </form>
 </div>
 <!-- Footer / Support -->
 <div class="flex flex-col items-center gap-4 text-center">
+<p class="text-sm text-on-surface-variant">
+  Don't have an account?
+  <a href="../signup_page/signup_page.html" class="font-bold text-primary hover:text-primary-container transition-colors">Sign up</a>
+</p>
 <p class="text-xs text-on-surface-variant max-w-[280px]">
-                Authorized access only. By signing in, you agree to Nexora KR's Internal Data Policy.
-            </p>
-<div class="flex items-center gap-6">
-<a class="text-xs font-medium text-outline hover:text-primary transition-colors" href="#">Privacy</a>
-<a class="text-xs font-medium text-outline hover:text-primary transition-colors" href="#">Terms</a>
-<a class="text-xs font-medium text-outline hover:text-primary transition-colors" href="#">Support</a>
-</div>
+  Authorized access only. By signing in, you agree to Nexora KR's Internal Data Policy.
+</p>
 </div>
 </div>
 <!-- Decorative Elements (Asymmetric) -->
 <div class="fixed top-0 right-0 -z-10 w-1/3 h-1/2 bg-gradient-to-b from-primary/5 to-transparent blur-3xl opacity-50 pointer-events-none"></div>
 <div class="fixed bottom-0 left-0 -z-10 w-1/4 h-1/3 bg-gradient-to-t from-tertiary/5 to-transparent blur-3xl opacity-50 pointer-events-none"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // Already logged in — go straight to dashboard.
+  if (localStorage.getItem("verity_token")) {
+    window.location.href = "../dashboard/dashboard.html";
+    return;
+  }
+
+  const form       = document.getElementById("login-form");
+  const emailInput = document.getElementById("email");
+  const passInput  = document.getElementById("password");
+  const loginBtn   = document.getElementById("login-btn");
+  const spinner    = document.getElementById("login-spinner");
+  const btnText    = document.getElementById("login-btn-text");
+  const errorCard  = document.getElementById("error-card");
+  const errorMsg   = document.getElementById("error-msg");
+
+  // Password visibility toggle.
+  const toggleBtn = passInput.parentElement.querySelector("button[type='button']");
+  if (toggleBtn) {
+    toggleBtn.addEventListener("click", () => {
+      const isHidden = passInput.type === "password";
+      passInput.type = isHidden ? "text" : "password";
+      const icon = toggleBtn.querySelector(".material-symbols-outlined");
+      if (icon) icon.textContent = isHidden ? "visibility" : "visibility_off";
+    });
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // Loading state.
+    spinner.classList.remove("hidden");
+    btnText.textContent = "Signing in…";
+    loginBtn.disabled = true;
+    errorCard.classList.add("hidden");
+
+    try {
+      const res = await fetch("http://localhost:8000/api/v1/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: emailInput.value.trim(),
+          password: passInput.value,
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || "Authentication failed. Check your credentials.");
+      }
+
+      const data = await res.json();
+
+      localStorage.setItem("verity_token", data.access_token);
+      localStorage.setItem(
+        "verity_user",
+        JSON.stringify({ name: data.name, role: data.role, user_id: data.user_id })
+      );
+
+      window.location.href = "../dashboard/dashboard.html";
+
+    } catch (err) {
+      errorMsg.textContent = err.message;
+      errorCard.classList.remove("hidden");
+      spinner.classList.add("hidden");
+      btnText.textContent = "Sign in";
+      loginBtn.disabled = false;
+    }
+  });
+});
+</script>
 </body></html>

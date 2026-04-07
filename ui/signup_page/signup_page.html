@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nexora KR - Create Account</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "on-primary-fixed-variant": "#005048",
+          "background": "#f8f9fb",
+          "on-primary": "#ffffff",
+          "error-container": "#ffdad6",
+          "outline": "#6c7a77",
+          "tertiary": "#6d3bd7",
+          "primary-fixed": "#71f8e4",
+          "error": "#ba1a1a",
+          "outline-variant": "#bbcac6",
+          "surface-tint": "#006b5f",
+          "primary-container": "#14b8a6",
+          "on-primary-fixed": "#00201c",
+          "on-surface": "#191c1e",
+          "on-surface-variant": "#3c4947",
+          "primary": "#006b5f",
+          "surface-container-low": "#f3f4f6",
+          "on-error-container": "#93000a",
+          "surface-bright": "#f8f9fb",
+          "on-error": "#ffffff",
+          "surface-container": "#edeef0",
+          "surface": "#f8f9fb",
+          "surface-container-high": "#e7e8ea",
+          "surface-container-lowest": "#ffffff"
+        },
+        borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", "2xl": "1rem", full: "9999px" },
+        fontFamily: { headline: ["Manrope"], body: ["Inter"] }
+      }
+    }
+  }
+</script>
+<style>
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  body { font-family: 'Inter', sans-serif; }
+  h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+  .bg-gradient-soft { background: radial-gradient(circle at top left, #f3f4f6 0%, #f8f9fb 100%); }
+  .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); }
+</style>
+</head>
+<body class="bg-gradient-soft min-h-screen flex items-center justify-center p-6 text-on-surface">
+
+<div class="w-full max-w-md space-y-8">
+  <!-- Brand Identity -->
+  <div class="flex flex-col items-center text-center space-y-4">
+    <div class="w-16 h-16 bg-gradient-to-br from-primary to-primary-container rounded-2xl flex items-center justify-center shadow-lg transform rotate-3">
+      <span class="material-symbols-outlined text-white text-4xl">auto_awesome</span>
+    </div>
+    <div class="space-y-1">
+      <h1 class="text-3xl font-extrabold tracking-tighter text-on-surface">Create account</h1>
+      <p class="text-on-surface-variant font-medium tracking-tight">Join Nexora KR — Intelligent Retrieval System</p>
+    </div>
+  </div>
+
+  <!-- Sign Up Card -->
+  <div class="glass-card rounded-2xl p-8 shadow-2xl shadow-on-surface/5 border border-white/50">
+    <!-- Success State (hidden initially) -->
+    <div id="success-card" class="hidden flex flex-col items-center text-center gap-4 py-4">
+      <div class="w-16 h-16 bg-teal-50 rounded-full flex items-center justify-center">
+        <span class="material-symbols-outlined text-3xl text-teal-600" style="font-variation-settings:'FILL' 1;">check_circle</span>
+      </div>
+      <h3 class="text-xl font-bold text-on-surface">Account created!</h3>
+      <p class="text-sm text-on-surface-variant">You've been signed in automatically.</p>
+      <a href="../dashboard/dashboard.html"
+         class="w-full mt-2 py-3 bg-gradient-to-r from-primary to-primary-container text-white font-bold rounded-2xl flex items-center justify-center gap-2 hover:scale-[1.02] transition-all">
+        Go to Dashboard
+      </a>
+    </div>
+
+    <form id="signup-form" class="space-y-5">
+      <!-- Full Name -->
+      <div class="space-y-2">
+        <label class="block text-sm font-semibold text-on-surface-variant ml-1" for="name">Full name</label>
+        <input id="name" name="name" type="text" placeholder="Jane Smith" required
+               class="w-full h-12 px-4 rounded-2xl bg-surface-container-low border-0 focus:ring-2 focus:ring-primary/20 transition-all text-on-surface placeholder:text-outline/50"/>
+      </div>
+
+      <!-- Email -->
+      <div class="space-y-2">
+        <label class="block text-sm font-semibold text-on-surface-variant ml-1" for="email">Email address</label>
+        <input id="email" name="email" type="email" placeholder="jane@company.com" required
+               class="w-full h-12 px-4 rounded-2xl bg-surface-container-low border-0 focus:ring-2 focus:ring-primary/20 transition-all text-on-surface placeholder:text-outline/50"/>
+      </div>
+
+      <!-- Password -->
+      <div class="space-y-2">
+        <label class="block text-sm font-semibold text-on-surface-variant ml-1" for="password">Password</label>
+        <div class="relative">
+          <input id="password" name="password" type="password" placeholder="Min. 8 characters" required
+                 class="w-full h-12 px-4 rounded-2xl bg-surface-container-low border-0 focus:ring-2 focus:ring-primary/20 transition-all text-on-surface placeholder:text-outline/50"/>
+          <button type="button" id="toggle-pw"
+                  class="absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant hover:text-primary transition-colors">
+            <span class="material-symbols-outlined text-[20px]">visibility_off</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="space-y-2">
+        <label class="block text-sm font-semibold text-on-surface-variant ml-1" for="confirm-password">Confirm password</label>
+        <input id="confirm-password" name="confirm-password" type="password" placeholder="Re-enter password" required
+               class="w-full h-12 px-4 rounded-2xl bg-surface-container-low border-0 focus:ring-2 focus:ring-primary/20 transition-all text-on-surface placeholder:text-outline/50"/>
+      </div>
+
+      <!-- Submit -->
+      <div class="pt-2">
+        <button id="signup-btn" type="submit"
+                class="w-full h-12 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold rounded-2xl flex items-center justify-center gap-3 shadow-md shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all duration-300">
+          <svg id="signup-spinner" class="animate-spin h-5 w-5 text-white hidden" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+            <path class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"/>
+          </svg>
+          <span id="signup-btn-text">Create account</span>
+        </button>
+      </div>
+
+      <!-- Error Card -->
+      <div id="error-card" class="hidden bg-error-container/50 border border-error/10 rounded-2xl p-4 flex items-start gap-3">
+        <span class="material-symbols-outlined text-error">error_outline</span>
+        <div class="space-y-1">
+          <p class="text-sm font-bold text-on-error-container">Sign up failed</p>
+          <p id="error-msg" class="text-xs text-on-error-container/80">Please check your details and try again.</p>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Footer -->
+  <div class="text-center">
+    <p class="text-sm text-on-surface-variant">
+      Already have an account?
+      <a href="../login_page/login_page.html" class="font-bold text-primary hover:text-primary-container transition-colors">Sign in</a>
+    </p>
+  </div>
+</div>
+
+<!-- Decorative Elements -->
+<div class="fixed top-0 right-0 -z-10 w-1/3 h-1/2 bg-gradient-to-b from-primary/5 to-transparent blur-3xl opacity-50 pointer-events-none"></div>
+<div class="fixed bottom-0 left-0 -z-10 w-1/4 h-1/3 bg-gradient-to-t from-tertiary/5 to-transparent blur-3xl opacity-50 pointer-events-none"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // Already logged in — go to dashboard.
+  if (localStorage.getItem("verity_token")) {
+    window.location.href = "../dashboard/dashboard.html";
+    return;
+  }
+
+  const form        = document.getElementById("signup-form");
+  const nameInput   = document.getElementById("name");
+  const emailInput  = document.getElementById("email");
+  const passInput   = document.getElementById("password");
+  const confirmPass = document.getElementById("confirm-password");
+  const signupBtn   = document.getElementById("signup-btn");
+  const spinner     = document.getElementById("signup-spinner");
+  const btnText     = document.getElementById("signup-btn-text");
+  const errorCard   = document.getElementById("error-card");
+  const errorMsg    = document.getElementById("error-msg");
+  const successCard = document.getElementById("success-card");
+
+  // Password visibility toggle.
+  document.getElementById("toggle-pw").addEventListener("click", () => {
+    const isHidden = passInput.type === "password";
+    passInput.type = isHidden ? "text" : "password";
+    document.querySelector("#toggle-pw .material-symbols-outlined").textContent =
+      isHidden ? "visibility" : "visibility_off";
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const name     = nameInput.value.trim();
+    const email    = emailInput.value.trim();
+    const password = passInput.value;
+    const confirm  = confirmPass.value;
+
+    if (password !== confirm) {
+      errorMsg.textContent = "Passwords do not match.";
+      errorCard.classList.remove("hidden");
+      return;
+    }
+
+    spinner.classList.remove("hidden");
+    btnText.textContent = "Creating account…";
+    signupBtn.disabled  = true;
+    errorCard.classList.add("hidden");
+
+    try {
+      const res = await fetch("http://localhost:8000/api/v1/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || "Registration failed. Please try again.");
+      }
+
+      const data = await res.json();
+      localStorage.setItem("verity_token", data.access_token);
+      localStorage.setItem("verity_user", JSON.stringify({
+        name: data.name,
+        role: data.role,
+        user_id: data.user_id,
+      }));
+
+      form.classList.add("hidden");
+      successCard.classList.remove("hidden");
+
+    } catch (err) {
+      errorMsg.textContent = err.message;
+      errorCard.classList.remove("hidden");
+      spinner.classList.add("hidden");
+      btnText.textContent = "Create account";
+      signupBtn.disabled  = false;
+    }
+  });
+});
+</script>
+</body>
+</html>

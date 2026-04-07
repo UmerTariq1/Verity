@@ -5,6 +5,54 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [Phase 6 — Fixes] — UI Audit & Backend Extensions (Apr 7, 2026)
+
+### Added
+- `ui/signup_page/signup_page.html` — self-registration page with name, email, password, confirm-password fields; calls `POST /api/v1/auth/register`; auto-signs-in on success
+- `ui/dashboard/dashboard.html` — new role-based dashboard: admin view shows 4 metric tiles (total docs, queries today, avg relevance, index status) from `GET /api/v1/health`, a recent activity feed, and quick-access cards; user view shows personal query history via `GET /api/v1/query/history` and a CTA to start a new search
+- `backend/app/api/auth.py` — `POST /api/v1/auth/register` public endpoint; creates `role: user` account, raises 409 on duplicate email, returns JWT
+- `backend/app/schemas/auth.py` — `RegisterRequest` Pydantic schema (name, email, password with min-length validation)
+- `backend/app/api/query.py` — `GET /api/v1/query/history?page&size` endpoint returning the current user's own past query logs (newest first)
+- `backend/app/schemas/log.py` — `UserHistoryResponse` schema; `user_name` and `user_email` fields added to `LogSummary`
+
+### Changed
+- `ui/login_page/login_page.html` — added "Don't have an account? Sign up" link; login now redirects to dashboard (was chat_interface); removed non-functional "Forgot password?" button
+- `ui/js/auth.js` — `wireNav` links map updated (dashboard → `dashboard.html`, search → `chat_interface.html`, health/users added); added `showProfileModal()` that fetches `/auth/me` and displays a slide-in profile card; added `applyScoreSigmoid(x)` helper for cross-encoder score normalisation
+- `ui/chat_interface/chat_interface.html` — renamed to "Search" page; date-filter pill removed; conversation history sidebar loads from `GET /api/v1/query/history` (no dummy data); source chip relevance percentages now use `applyScoreSigmoid` (was raw logit × 100, showing "500%+"); export answer uses closure-captured text variable (not `data-text` attribute); "New Search" button clears conversation; profile modal wired on user name click
+- `ui/user_management/user_management.html` — fixed user list reading `data.items` (was `data.users`); status check corrected to `u.status === "suspended"` (was `u.is_active === false`); PATCH body sends `{ status: "suspended"|"active" }` (was `{ is_active: bool }`); dummy "Total Queries" stat removed; Delete button added to slide-in panel calling `DELETE /api/v1/users/{id}` with confirm step
+- `ui/query_logs/query_logs.html` — all dummy `<tbody>` HTML removed; user display uses `log.user_name` and `log.user_email` from updated `LogSummary`; user search passes `user_search` param (was `user_id` UUID); avg relevance uses `applyScoreSigmoid`; chunk snippet expanded rows show `text_snippet`, `file_name`, `page_number` (removed non-existent "Score:" badge); System Health nav link added
+- `ui/system_health/System_health.html` — avg retrieval score display now uses `applyScoreSigmoid` → percentage (was raw `.toFixed(3)`); dummy trend badges removed; all sidebar links use `data-nav` attributes managed by `wireNav`; profile modal wired
+- `ui/document_ingestion/document_ingestion.html` — upload flow changed to stage-then-ingest: files are queued first, upload only starts when "Start Ingestion" is clicked; drag-and-drop support added; dummy hardcoded "Admin User" sidebar info replaced with `data-user-name` / `data-user-role` elements
+- `backend/app/api/logs.py` — rewrote `list_logs` and `export_logs` to JOIN `User` table; filter changed from `user_id` UUID param to `user_search` ILIKE substring match on `User.name` and `User.email`; `get_log` detail endpoint also JOINs `User`
+- All pages now share a consistent sidebar with all 6 nav items (Dashboard, Search, Library, Analytics, System Health, Users) using `data-nav` attributes; admin-only items hidden for non-admin users via `data-admin-nav`
+
+### Fixed
+- Relevance percentages in source chips and analytics stats were showing values over 100% because raw cross-encoder logits (range ≈ −10 to +10) were multiplied by 100 directly; fixed by applying sigmoid normalisation first
+- User management console was not loading users due to `data.users` vs `data.items` mismatch
+- Suspend/reinstate was failing silently because the PATCH body sent `is_active` (boolean) instead of `status` (string enum)
+- Query log user search was broken — was passing a UUID filter param when the UI provides text input
+- Export answer button was broken for long or special-character responses (HTML `data-text` attribute truncation); fixed with closure-captured variable approach
+- Dashboard and Search were both pointing to `chat_interface.html`; Dashboard now points to the new role-based `dashboard.html`
+
+---
+
+## [Phase 6] — Frontend Wiring (Apr 7, 2026)
+
+### Added
+- `ui/js/api.js` — centralised `fetch` wrapper (`apiFetch`): sets `Authorization: Bearer` header from `localStorage`, handles 401 auto-redirect to login, returns `null` on 204, returns `Blob` for CSV/octet-stream responses, throws descriptive `Error` for all non-ok statuses; includes `downloadBlob` helper
+- `ui/js/auth.js` — client-side auth utilities: `getUser`, `isAuthenticated`, `guardAuth`, `guardAdmin`, `logout`, `wireNav` (wires `data-nav`/`data-admin-nav`/`data-logout`/`data-user-name` attributes, highlights active page)
+- `ui/js/toast.js` — reusable toast system: `showToast(message, type, detail, duration)` renders success/error/warning toasts with auto-dismiss and slide-in/out animation; `dismissToast` and `escapeToastHtml` helpers
+
+### Changed
+- `ui/login_page/login_page.html` — form wired with `DOMContentLoaded` guard: calls `POST /api/v1/auth/login`, stores `verity_token`, `verity_user` (`{name, role, user_id}`) in `localStorage`, redirects to `chat_interface.html`; shows inline error card on failure; toggles password visibility
+- `ui/chat_interface/chat_interface.html` — full API wiring: `guardAuth` + `wireNav`; verifies session via `GET /api/v1/auth/me`; sends queries via `POST /api/v1/query` with optional date filters; renders AI responses using `.knowledge-leaf` markup; shows amber banner on `low_confidence: true`; submits feedback via `POST /api/v1/query/{log_id}/feedback`; exports answer as `.txt`; clear-conversation modal; textarea auto-resize and Enter-to-send
+- `ui/document_ingestion/document_ingestion.html` — admin-only wiring: `guardAdmin` + `wireNav`; drag-&-drop and browse file upload via `POST /api/v1/documents/upload` (FormData); 2-second status polling via `GET /api/v1/documents/{doc_id}`; document table with search/pagination from `GET /api/v1/documents`; single delete (`DELETE /api/v1/documents/{id}`) and re-index (`POST /api/v1/documents/{id}/reindex`); bulk-delete and bulk-reindex; delete confirmation modal
+- `ui/query_logs/query_logs.html` — admin-only wiring: `guardAdmin` + `wireNav`; health stats from `GET /api/v1/health`; paginated/filtered log table from `GET /api/v1/logs`; row expansion fetches chunk snippets from `GET /api/v1/logs/{id}`; CSV export via `GET /api/v1/logs/export`
+- `ui/system_health/System_health.html` — admin-only wiring: `guardAdmin` + `wireNav`; metrics from `GET /api/v1/health`; activity feed from `GET /api/v1/health/activity`; full re-index via `POST /api/v1/health/reindex` behind confirmation modal
+- `ui/user_management/user_management.html` — admin-only wiring: `guardAdmin` + `wireNav`; user list from `GET /api/v1/users` with live name/role search filter; slide-in detail panel with role-toggle (`PATCH /api/v1/users/{id}`) and suspend/reinstate; create user modal (`POST /api/v1/users`) with name, email, password, role fields; sidebar nav updated with all correct links and `data-*` attributes; mock rows removed
+
+---
+
 ## [Unreleased]
 
 ### Fixed
