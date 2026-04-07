@@ -1,2 +1,2 @@
-/api/*  https://YOUR-RENDER-SERVICE.onrender.com/api/:splat  200
-
+/  /login_page/login_page.html  200
+/api/*  https://verity-backend-twiz.onrender.com/api/:splat  200
