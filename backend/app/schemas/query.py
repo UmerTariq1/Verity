@@ -19,11 +19,13 @@ class SourceChunk(BaseModel):
     page: int
     score: float
     text_snippet: str
+    method: str = "semantic_match"  # "keyword_match" | "semantic_match" | "top_ranked"
 
 
 class QueryResponse(BaseModel):
     answer: str
-    sources: list[SourceChunk]
+    sources: list[SourceChunk]             # top-K chunks fed to the LLM
+    rejected_sources: list[SourceChunk]    # next 2–3 chunks not in LLM context
     log_id: uuid.UUID
     low_confidence: bool
 

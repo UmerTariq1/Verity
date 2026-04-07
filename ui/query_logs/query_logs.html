@@ -183,6 +183,18 @@
         </div>
       </div>
 
+      <!-- Low Confidence Queries Panel -->
+      <div class="bg-surface-container-lowest rounded-xl p-5 shadow-[0px_10px_30px_rgba(25,28,30,0.05)]">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="material-symbols-outlined text-amber-500">warning_amber</span>
+          <h4 class="text-sm font-bold text-on-surface">Low Confidence Queries</h4>
+          <span class="text-xs text-on-surface-variant ml-1">— avg retrieved confidence below 60%</span>
+        </div>
+        <div id="low-conf-list" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+          <div class="text-xs text-on-surface-variant animate-pulse px-1">Loading…</div>
+        </div>
+      </div>
+
       <!-- Main Log Section -->
       <div class="bg-surface-container-lowest rounded-xl p-4 md:p-6 shadow-[0px_20px_40px_rgba(25,28,30,0.06)]">
         <!-- Filters & Export -->
@@ -408,24 +420,73 @@ document.addEventListener("DOMContentLoaded", async () => {
         try {
           const detail = await apiFetch(`/logs/${log.id}`);
           if (!detail) return;
-          const chunks = detail.chunk_snippets || [];
-          expandRow.querySelector(".expand-content").innerHTML = `
-            <div class="space-y-4">
-              <div>
-                <p class="text-[10px] font-extrabold uppercase text-on-surface-variant mb-2 tracking-widest">Full Query</p>
-                <div class="leaf-card bg-white p-4 text-sm text-on-surface shadow-sm border-l-4 border-primary rounded-xl">"${escH(detail.query_text)}"</div>
+          const receipt = detail.retrieval_receipt || [];
+          const selected = receipt.filter(c => c.selected);
+          const rejected = receipt.filter(c => !c.selected);
+
+          const confidenceBadge = (pct) => {
+            if (pct >= 75) return `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-50 text-green-700">${pct}%</span>`;
+            if (pct >= 50) return `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700">${pct}%</span>`;
+            return `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-600">${pct}%</span>`;
+          };
+
+          const confidenceBar = (pct) => {
+            const color = pct >= 75 ? "bg-green-500" : pct >= 50 ? "bg-amber-400" : "bg-rose-400";
+            return `<div class="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="${color} h-full rounded-full" style="width:${Math.min(pct,100)}%"></div></div>`;
+          };
+
+          const methodBadge = (method) => {
+            const map = {
+              top_ranked:     ["text-tertiary bg-tertiary/10", "workspace_premium", "Top ranked"],
+              keyword_match:  ["text-secondary bg-secondary/10", "search", "Keyword match"],
+              semantic_match: ["text-primary bg-primary/10",   "neurology",  "Semantic match"],
+            };
+            const [cls, icon, label] = map[method] || map.semantic_match;
+            return `<span class="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full ${cls}">
+              <span class="material-symbols-outlined text-[12px]">${icon}</span>${label}</span>`;
+          };
+
+          const renderChunks = (items) => items.map(c => `
+            <div class="p-3 bg-white rounded-lg border border-surface-container flex flex-col gap-2">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-[10px] font-bold text-slate-500">${escH(c.file_name || "—")} · p.${c.page_number ?? "?"}</span>
+                ${methodBadge(c.method)}
+                ${confidenceBadge(c.confidence_pct)}
               </div>
-              ${chunks.length ? `
-              <div>
-                <p class="text-[10px] font-extrabold uppercase text-on-surface-variant mb-2 tracking-widest">Retrieved Chunks (${chunks.length})</p>
-                <div class="space-y-2 max-h-[300px] overflow-y-auto pr-2">
-                  ${chunks.map(c => `
-                    <div class="flex flex-col gap-1 p-3 bg-white rounded-lg shadow-sm">
-                      <span class="text-[10px] font-bold text-slate-400">${escH(c.file_name || "—")} • p.${c.page_number ?? "?"}</span>
-                      <p class="text-xs text-slate-600 italic">"${escH((c.text_snippet || "").slice(0, 200))}…"</p>
-                    </div>`).join("")}
+              <div class="flex items-center gap-2">
+                ${confidenceBar(c.confidence_pct)}
+              </div>
+              <p class="text-[11px] text-slate-600 italic leading-relaxed">"${escH((c.preview || "").slice(0,120))}…"</p>
+            </div>`).join("");
+
+          const traceBtn = detail.langsmith_trace_url
+            ? `<a href="${escAttr(detail.langsmith_trace_url)}" target="_blank" rel="noopener"
+                 class="inline-flex items-center gap-1.5 text-[11px] font-bold text-tertiary hover:underline">
+                 <span class="material-symbols-outlined text-sm">open_in_new</span>View LangSmith trace
+               </a>` : "";
+
+          expandRow.querySelector(".expand-content").innerHTML = `
+            <div class="space-y-5">
+              <div class="flex items-start justify-between gap-4 flex-wrap">
+                <div class="flex-1">
+                  <p class="text-[10px] font-extrabold uppercase text-on-surface-variant mb-2 tracking-widest">Full Query</p>
+                  <div class="leaf-card bg-white p-4 text-sm text-on-surface shadow-sm border-l-4 border-primary rounded-xl">"${escH(detail.query_text)}"</div>
                 </div>
-              </div>` : `<p class="text-xs text-slate-400">No chunk data available.</p>`}
+                <div class="flex flex-col items-end gap-2 shrink-0 pt-6">${traceBtn}</div>
+              </div>
+              ${selected.length ? `
+              <div>
+                <p class="text-[10px] font-extrabold uppercase text-on-surface-variant mb-2 tracking-widest">Retrieval Receipt — ${selected.length} chunk${selected.length !== 1 ? "s" : ""} fed to LLM</p>
+                <div class="space-y-2 max-h-72 overflow-y-auto pr-1">${renderChunks(selected)}</div>
+              </div>` : `<p class="text-xs text-slate-400">No retrieval trace available for this log.</p>`}
+              ${rejected.length ? `
+              <details class="group">
+                <summary class="flex items-center gap-2 cursor-pointer text-[10px] font-extrabold uppercase text-on-surface-variant tracking-widest select-none">
+                  <span class="material-symbols-outlined text-sm transition-transform group-open:rotate-90">chevron_right</span>
+                  What didn't make the cut (${rejected.length})
+                </summary>
+                <div class="mt-2 space-y-2 pl-4">${renderChunks(rejected)}</div>
+              </details>` : ""}
             </div>`;
         } catch (err) {
           expandRow.querySelector(".expand-content").textContent = "Failed to load: " + err.message;
@@ -467,6 +528,42 @@ document.addEventListener("DOMContentLoaded", async () => {
     d.textContent = String(t ?? "");
     return d.innerHTML;
   }
+  function escAttr(t) {
+    return String(t ?? "").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  // Load low-confidence panel
+  async function loadLowConf() {
+    const el = document.getElementById("low-conf-list");
+    try {
+      const items = await apiFetch("/logs/low-confidence?limit=15");
+      if (!items || !items.length) {
+        el.innerHTML = `<p class="text-xs text-on-surface-variant px-1">No low-confidence queries found — the knowledge base is answering well.</p>`;
+        return;
+      }
+      el.innerHTML = items.map(q => `
+        <div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-amber-50/50 border border-amber-100 hover:bg-amber-50 transition-colors">
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-semibold text-on-surface truncate">${escH(q.query_text)}</p>
+            <div class="flex items-center gap-2 mt-0.5">
+              <span class="text-[10px] text-on-surface-variant">${new Date(q.created_at).toLocaleString()}</span>
+              ${q.user_name ? `<span class="text-[10px] text-slate-400">· ${escH(q.user_name)}</span>` : ""}
+            </div>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-600">${q.avg_confidence_pct}%</span>
+            ${q.langsmith_trace_url
+              ? `<a href="${escAttr(q.langsmith_trace_url)}" target="_blank" rel="noopener" title="LangSmith trace"
+                   class="text-tertiary hover:text-tertiary/70 transition-colors">
+                   <span class="material-symbols-outlined text-sm">open_in_new</span></a>` : ""}
+          </div>
+        </div>`).join("");
+    } catch {
+      el.innerHTML = `<p class="text-xs text-on-surface-variant px-1">Could not load.</p>`;
+    }
+  }
+
+  loadLowConf();
 });
 </script>
 </body>

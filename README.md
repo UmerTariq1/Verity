@@ -8,12 +8,14 @@ Built as a portfolio project demonstrating real-world hybrid retrieval engineeri
 
 ## Overview
 
-<!-- TODO (Phase 7): Fill in — what Verity is, the domain choice, the tech stack summary -->
+Verity is a production-grade Retrieval-Augmented Generation (RAG) system built for querying internal HR policy documents at Nexora GmbH using natural language. It is designed as a portfolio project to demonstrate end-to-end retrieval engineering — not just "put documents in a vector store and call GPT", but a full hybrid pipeline with measurable precision improvements at each stage.
 
 Verity combines:
 - **Unstructured retrieval** over PDF policy documents (via vector embeddings + BM25)
 - **Structured querying** of document metadata (via PostgreSQL + SQLAlchemy)
 - **Hybrid re-ranking** using Reciprocal Rank Fusion and a cross-encoder model
+- **Retrieval explainability** — every answer surface shows which chunks were retrieved, by which method, at what confidence, and which candidates were ranked out
+- **Admin observability** — per-query retrieval receipts, low-confidence query detection, per-document performance tracking, and optional LangSmith trace links
 
 ---
 
@@ -72,23 +74,25 @@ docker compose exec backend python seed.py
 
 ## Retrieval Design Decisions
 
-<!-- TODO (Phase 7): This is the primary portfolio signal. Fill in with measured results. -->
-
 ### Why Hybrid Retrieval Over Pure Vector Search
 
+Pure dense retrieval fails on exact-match queries — policy names, section numbers, specific dates. BM25 handles those well but struggles with paraphrased or conceptual questions. Running both in parallel and merging with RRF captures the best of both: high recall from dense search, high precision on lexical queries from BM25.
+
 ### Chunking Strategy Tradeoffs
+
+Verity uses `RecursiveCharacterTextSplitter` (512 tokens, 64-token overlap) by default. Fixed-size chunking was tried and dropped because HR policy documents have variable sentence lengths — a fixed split often cuts mid-sentence, degrading both retrieval relevance and the readability of source previews shown to users.
 
 ### What the Cross-Encoder Re-Ranker Adds
 
 After BM25 and dense retrieval are fused with **Reciprocal Rank Fusion (RRF)**, a **cross-encoder** (`cross-encoder/ms-marco-MiniLM-L-6-v2`, loaded via `sentence-transformers`) scores each **(query, chunk text)** pair jointly. That improves **precision** versus bi-encoder similarity alone. The model is downloaded once on first use (~100 MB) and cached locally; expect extra CPU latency (on the order of hundreds of milliseconds) when re-ranking the candidate pool.
+
+Every chunk's source (BM25-dominant, dense-dominant, or re-ranker-promoted) is tracked and surfaced in both the user UI (method badge per source) and the admin retrieval receipt.
 
 ### What Was Tried and Dropped
 
 ---
 
 ## Architecture
-
-<!-- TODO (Phase 7): Insert Mermaid diagram of the full retrieval pipeline -->
 
 ```
 User Query → Query Router → Hybrid Retrieval → GPT-4o → Answer
@@ -99,53 +103,72 @@ User Query → Query Router → Hybrid Retrieval → GPT-4o → Answer
                     └──────── RRF Fusion ──────┘
                                     │
                            Cross-Encoder Re-Rank
+                                    │
+                  ┌─────────────────┴──────────────────┐
+                  ▼                                     ▼
+          Top-K → LLM context              Full ranked list → trace
+          (selected=true)                  (method + scores per chunk)
+                                                        │
+                                          ┌─────────────┴──────────────┐
+                                          ▼                            ▼
+                                   Retrieval receipt           Rejected chunks
+                                   (admin analytics)        ("didn't make the cut")
 ```
 
 ---
 
 ## API Reference
 
-<!-- TODO (Phase 7): Table of all endpoints -->
-
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | POST | `/api/v1/auth/login` | None | Get JWT token |
-| GET | `/api/v1/auth/me` | User | Current user info |
-| POST | `/api/v1/query` | User | Submit a query |
-| GET | `/api/v1/documents` | User | List documents |
-| POST | `/api/v1/documents/upload` | Admin | Upload PDF |
-| DELETE | `/api/v1/documents/{id}` | Admin | Delete document |
-| GET | `/api/v1/users` | Admin | List users |
-| GET | `/api/v1/logs` | Admin | Query logs |
+| GET | `/api/v1/auth/me` | User | Current user profile |
+| POST | `/api/v1/auth/register` | None | Self-register (creates `user` role) |
+| POST | `/api/v1/query` | User | Submit a query; returns answer, sources, rejected sources, low-confidence flag |
+| GET | `/api/v1/query/history` | User | Paginated personal query history |
+| POST | `/api/v1/query/{id}/feedback` | User | Submit thumbs up/down on a response |
+| GET | `/api/v1/documents` | User | Paginated document list with search/category filter |
+| GET | `/api/v1/documents/{id}` | User | Document status (for upload polling) |
+| POST | `/api/v1/documents/upload` | Admin | Upload and ingest PDF |
+| DELETE | `/api/v1/documents/{id}` | Admin | Delete document and its vectors |
+| POST | `/api/v1/documents/{id}/reindex` | Admin | Re-embed document from source file |
+| GET | `/api/v1/users` | Admin | Paginated user list |
+| POST | `/api/v1/users` | Admin | Create user |
+| PATCH | `/api/v1/users/{id}` | Admin | Update role or status |
+| DELETE | `/api/v1/users/{id}` | Admin | Delete user |
+| GET | `/api/v1/logs` | Admin | Filtered, paginated query logs |
+| GET | `/api/v1/logs/export` | Admin | Download logs as CSV |
+| GET | `/api/v1/logs/{id}` | Admin | Log detail with structured retrieval receipt |
+| GET | `/api/v1/logs/low-confidence` | Admin | Recent queries with avg chunk confidence < threshold |
 | GET | `/api/v1/health` | Admin | System metrics |
+| GET | `/api/v1/health/activity` | Admin | Recent ingestion and query activity feed |
+| POST | `/api/v1/health/reindex` | Admin | Full re-embed of all indexed documents |
+| GET | `/api/v1/health/document-performance` | Admin | Per-document query count and avg confidence |
 
 ---
 
 ## Data Model
 
-<!-- TODO (Phase 7): Column descriptions for all three tables -->
-
 | Table | Key Columns |
 |-------|-------------|
-| `users` | id, name, email, password_hash, role, status, last_active_at |
-| `policy_documents` | id, file_name, category, owner_department, effective_date, chunk_count, status, created_at |
-| `query_logs` | id, user_id, query_text, retrieved_chunk_ids, relevance_scores, feedback, response_latency_ms, created_at |
+| `users` | id, name, email, password_hash, role (`admin`/`user`), status (`active`/`suspended`), last_active_at |
+| `policy_documents` | id, file_name, category, owner_department, effective_date, chunk_count, status (`queued`/`processing`/`indexed`/`failed`), created_at, uploaded_by_user_id |
+| `query_logs` | id, user_id, query_text, filter_start_date, filter_end_date, filter_category, retrieved_chunk_ids, relevance_scores, **retrieval_trace**, **langsmith_run_id**, **langsmith_trace_url**, feedback, response_latency_ms, created_at |
+
+`retrieval_trace` is a JSON array of `TraceEntry` objects — one per candidate chunk — storing BM25 score, dense score, RRF score, cross-encoder score, method label (`keyword_match` / `semantic_match` / `top_ranked`), and a `selected` flag indicating whether the chunk was included in the LLM context.
 
 ---
 
 ## Security Notes
 
-<!-- TODO (Phase 7): localStorage JWT tradeoff, role enforcement model -->
-
-- JWT stored in `localStorage` — documented tradeoff (XSS risk vs. simplicity for demo)
+- JWT stored in `localStorage` — documented tradeoff (XSS risk vs. simplicity for a demo; HttpOnly cookies would be the production choice)
 - Role enforcement is **server-side only** — frontend role checks are UX convenience, never trusted
 - All admin routes require `role == "admin"` verified from JWT claim in `core/dependencies.py`
+- Self-deletion is blocked server-side; an admin cannot delete their own account
 
 ---
 
 ## Deployment
-
-<!-- TODO (Phase 7): Render + Pinecone production setup notes -->
 
 | Component | Platform |
 |-----------|----------|

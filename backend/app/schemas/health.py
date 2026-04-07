@@ -27,3 +27,10 @@ class ActivityResponse(BaseModel):
 class ReindexResponse(BaseModel):
     message: str
     documents_queued: int
+
+
+class DocumentPerformance(BaseModel):
+    doc_id: str
+    file_name: str
+    query_count: int
+    avg_confidence_pct: float

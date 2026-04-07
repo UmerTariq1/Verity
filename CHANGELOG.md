@@ -5,6 +5,27 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [Phase 7] — Retrieval Receipts, Explainability & Observability (Apr 7, 2026)
+
+### Added
+- `backend/migrations/versions/0002_query_log_trace_columns.py` — new migration adding `retrieval_trace` (JSON), `langsmith_run_id` (string), and `langsmith_trace_url` (string) to `query_logs`; fully reversible
+- `backend/app/models/query_log.py` — three new mapped columns: `retrieval_trace`, `langsmith_run_id`, `langsmith_trace_url`
+- `backend/app/retrieval/hybrid_retriever.py` — new `TraceEntry` dataclass; `retrieve()` now re-ranks the **full candidate pool** (not just top-K) and builds a complete per-chunk trace with method attribution (`keyword_match` / `semantic_match` / `top_ranked`) and scores from every pipeline stage (BM25, dense, RRF, cross-encoder)
+- `backend/app/api/query.py` — `POST /api/v1/query` now persists aligned `retrieval_trace` JSON; low-confidence logic updated from a single-chunk score threshold to **average sigmoid-normalised confidence < 60%** across selected chunks; response now includes `rejected_sources` (next 3 ranked chunks not sent to the LLM); LangSmith run ID and trace URL captured and persisted after each retrieval call
+- `backend/app/schemas/query.py` — `SourceChunk` extended with `method` field; `QueryResponse` extended with `rejected_sources` list
+- `backend/app/schemas/log.py` — new `LogReceiptEntry` schema (confidence %, method, selected flag); `LogSummary` exposes `langsmith_trace_url`; `LogDetail` gains `retrieval_receipt` array; new `LowConfidenceLog` schema
+- `backend/app/schemas/health.py` — new `DocumentPerformance` schema
+- `backend/app/api/logs.py` — `GET /api/v1/logs/{id}` builds a structured `retrieval_receipt` from stored trace (falls back to live Chroma fetch for legacy logs); `GET /api/v1/logs/export` CSV includes `langsmith_trace_url` column; new `GET /api/v1/logs/low-confidence?threshold&limit` endpoint returning recent queries whose avg selected-chunk confidence is below threshold
+- `backend/app/api/health.py` — new `GET /api/v1/health/document-performance?limit` endpoint aggregating per-document query counts and average confidence from stored retrieval traces
+- `ui/query_logs/query_logs.html` — **Low Confidence Queries panel** above the log table; expanded row replaced with a full **retrieval receipt**: per-chunk cards showing document name, page, method badge, colour-coded confidence badge (green ≥75%, amber 50–75%, rose <50%), and a mini progress bar; collapsible **"What didn't make the cut"** section showing rejected chunks; LangSmith **"View trace"** link per query when tracing is active
+- `ui/system_health/System_health.html` — new **Document Performance** section: all indexed documents listed by lowest average confidence first, with query counts and colour-coded confidence bars
+- `ui/chat_interface/chat_interface.html` — sources now render as **retrieval cards** (document name, page, method badge, confidence %) instead of flat chips; collapsible **"What didn't make the cut"** panel shows the next 2–3 chunks not fed to the LLM; low-confidence amber notice text updated to *"I found some relevant sections but confidence is low — consider rephrasing or adjusting your date filter."*
+
+### Changed
+- `backend/app/api/query.py` — relevance score list is now aligned to `retrieved_chunk_ids` (was built from `dict.values()` with no ordering guarantee); `_LOW_CONFIDENCE_THRESHOLD` semantics changed from raw logit to sigmoid-normalised average
+
+---
+
 ## [Phase 6 — Fixes] — UI Audit & Backend Extensions (Apr 7, 2026)
 
 ### Added

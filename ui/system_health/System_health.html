@@ -240,6 +240,19 @@
       </div>
     </div>
 
+    <!-- Per-Document Performance -->
+    <div class="bg-surface-container-lowest rounded-xl overflow-hidden mb-8">
+      <div class="px-8 py-6 border-b border-surface-container flex items-center justify-between bg-surface-container/20">
+        <div>
+          <h4 class="text-lg font-bold tracking-tight">Document Performance</h4>
+          <p class="text-xs text-on-surface-variant mt-0.5">Average retrieval confidence per document — sorted by lowest first.</p>
+        </div>
+      </div>
+      <div id="doc-perf-list" class="divide-y divide-surface-container/50 min-h-[60px]">
+        <div class="px-8 py-6 text-sm text-on-surface-variant animate-pulse">Loading…</div>
+      </div>
+    </div>
+
     <!-- Activity Feed -->
     <div class="bg-surface-container-lowest rounded-xl overflow-hidden">
       <div class="px-8 py-6 border-b border-surface-container flex items-center justify-between bg-surface-container/20">
@@ -320,6 +333,40 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   } catch (err) {
     showToast("Failed to load metrics", "error", err.message);
+  }
+
+  // Load per-document performance.
+  const docPerfList = document.getElementById("doc-perf-list");
+  try {
+    const docs = await apiFetch("/health/document-performance?limit=50");
+    if (docs && docs.length) {
+      docPerfList.innerHTML = docs.map(d => {
+        const color = d.avg_confidence_pct >= 75 ? "bg-green-500" : d.avg_confidence_pct >= 50 ? "bg-amber-400" : "bg-rose-400";
+        const badge = d.avg_confidence_pct >= 75
+          ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-50 text-green-700">${d.avg_confidence_pct}%</span>`
+          : d.avg_confidence_pct >= 50
+          ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700">${d.avg_confidence_pct}%</span>`
+          : `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-600">${d.avg_confidence_pct}%</span>`;
+        return `
+          <div class="px-8 py-4 flex items-center gap-6 hover:bg-surface-container-low transition-colors">
+            <span class="material-symbols-outlined text-on-surface-variant text-[20px]">description</span>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold text-on-surface truncate">${escH(d.file_name)}</p>
+              <p class="text-xs text-on-surface-variant mt-0.5">${d.query_count} quer${d.query_count !== 1 ? "ies" : "y"}</p>
+            </div>
+            <div class="flex items-center gap-3 shrink-0">
+              <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                <div class="${color} h-full rounded-full" style="width:${Math.min(d.avg_confidence_pct, 100)}%"></div>
+              </div>
+              ${badge}
+            </div>
+          </div>`;
+      }).join("");
+    } else {
+      docPerfList.innerHTML = `<div class="px-8 py-6 text-sm text-on-surface-variant">No query data yet — make some queries first.</div>`;
+    }
+  } catch {
+    docPerfList.innerHTML = `<div class="px-8 py-6 text-sm text-on-surface-variant">Could not load document performance.</div>`;
   }
 
   // Load activity feed.

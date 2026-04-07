@@ -4,7 +4,7 @@ GET  /api/v1/query/history              — current user's own query history
 POST /api/v1/query                      — hybrid RAG query
 POST /api/v1/query/{log_id}/feedback    — thumbs up/down on a previous answer
 """
-import asyncio
+import math
 import logging
 import time
 import uuid
@@ -26,17 +26,21 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/query", tags=["query"])
 
-# Confidence threshold: if the top re-ranked chunk's score is below this, we
-# surface a low-confidence warning in the UI rather than showing a confident answer.
-_LOW_CONFIDENCE_THRESHOLD = 0.0   # cross-encoder logits: negative → low confidence
+# Confidence threshold: avg sigmoid-normalised rerank score across selected chunks.
+# Below this we surface a low-confidence notice to the user.
+_LOW_CONFIDENCE_THRESHOLD = 0.60
+
+# Number of "rejected" chunks to surface in the explainability panel.
+_REJECTED_SOURCES_COUNT = 3
+
+
+def _sigmoid(x: float) -> float:
+    """Sigmoid normalisation — maps cross-encoder logits to [0, 1]."""
+    return 1.0 / (1.0 + math.exp(-x))
 
 
 def _build_gpt_answer(query: str, sources: list[SourceChunk]) -> str:
-    """Call GPT-4o and return the answer string.
-
-    Wrapped in a dedicated function so it can be mocked in tests and replaced
-    with a streaming variant in a future iteration without touching the route.
-    """
+    """Call GPT-4o and return the answer string."""
     try:
         from openai import OpenAI
         from app.config import settings
@@ -72,6 +76,23 @@ def _build_gpt_answer(query: str, sources: list[SourceChunk]) -> str:
             "I was unable to generate an answer at this time. "
             "Please review the source excerpts below."
         )
+
+
+def _try_get_langsmith_run() -> tuple[str | None, str | None]:
+    """Return (run_id, trace_url) for the current LangSmith trace, or (None, None)."""
+    try:
+        from langsmith import get_current_run_tree  # type: ignore[import]
+        run = get_current_run_tree()
+        if run is None:
+            return None, None
+        run_id = str(run.id)
+        # Build the canonical LangSmith trace URL from the project and run id.
+        from app.config import settings
+        project = getattr(settings, "langchain_project", None) or "default"
+        trace_url = f"https://smith.langchain.com/o/projects/p/{project}/r/{run_id}"
+        return run_id, trace_url
+    except Exception:
+        return None, None
 
 
 @router.get("/history", response_model=UserHistoryResponse)
@@ -122,8 +143,6 @@ def query(
     # ── Route the query ───────────────────────────────────────────────────────
     route = route_query(body.query_text, known_categories=known_categories)
 
-    # Merge explicit request filters (body) with router-extracted filters so
-    # the caller can always override or augment the heuristic extraction.
     filters = dict(route.filters)
     if body.date_from:
         filters["date_from"] = body.date_from.isoformat()
@@ -132,9 +151,11 @@ def query(
     if body.category:
         filters["category"] = body.category
 
+    retrieval_trace_json: list | None = None
+    langsmith_run_id: str | None = None
+    langsmith_trace_url: str | None = None
+
     if route.route == "metadata":
-        # Metadata queries return a structured document list, not a RAG answer.
-        # Build a simple text answer from the DB result set.
         query_stmt = select(PolicyDocument).where(PolicyDocument.status == "indexed")
         if filters.get("category"):
             query_stmt = query_stmt.where(PolicyDocument.category == filters["category"])
@@ -157,6 +178,7 @@ def query(
             else "No indexed documents match your criteria."
         )
         sources: list[SourceChunk] = []
+        rejected_sources: list[SourceChunk] = []
         retrieved_chunk_ids: list[str] = []
         relevance_scores_list: list[float] = []
         low_confidence = False
@@ -164,25 +186,49 @@ def query(
         # ── Hybrid retrieval ──────────────────────────────────────────────────
         result = retrieve(body.query_text, top_k=5, filters=filters)
 
+        langsmith_run_id, langsmith_trace_url = _try_get_langsmith_run()
+
+        # Build selected sources from trace (preserves alignment)
+        selected_entries = [e for e in result.trace if e.selected]
+        rejected_entries = [e for e in result.trace if not e.selected]
+
         sources = [
             SourceChunk(
-                chunk_id=chunk.chunk_id,
-                file_name=chunk.file_name,
-                page=chunk.page_number,
-                score=round(result.reranker_scores.get(chunk.chunk_id, chunk.score), 4),
-                text_snippet=chunk.text[:400],
+                chunk_id=e.chunk_id,
+                file_name=e.file_name,
+                page=e.page_number,
+                score=round(e.rerank_score, 4),
+                text_snippet=e.preview,
+                method=e.method,
             )
-            for chunk in result.chunks
+            for e in selected_entries
         ]
 
-        retrieved_chunk_ids = [chunk.chunk_id for chunk in result.chunks]
-        relevance_scores_list = list(result.reranker_scores.values())
+        rejected_sources = [
+            SourceChunk(
+                chunk_id=e.chunk_id,
+                file_name=e.file_name,
+                page=e.page_number,
+                score=round(e.rerank_score, 4),
+                text_snippet=e.preview,
+                method=e.method,
+            )
+            for e in rejected_entries[:_REJECTED_SOURCES_COUNT]
+        ]
 
-        # Low confidence when: no chunks returned, or top chunk score below threshold
-        low_confidence = (
-            not result.chunks
-            or result.chunks[0].score < _LOW_CONFIDENCE_THRESHOLD
-        )
+        # Aligned lists (same order as selected_entries → sources)
+        retrieved_chunk_ids = [e.chunk_id for e in selected_entries]
+        relevance_scores_list = [round(e.rerank_score, 4) for e in selected_entries]
+
+        # Persist full trace as serialisable JSON
+        retrieval_trace_json = [e.to_dict() for e in result.trace]
+
+        # Low confidence: avg sigmoid-normalised rerank score across selected < threshold
+        if not selected_entries:
+            low_confidence = True
+        else:
+            avg_conf = sum(_sigmoid(e.rerank_score) for e in selected_entries) / len(selected_entries)
+            low_confidence = avg_conf < _LOW_CONFIDENCE_THRESHOLD
 
         if not result.chunks:
             answer = (
@@ -200,6 +246,9 @@ def query(
         query_text=body.query_text,
         retrieved_chunk_ids=retrieved_chunk_ids,
         relevance_scores=relevance_scores_list,
+        retrieval_trace=retrieval_trace_json,
+        langsmith_run_id=langsmith_run_id,
+        langsmith_trace_url=langsmith_trace_url,
         date_filter_from=body.date_from,
         date_filter_to=body.date_to,
         response_latency_ms=elapsed_ms,
@@ -211,6 +260,7 @@ def query(
     return QueryResponse(
         answer=answer,
         sources=sources,
+        rejected_sources=rejected_sources,
         log_id=log.id,
         low_confidence=low_confidence,
     )

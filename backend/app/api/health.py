@@ -1,14 +1,16 @@
 """System health routes (admin only).
 
-GET  /api/v1/health            — key metrics snapshot
-GET  /api/v1/health/activity   — most recent 20 ingestion/query events
-POST /api/v1/health/reindex    — trigger full re-ingestion of all indexed documents
+GET  /api/v1/health                        — key metrics snapshot
+GET  /api/v1/health/activity               — most recent 20 ingestion/query events
+GET  /api/v1/health/document-performance   — per-document retrieval stats
+POST /api/v1/health/reindex                — trigger full re-ingestion of all indexed documents
 """
 import asyncio
 import logging
+import math
 from datetime import date, datetime, timezone
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy import func, select, update
 from sqlalchemy.orm import Session
 
@@ -19,6 +21,7 @@ from app.retrieval import bm25_index as _bm25
 from app.schemas.health import (
     ActivityEvent,
     ActivityResponse,
+    DocumentPerformance,
     HealthResponse,
     ReindexResponse,
 )
@@ -125,6 +128,69 @@ def activity(
     events.sort(key=lambda e: e.created_at, reverse=True)
 
     return ActivityResponse(events=events[:20])
+
+
+def _sigmoid(x: float) -> float:
+    return 1.0 / (1.0 + math.exp(-x))
+
+
+@router.get("/document-performance", response_model=list[DocumentPerformance])
+def document_performance(
+    limit: int = Query(default=50, ge=1, le=200),
+    _: User = Depends(require_admin),
+    db: Session = Depends(get_db),
+) -> list[DocumentPerformance]:
+    """Return per-document retrieval stats derived from stored retrieval traces.
+
+    For each indexed document: number of queries that retrieved at least one
+    chunk from it, and the average confidence % across those selected chunks.
+    """
+    docs = db.execute(
+        select(PolicyDocument).where(PolicyDocument.status == "indexed")
+    ).scalars().all()
+
+    doc_map = {str(d.id): d.file_name for d in docs}
+
+    # Aggregate from retrieval_trace JSON in Python — avoids complex JSON SQL
+    logs = db.execute(
+        select(QueryLog.retrieval_trace)
+        .where(QueryLog.retrieval_trace.isnot(None))
+    ).scalars().all()
+
+    # doc_id → (query_count, [confidence values])
+    stats: dict[str, dict] = {}
+    for trace in logs:
+        if not trace:
+            continue
+        seen_docs: set[str] = set()
+        for entry in trace:
+            if not entry.get("selected"):
+                continue
+            doc_id = entry.get("doc_id", "")
+            if not doc_id or doc_id not in doc_map:
+                continue
+            rerank = entry.get("scores", {}).get("rerank", 0.0) or 0.0
+            conf = _sigmoid(rerank)
+            if doc_id not in stats:
+                stats[doc_id] = {"count": 0, "scores": []}
+            if doc_id not in seen_docs:
+                stats[doc_id]["count"] += 1
+                seen_docs.add(doc_id)
+            stats[doc_id]["scores"].append(conf)
+
+    result: list[DocumentPerformance] = []
+    for doc_id, agg in stats.items():
+        avg_conf = round(sum(agg["scores"]) / len(agg["scores"]) * 100, 1) if agg["scores"] else 0.0
+        result.append(DocumentPerformance(
+            doc_id=doc_id,
+            file_name=doc_map.get(doc_id, doc_id),
+            query_count=agg["count"],
+            avg_confidence_pct=avg_conf,
+        ))
+
+    # Sort by avg_confidence ascending (struggling docs first)
+    result.sort(key=lambda d: d.avg_confidence_pct)
+    return result[:limit]
 
 
 def _reindex_all_sync() -> int:

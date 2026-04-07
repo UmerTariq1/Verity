@@ -415,28 +415,56 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function appendAIMessage(data) {
-    const logId     = data.log_id;
-    const isLowConf = data.low_confidence;
-    // Capture answer text in closure — avoids HTML attribute limitations.
-    const answerText = data.answer || "No answer returned.";
-    const sources    = data.sources || [];
+    const logId          = data.log_id;
+    const isLowConf      = data.low_confidence;
+    const answerText     = data.answer || "No answer returned.";
+    const sources        = data.sources || [];
+    const rejectedSources = data.rejected_sources || [];
+
+    const methodBadge = (method) => {
+      const map = {
+        top_ranked:     ["text-[#6d3bd7] bg-[#6d3bd7]/10", "workspace_premium", "Top ranked"],
+        keyword_match:  ["text-[#4648d4] bg-[#4648d4]/10", "search",             "Keyword"],
+        semantic_match: ["text-[#006b5f] bg-[#006b5f]/10", "neurology",           "Semantic"],
+      };
+      const [cls, icon, label] = map[method] || map.semantic_match;
+      return `<span class="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded-full ${cls}">
+        <span class="material-symbols-outlined text-[11px]">${icon}</span>${label}</span>`;
+    };
+
+    const confBadge = (score) => {
+      const pct = Math.round(applyScoreSigmoid(score || 0) * 100);
+      const cls  = pct >= 75 ? "text-green-700 bg-green-50" : pct >= 50 ? "text-amber-700 bg-amber-50" : "text-rose-600 bg-rose-50";
+      return `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full ${cls}">${pct}%</span>`;
+    };
+
+    const renderSourceCard = (s) => `
+      <div class="p-3 bg-surface-container-low rounded-xl border border-outline-variant/10 flex flex-col gap-1.5">
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <span class="material-symbols-outlined text-primary text-sm">description</span>
+          <span class="text-[11px] font-semibold text-on-surface">${escHtml(s.file_name)}</span>
+          <span class="text-[10px] bg-primary-container/20 text-primary px-1.5 py-0.5 rounded">p.${s.page}</span>
+          ${methodBadge(s.method || "semantic_match")}
+          ${confBadge(s.score)}
+        </div>
+        <p class="text-[11px] text-on-surface-variant italic leading-relaxed">"${escHtml((s.text_snippet || "").slice(0, 120))}…"</p>
+      </div>`;
 
     const sourcesHtml = sources.length ? `
-      <div class="mt-6 pt-6 border-t border-surface-container">
-        <div class="flex items-center gap-2 mb-3">
+      <div class="mt-6 pt-6 border-t border-surface-container space-y-3">
+        <div class="flex items-center gap-2">
           <span class="material-symbols-outlined text-primary text-sm">book</span>
           <span class="text-xs font-bold uppercase tracking-tighter text-on-surface-variant">Sources (${sources.length})</span>
         </div>
-        <div class="flex flex-wrap gap-2">
-          ${sources.map(s => `
-            <div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-low hover:bg-surface-bright rounded-lg cursor-pointer transition-colors border border-outline-variant/10"
-                 title="${escAttr(s.text_snippet || "")}">
-              <span class="text-[11px] font-medium text-on-surface-variant">${escHtml(s.file_name)}</span>
-              <span class="text-[10px] bg-primary-container/20 text-primary px-1.5 rounded">p.${s.page}</span>
-              <span class="text-[9px] font-bold text-teal-600 bg-teal-50 px-1 rounded-full">${Math.round(applyScoreSigmoid(s.score || 0) * 100)}%</span>
-            </div>
-          `).join("")}
-        </div>
+        <div class="space-y-2">${sources.map(renderSourceCard).join("")}</div>
+        ${rejectedSources.length ? `
+        <details class="group mt-1">
+          <summary class="flex items-center gap-1.5 cursor-pointer text-[10px] font-bold uppercase tracking-wider text-on-surface-variant/70 select-none hover:text-on-surface-variant transition-colors">
+            <span class="material-symbols-outlined text-sm transition-transform group-open:rotate-90">chevron_right</span>
+            What didn't make the cut (${rejectedSources.length})
+          </summary>
+          <div class="mt-2 space-y-2 pl-3 border-l-2 border-surface-container">${rejectedSources.map(renderSourceCard).join("")}</div>
+        </details>` : ""}
       </div>` : "";
 
     const div = document.createElement("div");
@@ -444,9 +472,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     div.innerHTML = `
       <div class="max-w-[90%] bg-surface-container-lowest p-6 rounded-xl border-l-4 border-primary shadow-sm knowledge-leaf">
         ${isLowConf ? `
-          <div class="mb-4 flex items-center gap-2 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-lg text-amber-800">
-            <span class="material-symbols-outlined text-sm">warning</span>
-            <span class="text-[10px] font-bold uppercase tracking-wider">Low confidence result</span>
+          <div class="mb-4 flex items-start gap-2 px-3 py-2.5 bg-amber-50 border border-amber-200 rounded-lg text-amber-800">
+            <span class="material-symbols-outlined text-sm mt-0.5">warning_amber</span>
+            <span class="text-[11px] leading-snug">I found some relevant sections but confidence is low — consider rephrasing or adjusting your date filter.</span>
           </div>` : ""}
         <p class="text-sm text-on-surface leading-relaxed whitespace-pre-wrap">${escHtml(answerText)}</p>
         ${sourcesHtml}

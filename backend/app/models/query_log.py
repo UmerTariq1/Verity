@@ -1,7 +1,7 @@
 import uuid
 from datetime import date, datetime
 
-from sqlalchemy import Enum, Text, Integer, Date, DateTime, ForeignKey, func
+from sqlalchemy import Enum, Text, String, Integer, Date, DateTime, ForeignKey, func
 from sqlalchemy.dialects.postgresql import UUID, JSON
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -28,6 +28,15 @@ class QueryLog(Base):
     # AI response text (avoids DB bloat — see BRD §7 "Important Decision")
     retrieved_chunk_ids: Mapped[list | None] = mapped_column(JSON, nullable=True)
     relevance_scores: Mapped[list | None] = mapped_column(JSON, nullable=True)
+
+    # Full pipeline trace: ordered list of dicts (selected + rejected chunks)
+    # Each entry: chunk_id, doc_id, file_name, page_number, preview, scores{},
+    #             method, selected (bool)
+    retrieval_trace: Mapped[list | None] = mapped_column(JSON, nullable=True)
+
+    # LangSmith observability — null when tracing is disabled or not installed
+    langsmith_run_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    langsmith_trace_url: Mapped[str | None] = mapped_column(String(2048), nullable=True)
 
     date_filter_from: Mapped[date | None] = mapped_column(Date, nullable=True)
     date_filter_to: Mapped[date | None] = mapped_column(Date, nullable=True)
