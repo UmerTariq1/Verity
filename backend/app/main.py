@@ -7,7 +7,38 @@ Startup sequence (order matters):
 BM25 must be built after ingestion so it sees all chunks.
 """
 import logging
+import sys
 from contextlib import asynccontextmanager
+
+_LOG_FMT = "%(asctime)s | %(levelname)-8s | %(name)s | %(message)s"
+
+
+def _configure_logging() -> None:
+    """Ensure application logs reach stderr under uvicorn.
+
+    Uvicorn applies ``dictConfig`` before importing this module; it does not give
+    the root logger a handler. ``basicConfig`` is then often a no-op. Some
+    setups only show uvicorn's own loggers unless we attach handlers here.
+    """
+    formatter = logging.Formatter(_LOG_FMT)
+    root = logging.getLogger()
+    root.setLevel(logging.INFO)
+    if not root.handlers:
+        h = logging.StreamHandler(sys.stderr)
+        h.setFormatter(formatter)
+        h.setLevel(logging.INFO)
+        root.addHandler(h)
+    app_log = logging.getLogger("app")
+    app_log.setLevel(logging.INFO)
+    if not app_log.handlers:
+        h = logging.StreamHandler(sys.stderr)
+        h.setFormatter(formatter)
+        h.setLevel(logging.INFO)
+        app_log.addHandler(h)
+    app_log.propagate = False
+
+
+_configure_logging()
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -18,11 +49,6 @@ from app.ingestion.startup_ingestor import run_startup_ingestion
 from app.retrieval.bm25_index import build_bm25_index
 
 logger = logging.getLogger(__name__)
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
-)
 
 
 # ── Lifespan ──────────────────────────────────────────────────────────────────

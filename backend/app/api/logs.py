@@ -7,6 +7,7 @@ GET /api/v1/logs/{id}              , log detail with receipt + chunk snippets
 """
 import csv
 import io
+import logging
 import math
 import uuid
 from datetime import date
@@ -27,6 +28,8 @@ from app.schemas.log import (
     LogReceiptEntry,
     LogSummary,
 )
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/logs", tags=["logs"])
 
@@ -117,7 +120,7 @@ def list_logs(
     feedback: str = "",
     page: int = 1,
     size: int = 20,
-    _: User = Depends(require_admin),
+    current_admin: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> LogListResponse:
     """Return a paginated list of query logs with optional filters."""
@@ -144,6 +147,19 @@ def list_logs(
     ).all()
 
     items = [_row_to_summary(log, user) for log, user in rows]
+
+    logger.info(
+        "Logs: list admin_id=%s page=%s size=%s total=%s user_search=%r date_from=%s date_to=%s feedback=%r",
+        current_admin.id,
+        page,
+        size,
+        total,
+        user_search,
+        date_from,
+        date_to,
+        feedback,
+    )
+
     return LogListResponse(items=items, total=total, page=page, size=size)
 
 
@@ -153,7 +169,7 @@ def export_logs(
     date_from: date | None = None,
     date_to: date | None = None,
     feedback: str = "",
-    _: User = Depends(require_admin),
+    current_admin: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> StreamingResponse:
     """Stream all matching query logs as a CSV download."""
@@ -170,6 +186,16 @@ def export_logs(
         stmt = stmt.where(QueryLog.feedback == feedback)
 
     rows = db.execute(stmt.order_by(QueryLog.created_at.desc())).all()
+
+    logger.info(
+        "Logs: export CSV admin_id=%s rows=%s user_search=%r date_from=%s date_to=%s feedback=%r",
+        current_admin.id,
+        len(rows),
+        user_search,
+        date_from,
+        date_to,
+        feedback,
+    )
 
     def _generate():
         buffer = io.StringIO()
@@ -213,7 +239,7 @@ def export_logs(
 def low_confidence_logs(
     threshold: float = Query(default=_LOW_CONF_DEFAULT, ge=0.0, le=1.0),
     limit: int = Query(default=20, ge=1, le=100),
-    _: User = Depends(require_admin),
+    current_admin: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> list[LowConfidenceLog]:
     """Return recent logs where avg selected-chunk confidence < threshold.
@@ -248,13 +274,20 @@ def low_confidence_logs(
         if len(results) >= limit:
             break
 
+    logger.info(
+        "Logs: low-confidence list admin_id=%s threshold=%s returned=%s",
+        current_admin.id,
+        threshold,
+        len(results),
+    )
+
     return results
 
 
 @router.get("/{log_id}", response_model=LogDetail)
 def get_log(
     log_id: uuid.UUID,
-    _: User = Depends(require_admin),
+    current_admin: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> LogDetail:
     """Return full log detail including a structured retrieval receipt."""
@@ -287,4 +320,7 @@ def get_log(
 
     receipt = _build_receipt(log.retrieval_trace)
     summary = _row_to_summary(log, user)
+
+    logger.info("Logs: detail admin_id=%s log_id=%s", current_admin.id, log_id)
+
     return LogDetail(**summary.model_dump(), chunk_snippets=snippets, retrieval_receipt=receipt)

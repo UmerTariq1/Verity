@@ -189,6 +189,15 @@ def list_documents(
         .limit(size)
     ).scalars().all()
 
+    logger.info(
+        "Documents: list user_id=%s page=%s total=%s search=%r category=%r",
+        current_user.id,
+        page,
+        total,
+        search,
+        category,
+    )
+
     return DocumentListResponse(
         items=[DocumentResponse.model_validate(d) for d in items],
         total=total,
@@ -234,13 +243,15 @@ async def upload_document(
     file_bytes = await file.read()
     file_name = file.filename or f"upload_{uuid.uuid4()}.pdf"
     logger.info(
-        "Upload received: %s | bytes=%d | category=%s | owner_department=%s | effective_date=%s | user=%s",
+        "Documents: upload queued file=%s bytes=%d category=%s owner_department=%s effective_date=%s "
+        "user_id=%s email=%s",
         file_name,
         len(file_bytes or b""),
         category,
         owner_department,
         effective_date,
-        getattr(current_user, "id", "unknown"),
+        current_user.id,
+        current_user.email,
     )
 
     # Prevent duplicate filenames (case-insensitive) to avoid ambiguous policies.
@@ -294,13 +305,15 @@ def get_document(
     if doc is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Document not found")
 
+    logger.info("Documents: get doc_id=%s file=%s user_id=%s", doc_id, doc.file_name, current_user.id)
+
     return DocumentResponse.model_validate(doc)
 
 
 @router.delete("/{doc_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_document(
     doc_id: uuid.UUID,
-    _: User = Depends(require_admin),
+    current_user: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> None:
     """Delete a document from the DB and remove its chunks from the vector store."""
@@ -310,6 +323,14 @@ def delete_document(
 
     if doc is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Document not found")
+
+    logger.info(
+        "Documents: delete doc_id=%s file=%s user_id=%s email=%s",
+        doc_id,
+        doc.file_name,
+        current_user.id,
+        current_user.email,
+    )
 
     delete_chunks(doc_id)
 
@@ -323,7 +344,7 @@ def delete_document(
 @router.post("/{doc_id}/reindex", status_code=status.HTTP_202_ACCEPTED)
 async def reindex_document(
     doc_id: uuid.UUID,
-    _: User = Depends(require_admin),
+    current_user: User = Depends(require_admin),
     db: Session = Depends(get_db),
     chunking_strategy: str | None = Form(None),
     chunk_size: int | None = Form(None),
@@ -389,6 +410,15 @@ async def reindex_document(
             doc.effective_date,
             splitter_overrides,
         )
+    )
+
+    logger.info(
+        "Documents: reindex queued doc_id=%s file=%s user_id=%s email=%s overrides=%s",
+        doc_id,
+        doc.file_name,
+        current_user.id,
+        current_user.email,
+        {k: v for k, v in splitter_overrides.items() if v is not None},
     )
 
     return {"message": f"Re-index of '{doc.file_name}' queued.", "doc_id": str(doc_id)}

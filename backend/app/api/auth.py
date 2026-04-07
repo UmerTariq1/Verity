@@ -3,6 +3,7 @@
 POST /api/v1/auth/login  , exchange credentials for a JWT
 GET  /api/v1/auth/me     , return the currently authenticated user's profile
 """
+import logging
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -15,6 +16,8 @@ from app.database import get_db
 from app.models import User
 from app.schemas.auth import LoginRequest, MeResponse, RegisterRequest, TokenResponse
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
@@ -26,6 +29,7 @@ def login(body: LoginRequest, db: Session = Depends(get_db)) -> TokenResponse:
     ).scalar_one_or_none()
 
     if user is None or not verify_password(body.password, user.password_hash):
+        logger.warning("Auth: failed login attempt email=%s", body.email)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password",
@@ -47,6 +51,8 @@ def login(body: LoginRequest, db: Session = Depends(get_db)) -> TokenResponse:
         .values(last_active_at=datetime.now(timezone.utc))
     )
     db.commit()
+
+    logger.info("Auth: login user_id=%s email=%s role=%s", user.id, user.email, user.role)
 
     return TokenResponse(
         access_token=token,
@@ -82,6 +88,9 @@ def register(body: RegisterRequest, db: Session = Depends(get_db)) -> TokenRespo
     token = create_access_token(
         {"sub": user.email, "role": user.role, "uid": str(user.id)}
     )
+
+    logger.info("Auth: register user_id=%s email=%s", user.id, user.email)
+
     return TokenResponse(
         access_token=token,
         user_id=user.id,
@@ -93,4 +102,5 @@ def register(body: RegisterRequest, db: Session = Depends(get_db)) -> TokenRespo
 @router.get("/me", response_model=MeResponse)
 def me(current_user: User = Depends(get_current_user)) -> MeResponse:
     """Return the profile of the currently authenticated user."""
+    logger.debug("Auth: /me user_id=%s", current_user.id)
     return MeResponse.model_validate(current_user)

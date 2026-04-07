@@ -91,7 +91,7 @@ def health(
 
 @router.get("/activity", response_model=ActivityResponse)
 def activity(
-    _: User = Depends(require_admin),
+    current_admin: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> ActivityResponse:
     """Return the 20 most recent ingestion and query events for the activity feed."""
@@ -126,7 +126,14 @@ def activity(
 
     events.sort(key=lambda e: e.created_at, reverse=True)
 
-    return ActivityResponse(events=events[:20])
+    out = events[:20]
+    logger.info(
+        "Health: activity feed admin_id=%s events_returned=%s",
+        current_admin.id,
+        len(out),
+    )
+
+    return ActivityResponse(events=out)
 
 
 def _sigmoid(x: float) -> float:
@@ -136,7 +143,7 @@ def _sigmoid(x: float) -> float:
 @router.get("/document-performance", response_model=list[DocumentPerformance])
 def document_performance(
     limit: int = Query(default=50, ge=1, le=200),
-    _: User = Depends(require_admin),
+    current_admin: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> list[DocumentPerformance]:
     """Return per-document retrieval stats derived from stored retrieval traces.
@@ -189,7 +196,16 @@ def document_performance(
 
     # Sort by avg_confidence ascending (struggling docs first)
     result.sort(key=lambda d: d.avg_confidence_pct)
-    return result[:limit]
+    slice_ = result[:limit]
+
+    logger.info(
+        "Health: document-performance admin_id=%s limit=%s docs_returned=%s",
+        current_admin.id,
+        limit,
+        len(slice_),
+    )
+
+    return slice_
 
 
 def _reindex_all_sync() -> int:
@@ -280,7 +296,7 @@ def _reindex_all_sync() -> int:
 
 @router.post("/reindex", response_model=ReindexResponse, status_code=202)
 async def full_reindex(
-    _: User = Depends(require_admin),
+    current_admin: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> ReindexResponse:
     """Trigger full re-ingestion of all indexed documents.
@@ -295,6 +311,13 @@ async def full_reindex(
 
     loop = asyncio.get_event_loop()
     asyncio.create_task(loop.run_in_executor(None, _reindex_all_sync))
+
+    logger.info(
+        "Health: full reindex triggered admin_id=%s email=%s indexed_documents=%s",
+        current_admin.id,
+        current_admin.email,
+        count,
+    )
 
     return ReindexResponse(
         message="Full re-index started in background.",

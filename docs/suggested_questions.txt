@@ -1,0 +1,32 @@
+1. Remote and Hybrid Work Policy
+What is the maximum number of working days per calendar year that an eligible employee is permitted to work remotely from another EU or EEA country under the "Workation" provision?
+
+2. Performance Review Process
+For which specific roles and seniority levels is it mandatory for Line Managers to incorporate 360-degree feedback from a minimum of three cross-functional peers during the performance evaluation?
+
+3. Disciplinary and Grievance Procedure
+Under Section 102 of the Works Constitution Act (Betriebsverfassungsgesetz), how many days does the Works Council have to respond after being provided with the reasons for an intended ordinary dismissal?
+
+4. Parental Leave and Return to Work Policy
+How many fully paid working days per year of leave are permitted for an employee opting into the voluntary Keep In Touch (KIT) Programme?
+
+5. Data Handling and Device Usage Policy
+Within what specific timeframe must an employee notify the IT Helpdesk and the Data Protection Officer (DSB) after discovering a suspected or confirmed cybersecurity incident or data breach?
+
+6. Engineering On-Call and Incident Response Policy
+If an on-call engineer is actively paged and performs work during the night, how many hours of uninterrupted statutory rest are they legally required to take before commencing their standard working day?
+
+7. Expense Reimbursement Policy
+What is the standard nightly cap for hotel accommodation costs within Germany (excluding designated major metropolitan areas like Munich or Berlin) under the travel guidelines?
+
+8. Recruitment and Referral Policy
+What is the specific gross financial bonus awarded to an eligible employee for successfully referring a candidate to a "hard-to-fill" position (e.g., Senior Engineering or specialised DevOps)?
+
+9. Learning and Development Budget Policy
+If an employee undertakes a highly specialised training programme exceeding €2,500, for how many months following the course completion does the formal repayment agreement (Rückzahlungsklausel) remain in effect if they voluntarily leave the company?
+
+10. Probation Period Policy
+To ensure Works Council consultation periods are met before statutory employment protection begins, by the end of which specific month must a Line Manager submit the Final Probation Assessment recommending retention or termination?
+
+11. Post-Contractual Non-Compete Policy
+What exact percentage of an employee's most recent contractual remuneration must Nexora GmbH pay as continuous monthly compensation (Karenzentschädigung) to enforce the twelve-month restriction?

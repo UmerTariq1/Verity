@@ -33,14 +33,25 @@ _LOW_CONFIDENCE_THRESHOLD = 0.60
 # Number of "rejected" chunks to surface in the explainability panel.
 _REJECTED_SOURCES_COUNT = 5
 
+# Cap client-visible LLM error strings (avoid huge HTML bodies from providers).
+_LLM_ERROR_CLIENT_MAX_LEN = 2000
+
+
+def _client_visible_llm_error(exc: BaseException) -> str:
+    """Short, JSON-safe string for API clients; full detail remains in logs."""
+    msg = str(exc).strip() or exc.__class__.__name__
+    if len(msg) > _LLM_ERROR_CLIENT_MAX_LEN:
+        return msg[: _LLM_ERROR_CLIENT_MAX_LEN - 1] + "…"
+    return msg
+
 
 def _sigmoid(x: float) -> float:
     """Sigmoid normalisation , maps cross-encoder logits to [0, 1]."""
     return 1.0 / (1.0 + math.exp(-x))
 
 
-def _build_gpt_answer(query: str, sources: list[SourceChunk]) -> str:
-    """Call gpt-5-nano and return the answer string."""
+def _build_gpt_answer(query: str, sources: list[SourceChunk]) -> tuple[str, str | None]:
+    """Call the configured chat model. Returns (answer_text, llm_error_or_none)."""
     try:
         from openai import OpenAI
         from app.config import settings
@@ -60,24 +71,34 @@ def _build_gpt_answer(query: str, sources: list[SourceChunk]) -> str:
         user_message = f"Context:\n{context}\n\nQuestion: {query}"
 
         client = OpenAI(api_key=settings.openai_api_key)
+
+        logger.info("LLM openai call started")
         response = client.chat.completions.create(
-            model="gpt-5-nano-2025-08-07",
+            model="gpt-4.1-nano",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_message},
             ],
             temperature=0.2,
-            max_tokens=1024,
+            max_completion_tokens=1024,
         )
-        if not response.choices[0].message.content:
-            logger.error("gpt-5-nano-2025-08-07 response: %s", response.choices[0].message.content)
-
-        return response.choices[0].message.content or "No answer generated."
+        logger.info("LLM openai call completed")
+        content = response.choices[0].message.content
+        if not content:
+            logger.error("LLM returned empty message.content")
+            return (
+                "No answer generated.",
+                "The model returned an empty response.",
+            )
+        else:
+            logger.info("LLM response successful: %s", content)
+        return content, None
     except Exception as exc:
-        logger.error("gpt-5-nano-2025-08-07 call failed: %s", exc)
+        logger.exception("LLM chat completion failed")
         return (
             "I was unable to generate an answer at this time. "
-            "Please review the source excerpts below."
+            "Please review the source excerpts below.",
+            _client_visible_llm_error(exc),
         )
 
 
@@ -125,6 +146,14 @@ def query_history(
         summary.user_email = current_user.email
         items.append(summary)
 
+    logger.info(
+        "Query: history user_id=%s page=%s size=%s total=%s",
+        current_user.id,
+        page,
+        size,
+        total,
+    )
+
     return UserHistoryResponse(items=items, total=total, page=page, size=size)
 
 
@@ -157,6 +186,7 @@ def query(
     retrieval_trace_json: list | None = None
     langsmith_run_id: str | None = None
     langsmith_trace_url: str | None = None
+    llm_error: str | None = None
 
     if route.route == "metadata":
         query_stmt = select(PolicyDocument).where(PolicyDocument.status == "indexed")
@@ -243,7 +273,7 @@ def query(
                 "Please try rephrasing or check with your HR team."
             )
         else:
-            answer = _build_gpt_answer(body.query_text, sources)
+            answer, llm_error = _build_gpt_answer(body.query_text, sources)
 
     elapsed_ms = int((time.monotonic() - start_ms) * 1000)
 
@@ -264,12 +294,25 @@ def query(
     db.commit()
     db.refresh(log)
 
+    q_preview = (body.query_text[:120] + "…") if len(body.query_text) > 120 else body.query_text
+    logger.info(
+        "Query: answered user_id=%s log_id=%s latency_ms=%s route=%s source_count=%s low_confidence=%s q=%r",
+        current_user.id,
+        log.id,
+        elapsed_ms,
+        route.route,
+        len(sources),
+        low_confidence,
+        q_preview,
+    )
+
     return QueryResponse(
         answer=answer,
         sources=sources,
         rejected_sources=rejected_sources,
         log_id=log.id,
         low_confidence=low_confidence,
+        llm_error=llm_error,
     )
 
 
@@ -298,3 +341,10 @@ def feedback(
         update(QueryLog).where(QueryLog.id == log_id).values(feedback=body.feedback)
     )
     db.commit()
+
+    logger.info(
+        "Query: feedback user_id=%s log_id=%s feedback=%s",
+        current_user.id,
+        log_id,
+        body.feedback,
+    )

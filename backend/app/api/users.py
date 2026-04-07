@@ -5,6 +5,7 @@ POST   /api/v1/users          , create a new user
 PATCH  /api/v1/users/{id}     , update role or status
 DELETE /api/v1/users/{id}     , remove user account
 """
+import logging
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -22,6 +23,8 @@ from app.schemas.user import (
     UserResponse,
 )
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/users", tags=["users"])
 
 
@@ -32,7 +35,7 @@ def list_users(
     status_filter: str = "",
     page: int = 1,
     size: int = 20,
-    _: User = Depends(require_admin),
+    current_admin: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> UserListResponse:
     """Return a paginated user list. Supports search by name/email and role/status filters."""
@@ -57,6 +60,17 @@ def list_users(
         .limit(size)
     ).scalars().all()
 
+    logger.info(
+        "Users: list admin_id=%s page=%s size=%s total=%s search=%r role=%r status=%r",
+        current_admin.id,
+        page,
+        size,
+        total,
+        search,
+        role,
+        status_filter,
+    )
+
     return UserListResponse(
         items=[UserResponse.model_validate(u) for u in items],
         total=total,
@@ -68,7 +82,7 @@ def list_users(
 @router.post("", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 def create_user(
     body: UserCreateRequest,
-    _: User = Depends(require_admin),
+    current_admin: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> UserResponse:
     """Create a new user account. Raises 409 if the email is already taken."""
@@ -92,6 +106,14 @@ def create_user(
     db.commit()
     db.refresh(user)
 
+    logger.info(
+        "Users: created user_id=%s email=%s role=%s by_admin_id=%s",
+        user.id,
+        user.email,
+        user.role,
+        current_admin.id,
+    )
+
     return UserResponse.model_validate(user)
 
 
@@ -99,7 +121,7 @@ def create_user(
 def patch_user(
     user_id: uuid.UUID,
     body: UserPatchRequest,
-    _: User = Depends(require_admin),
+    current_admin: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> UserResponse:
     """Update a user's role and/or status. At least one field must be provided."""
@@ -124,6 +146,13 @@ def patch_user(
     db.commit()
     db.refresh(user)
 
+    logger.info(
+        "Users: patched user_id=%s by_admin_id=%s fields=%s",
+        user_id,
+        current_admin.id,
+        body.model_dump(exclude_unset=True),
+    )
+
     return UserResponse.model_validate(user)
 
 
@@ -146,6 +175,13 @@ def delete_user(
 
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    logger.info(
+        "Users: deleted user_id=%s email=%s by_admin_id=%s",
+        user_id,
+        user.email,
+        current_admin.id,
+    )
 
     db.delete(user)
     db.commit()
