@@ -61,6 +61,18 @@ def build_bm25_index() -> None:
     Should be called once from the FastAPI lifespan hook so the first query is
     never slow.  Returns immediately if Chroma is empty (logs a warning).
     """
+    if not settings.bm25_enabled:
+        logger.info("BM25 index build skipped (BM25 disabled).")
+        _state.ready = False
+        return
+
+    # BM25 is currently built from the local Chroma collection.
+    # In production (Pinecone), skip building BM25 to avoid loading large corpora into memory.
+    if settings.vector_store != "chroma":
+        logger.info("BM25 index build skipped (vector_store=%s).", settings.vector_store)
+        _state.ready = False
+        return
+
     import chromadb
 
     logger.info("Building BM25 index from Chroma collection '%s'…", _CHROMA_COLLECTION_NAME)

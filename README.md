@@ -195,7 +195,7 @@ Set these **Render environment variables** (minimum):
 
 - **`OPENAI_API_KEY`**: required for ingestion/reindex
 - **`DATABASE_URL`**: from your Render Postgres instance (Render will provide this)
-- **`JWT_SECRET`** (or whatever your `.env.example` calls it): a long random string
+- **`JWT_SECRET_KEY`**: a long random string
 - **`CORS_ORIGINS`**: your Netlify site URL, plus local dev if you want (comma-separated)
   - Example: `https://your-site.netlify.app,http://localhost:8080`
 
@@ -203,6 +203,7 @@ Recommended for hosted demos:
 
 - **`VECTOR_STORE=pinecone`** (vectors persist across restarts)
 - **Pinecone env vars** (as defined in `.env.example`) so retrieval works after sleep/redeploy
+- **`BM25_BUILD_ON_STARTUP=false`** (prevents Render free tier OOM; dense retrieval still works)
 
 After the backend is live:
 
@@ -215,18 +216,19 @@ You should now be able to visit `GET /api/v1/health` and see a JSON response.
 
 Netlify should publish the `ui/` folder as static files.
 
-##### Configure the UI to talk to your Render backend
+##### Make the UI work for everyone (no per-browser setup)
 
-The UI reads the backend base URL from the browser via `localStorage`.
+This repo is set up to proxy API requests through Netlify so the browser calls:
 
-On your deployed Netlify site, open the browser console and run:
+- `https://your-site.netlify.app/api/v1/...` (same origin)
 
-```js
-localStorage.setItem("verity_api_base", "https://YOUR-RENDER-SERVICE.onrender.com/api/v1");
-location.reload();
-```
+and Netlify forwards them to your Render backend.
 
-That’s it — you only need to do this once per browser/profile (unless you clear storage).
+To enable that, update the placeholder in `ui/_redirects`:
+
+- Replace `https://YOUR-RENDER-SERVICE.onrender.com` with your real Render backend URL
+
+Then redeploy Netlify.
 
 ---
 
@@ -249,6 +251,6 @@ During the interview/demo, you should not need reindexing — just query normall
 
 ### Troubleshooting (fast)
 
-- **UI loads but API calls fail**: re-check `localStorage.verity_api_base` and make sure it ends with `/api/v1`
-- **CORS error in browser console**: update Render `CORS_ORIGINS` to include your Netlify URL
+- **UI loads but API calls fail**: confirm `ui/_redirects` points to your Render backend and Netlify redeployed
+- **CORS error in browser console**: if you're using the Netlify proxy (`/api/*`), you typically won't hit CORS; if you call Render directly, add your Netlify URL to `CORS_ORIGINS`
 - **Reindex fails immediately**: confirm `OPENAI_API_KEY` is set in Render env vars

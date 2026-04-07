@@ -62,6 +62,20 @@ class Settings(BaseSettings):
     )
     chroma_persist_dir: str = Field(default="./chroma_db")
 
+    # ── Startup tasks (demo-friendly defaults) ────────────────────────────────
+    startup_ingestion_enabled: bool = Field(
+        default=True,
+        description="If true, ingest PDFs from data/ on startup when needed",
+    )
+    bm25_enabled: bool = Field(
+        default=True,
+        description="If true, enable BM25 sparse retrieval (hybrid mode)",
+    )
+    bm25_build_on_startup: bool = Field(
+        default=True,
+        description="If true, build the BM25 index during app startup",
+    )
+
     # ── Chunking ──────────────────────────────────────────────────────────────
     chunking_strategy: Literal["fixed", "recursive"] = Field(
         default="recursive",

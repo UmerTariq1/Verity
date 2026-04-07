@@ -31,17 +31,23 @@ logging.basicConfig(
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Run startup tasks before the first request is served."""
-    logger.info("Verity starting — running startup ingestion…")
-    try:
-        run_startup_ingestion()
-    except Exception as exc:
-        logger.error("Startup ingestion failed: %s", exc, exc_info=True)
+    if settings.startup_ingestion_enabled:
+        logger.info("Verity starting — running startup ingestion…")
+        try:
+            run_startup_ingestion()
+        except Exception as exc:
+            logger.error("Startup ingestion failed: %s", exc, exc_info=True)
+    else:
+        logger.info("Startup ingestion skipped (disabled by config).")
 
-    logger.info("Building BM25 index…")
-    try:
-        build_bm25_index()
-    except Exception as exc:
-        logger.error("BM25 index build failed: %s", exc, exc_info=True)
+    if settings.bm25_enabled and settings.bm25_build_on_startup:
+        logger.info("Building BM25 index…")
+        try:
+            build_bm25_index()
+        except Exception as exc:
+            logger.error("BM25 index build failed: %s", exc, exc_info=True)
+    else:
+        logger.info("BM25 index build skipped (disabled by config).")
 
     logger.info("Verity ready.")
     yield
