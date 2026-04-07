@@ -1,0 +1,8 @@
+#
+# PIP CONSTRAINTS
+# - Keep the Docker image small and predictable by pinning heavyweight wheels.
+# - We explicitly install CPU-only PyTorch from the official CPU wheel index in the Dockerfile.
+#
+# NOTE: If you bump this version, also bump the Dockerfile torch install command accordingly.
+torch==2.7.0
+

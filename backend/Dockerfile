@@ -7,8 +7,12 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends gcc libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
+COPY constraints.txt .
+# Install CPU-only PyTorch in its own layer so it stays cached when app deps change.
+RUN pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu -c constraints.txt torch
+
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt -c constraints.txt
 
 COPY . .
 
