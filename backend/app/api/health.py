@@ -1,4 +1,4 @@
-"""System health routes (admin only).
+"""System health routes.
 
 GET  /api/v1/health                        — key metrics snapshot
 GET  /api/v1/health/activity               — most recent 20 ingestion/query events
@@ -59,7 +59,6 @@ def _avg_relevance(db: Session) -> float | None:
 
 @router.get("", response_model=HealthResponse)
 def health(
-    _: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> HealthResponse:
     """Return a metrics snapshot for the system health dashboard."""
