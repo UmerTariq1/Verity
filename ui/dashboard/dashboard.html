@@ -165,23 +165,23 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div class="bg-surface-container-lowest rounded-xl p-6 border-l-4 border-primary">
           <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Total Documents</p>
-          <h4 id="m-total-docs" class="text-3xl font-extrabold text-on-surface tracking-tighter">—</h4>
+          <h4 id="m-total-docs" class="text-3xl font-extrabold text-on-surface tracking-tighter">,</h4>
           <p class="text-xs text-on-surface-variant mt-2">indexed in system</p>
         </div>
         <div class="bg-surface-container-lowest rounded-xl p-6 border-l-4 border-secondary">
           <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Queries Today</p>
-          <h4 id="m-queries-today" class="text-3xl font-extrabold text-on-surface tracking-tighter">—</h4>
+          <h4 id="m-queries-today" class="text-3xl font-extrabold text-on-surface tracking-tighter">,</h4>
           <p class="text-xs text-on-surface-variant mt-2">across all users</p>
         </div>
         <div class="bg-surface-container-lowest rounded-xl p-6 border-l-4 border-tertiary">
           <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Avg Relevance</p>
-          <h4 id="m-avg-relevance" class="text-3xl font-extrabold text-on-surface tracking-tighter">—</h4>
+          <h4 id="m-avg-relevance" class="text-3xl font-extrabold text-on-surface tracking-tighter">,</h4>
           <p class="text-xs text-on-surface-variant mt-2">cross-encoder score</p>
         </div>
         <div class="bg-surface-container-lowest rounded-xl p-6 border-l-4 border-primary-container">
           <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Index Status</p>
-          <h4 id="m-index-status" class="text-2xl font-extrabold text-on-surface tracking-tighter capitalize">—</h4>
-          <p id="m-vector-store" class="text-xs text-on-surface-variant mt-2">—</p>
+          <h4 id="m-index-status" class="text-2xl font-extrabold text-on-surface tracking-tighter capitalize">,</h4>
+          <p id="m-vector-store" class="text-xs text-on-surface-variant mt-2">,</p>
         </div>
       </div>
 
@@ -286,12 +286,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       const h = await apiFetch("/health");
       if (h) {
-        document.getElementById("m-total-docs").textContent    = h.total_documents ?? "—";
-        document.getElementById("m-queries-today").textContent = h.queries_today ?? "—";
+        document.getElementById("m-total-docs").textContent    = h.total_documents ?? ",";
+        document.getElementById("m-queries-today").textContent = h.queries_today ?? ",";
         document.getElementById("m-avg-relevance").textContent = h.avg_relevance_score != null
-          ? (applyScoreSigmoid(h.avg_relevance_score) * 100).toFixed(1) + "%" : "—";
-        document.getElementById("m-index-status").textContent  = h.index_status ?? "—";
-        document.getElementById("m-vector-store").textContent  = h.vector_store_type ?? "—";
+          ? (applyScoreSigmoid(h.avg_relevance_score) * 100).toFixed(1) + "%" : ",";
+        document.getElementById("m-index-status").textContent  = h.index_status ?? ",";
+        document.getElementById("m-vector-store").textContent  = h.vector_store_type ?? ",";
       }
     } catch { /* non-critical */ }
 

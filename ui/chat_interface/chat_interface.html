@@ -241,7 +241,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const me = await apiFetch("/auth/me");
     if (!me) return;
   } catch {
-    showToast("Session error — please sign in again.", "error");
+    showToast("Session error , please sign in again.", "error");
     setTimeout(logout, 1500);
     return;
   }
@@ -484,7 +484,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         ${isLowConf ? `
           <div class="mb-4 flex items-start gap-2 px-3 py-2.5 bg-amber-50 border border-amber-200 rounded-lg text-amber-800">
             <span class="material-symbols-outlined text-sm mt-0.5">warning_amber</span>
-            <span class="text-[11px] leading-snug">I found some relevant sections but confidence is low — consider rephrasing or adjusting your date filter.</span>
+            <span class="text-[11px] leading-snug">I found some relevant sections but confidence is low , consider rephrasing or adjusting your date filter.</span>
           </div>` : ""}
         <p class="text-sm text-on-surface leading-relaxed whitespace-pre-wrap">${escHtml(answerText)}</p>
         ${sourcesHtml}
@@ -532,14 +532,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
-    // Wire copy — uses closure-captured answerText.
+    // Wire copy , uses closure-captured answerText.
     div.querySelector(".js-copy").addEventListener("click", () => {
       navigator.clipboard.writeText(answerText).then(() =>
         showToast("Copied to clipboard", "success")
       ).catch(() => showToast("Copy failed", "error"));
     });
 
-    // Wire export — uses closure-captured answerText.
+    // Wire export , uses closure-captured answerText.
     div.querySelector(".js-export").addEventListener("click", () => {
       const blob = new Blob([answerText], { type: "text/plain" });
       downloadBlob(blob, `nexora-answer-${Date.now()}.txt`);

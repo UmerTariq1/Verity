@@ -1,7 +1,7 @@
 """Authentication routes.
 
-POST /api/v1/auth/login  — exchange credentials for a JWT
-GET  /api/v1/auth/me     — return the currently authenticated user's profile
+POST /api/v1/auth/login  , exchange credentials for a JWT
+GET  /api/v1/auth/me     , return the currently authenticated user's profile
 """
 from datetime import datetime, timezone
 

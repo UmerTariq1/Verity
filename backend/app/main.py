@@ -1,8 +1,8 @@
 """FastAPI application entry point.
 
 Startup sequence (order matters):
-  1. run_startup_ingestion() — ingest any un-indexed PDFs from data/
-  2. build_bm25_index()      — build sparse index from the now-complete Chroma collection
+  1. run_startup_ingestion() , ingest any un-indexed PDFs from data/
+  2. build_bm25_index()      , build sparse index from the now-complete Chroma collection
 
 BM25 must be built after ingestion so it sees all chunks.
 """
@@ -32,7 +32,7 @@ logging.basicConfig(
 async def lifespan(app: FastAPI):
     """Run startup tasks before the first request is served."""
     if settings.startup_ingestion_enabled:
-        logger.info("Verity starting — running startup ingestion…")
+        logger.info("Verity starting , running startup ingestion…")
         try:
             run_startup_ingestion()
         except Exception as exc:
@@ -58,7 +58,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Verity — HR Policy Knowledge Retrieval",
+    title="Verity , HR Policy Knowledge Retrieval",
     description=(
         "Production-grade RAG system for HR policy queries. "
         "Hybrid BM25 + dense retrieval with cross-encoder re-ranking."
@@ -107,5 +107,5 @@ app.include_router(health_router, prefix=_PREFIX)
 
 @app.get("/", tags=["meta"])
 def root() -> dict:
-    """Health-check endpoint — no authentication required."""
+    """Health-check endpoint , no authentication required."""
     return {"status": "ok", "service": "verity"}

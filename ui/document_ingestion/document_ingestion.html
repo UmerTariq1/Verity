@@ -295,7 +295,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (e.key === "Escape" && !modalOverlay.classList.contains("hidden")) closeModal();
   });
 
-  // Staging array — upload only happens when "Start Ingestion" is clicked.
+  // Staging array , upload only happens when "Start Ingestion" is clicked.
   let stagedFiles = [];
 
   // Browse button opens file picker.
@@ -460,7 +460,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             : d.status === "failed" ? "bg-rose-50 text-rose-700"
             : d.status === "processing" ? "bg-sky-50 text-sky-700"
             : "bg-amber-50 text-amber-700"
-          } rounded-full shadow-sm">${d.status || "—"}</span>
+          } rounded-full shadow-sm">${d.status || ","}</span>
           <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
             <button class="doc-reindex px-3 py-2 text-xs font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 rounded-lg"
                     data-id="${escHtml(d.id)}" data-name="${escHtml(d.file_name || "")}">

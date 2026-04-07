@@ -1,5 +1,5 @@
 /**
- * config.js — Frontend runtime configuration.
+ * config.js , Frontend runtime configuration.
  *
  * Goal: "start the servers and anyone can use it" (no per-browser setup).
  *

@@ -4,7 +4,7 @@ Usage in route definitions:
     current_user: User = Depends(get_current_user)   # any authenticated user
     _: User = Depends(require_admin)                  # admin-only routes
 
-Role is verified server-side from the JWT claim — never trusted from the
+Role is verified server-side from the JWT claim , never trusted from the
 request body or frontend state.
 """
 from fastapi import Depends, HTTPException, status
@@ -61,7 +61,7 @@ def get_current_user(
 
 
 def require_admin(current_user: User = Depends(get_current_user)) -> User:
-    """Extend get_current_user — additionally require role == 'admin'.
+    """Extend get_current_user , additionally require role == 'admin'.
 
     Raises HTTP 403 if the authenticated user is not an admin.
     """

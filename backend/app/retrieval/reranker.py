@@ -4,7 +4,7 @@ Uses ``cross-encoder/ms-marco-MiniLM-L-6-v2`` (HuggingFace sentence-transformers
 to re-score (query, chunk) pairs and return the top-K candidates.
 
 Design decision (documented in README "Retrieval Design Decisions"):
-  Initial BM25 + dense retrieval optimises for recall — we want to surface
+  Initial BM25 + dense retrieval optimises for recall , we want to surface
   as many relevant chunks as possible in the top-20 candidate pool.
   The cross-encoder then optimises for precision by jointly encoding the
   query and each chunk, which is far more accurate than the separate
@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 _MODEL_NAME = "cross-encoder/ms-marco-MiniLM-L-6-v2"
 
-# Lazy singleton — model loaded once and reused across all requests
+# Lazy singleton , model loaded once and reused across all requests
 _encoder: CrossEncoder | None = None
 
 

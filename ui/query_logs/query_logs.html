@@ -153,30 +153,30 @@
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div class="bg-surface-container-lowest p-5 rounded-xl border-l-4 border-primary">
           <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">Total Queries</p>
-          <h3 id="stat-total-queries" class="text-2xl font-extrabold mt-1">—</h3>
+          <h3 id="stat-total-queries" class="text-2xl font-extrabold mt-1">,</h3>
           <div class="mt-2 flex items-center gap-1 text-teal-600 text-xs font-medium">
             <span class="material-symbols-outlined text-[14px]">today</span>
-            <span id="stat-today">— today</span>
+            <span id="stat-today">, today</span>
           </div>
         </div>
         <div class="bg-surface-container-lowest p-5 rounded-xl border-l-4 border-secondary">
           <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">Avg Relevance</p>
-          <h3 id="stat-avg-relevance" class="text-2xl font-extrabold mt-1">—</h3>
+          <h3 id="stat-avg-relevance" class="text-2xl font-extrabold mt-1">,</h3>
           <div class="mt-2 flex items-center gap-1 text-secondary text-xs font-medium">
             <span class="material-symbols-outlined text-[14px]">verified</span> Cross-encoder score
           </div>
         </div>
         <div class="bg-surface-container-lowest p-5 rounded-xl border-l-4 border-tertiary">
           <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">Index Status</p>
-          <h3 id="stat-index-status" class="text-2xl font-extrabold mt-1 capitalize">—</h3>
+          <h3 id="stat-index-status" class="text-2xl font-extrabold mt-1 capitalize">,</h3>
           <div class="mt-2 flex items-center gap-1 text-tertiary text-xs font-medium">
             <span class="material-symbols-outlined text-[14px]">database</span>
-            <span id="stat-vector-store">—</span>
+            <span id="stat-vector-store">,</span>
           </div>
         </div>
         <div class="bg-surface-container-lowest p-5 rounded-xl border-l-4 border-error">
           <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">Total Documents</p>
-          <h3 id="stat-total-docs" class="text-2xl font-extrabold mt-1">—</h3>
+          <h3 id="stat-total-docs" class="text-2xl font-extrabold mt-1">,</h3>
           <div class="mt-2 flex items-center gap-1 text-error text-xs font-medium">
             <span class="material-symbols-outlined text-[14px]">description</span> indexed in system
           </div>
@@ -188,7 +188,7 @@
         <div class="flex items-center gap-2 mb-4">
           <span class="material-symbols-outlined text-amber-500">warning_amber</span>
           <h4 class="text-sm font-bold text-on-surface">Low Confidence Queries</h4>
-          <span class="text-xs text-on-surface-variant ml-1">— avg retrieved confidence below 60%</span>
+          <span class="text-xs text-on-surface-variant ml-1">, avg retrieved confidence below 60%</span>
         </div>
         <div id="low-conf-list" class="space-y-2 max-h-56 overflow-y-auto pr-1">
           <div class="text-xs text-on-surface-variant animate-pulse px-1">Loading…</div>
@@ -283,15 +283,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     const h = await apiFetch("/health");
     if (h) {
-      document.getElementById("stat-total-queries").textContent  = h.total_documents != null ? "—" : "—";
+      document.getElementById("stat-total-queries").textContent  = h.total_documents != null ? "," : ",";
       // Use queries_today for total; backend only has queries_today not total_queries.
       document.getElementById("stat-today").textContent          = `${h.queries_today ?? 0} today`;
-      document.getElementById("stat-total-queries").textContent  = h.queries_today ?? "—";
+      document.getElementById("stat-total-queries").textContent  = h.queries_today ?? ",";
       document.getElementById("stat-avg-relevance").textContent  = h.avg_relevance_score != null
-        ? (applyScoreSigmoid(h.avg_relevance_score) * 100).toFixed(1) + "%" : "—";
-      document.getElementById("stat-index-status").textContent   = h.index_status ?? "—";
-      document.getElementById("stat-vector-store").textContent   = h.vector_store_type ?? "—";
-      document.getElementById("stat-total-docs").textContent     = h.total_documents ?? "—";
+        ? (applyScoreSigmoid(h.avg_relevance_score) * 100).toFixed(1) + "%" : ",";
+      document.getElementById("stat-index-status").textContent   = h.index_status ?? ",";
+      document.getElementById("stat-vector-store").textContent   = h.vector_store_type ?? ",";
+      document.getElementById("stat-total-docs").textContent     = h.total_documents ?? ",";
     }
   } catch { /* stats non-critical */ }
 
@@ -458,7 +458,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           const renderChunks = (items) => items.map(c => `
             <div class="p-3 bg-white rounded-lg border border-surface-container flex flex-col gap-2">
               <div class="flex items-center gap-2 flex-wrap">
-                <span class="text-[10px] font-bold text-slate-500">${escH(c.file_name || "—")} · p.${c.page_number ?? "?"}</span>
+                <span class="text-[10px] font-bold text-slate-500">${escH(c.file_name || ",")} · p.${c.page_number ?? "?"}</span>
                 ${chunkPartLabel(c)}
                 ${methodBadge(c.method)}
                 ${confidenceBadge(c.confidence_pct)}
@@ -485,7 +485,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               </div>
               ${selected.length ? `
               <div>
-                <p class="text-[10px] font-extrabold uppercase text-on-surface-variant mb-2 tracking-widest">Retrieval Receipt — ${selected.length} chunk${selected.length !== 1 ? "s" : ""} fed to LLM</p>
+                <p class="text-[10px] font-extrabold uppercase text-on-surface-variant mb-2 tracking-widest">Retrieval Receipt , ${selected.length} chunk${selected.length !== 1 ? "s" : ""} fed to LLM</p>
                 <div class="space-y-2 max-h-72 overflow-y-auto pr-1">${renderChunks(selected)}</div>
               </div>` : `<p class="text-xs text-slate-400">No retrieval trace available for this log.</p>`}
               ${rejected.length ? `
@@ -547,7 +547,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       const items = await apiFetch("/logs/low-confidence?limit=15");
       if (!items || !items.length) {
-        el.innerHTML = `<p class="text-xs text-on-surface-variant px-1">No low-confidence queries found — the knowledge base is answering well.</p>`;
+        el.innerHTML = `<p class="text-xs text-on-surface-variant px-1">No low-confidence queries found , the knowledge base is answering well.</p>`;
         return;
       }
       el.innerHTML = items.map(q => `

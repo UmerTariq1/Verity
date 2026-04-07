@@ -3,14 +3,14 @@
 Built as a module-level singleton on startup via ``build_bm25_index()``.
 
 BM25Okapi is not serialisable across processes, so the index is rebuilt from
-the Chroma collection on every container start (~200ms for 10 k chunks — an
+the Chroma collection on every container start (~200ms for 10 k chunks , an
 acceptable startup cost documented in README "Retrieval Design Decisions").
 
 The Chroma collection fetched here is the same "policy_documents" collection
 written by embedder.py.  Chunk IDs follow the pattern <doc_id>__chunk_<index>,
 and chunk metadata carries the full set of fields written during ingestion.
 
-Tokenisation: simple whitespace lowercasing — consistent with the chunk text
+Tokenisation: simple whitespace lowercasing , consistent with the chunk text
 stored in Chroma (no extra normalisation needed; BM25 ranking is robust to
 minor tokenisation differences between index and query time).
 """
@@ -45,7 +45,7 @@ _state = _BM25State()
 
 
 def _tokenize(text: str) -> list[str]:
-    """Lowercase whitespace tokeniser — applied consistently at index and query time."""
+    """Lowercase whitespace tokeniser , applied consistently at index and query time."""
     return text.lower().split()
 
 
@@ -55,7 +55,7 @@ def _tokenize(text: str) -> list[str]:
 def build_bm25_index() -> None:
     """Fetch all chunks from Chroma and build the in-memory BM25Okapi index.
 
-    Safe to call multiple times — each call does a full rebuild (e.g. after a
+    Safe to call multiple times , each call does a full rebuild (e.g. after a
     re-index operation triggered by the admin panel in Phase 5).
 
     Should be called once from the FastAPI lifespan hook so the first query is
@@ -91,7 +91,7 @@ def build_bm25_index() -> None:
 
     if not chunk_texts:
         logger.warning(
-            "BM25 index: no chunks found in Chroma — BM25 will return empty results "
+            "BM25 index: no chunks found in Chroma , BM25 will return empty results "
             "until documents are ingested and build_bm25_index() is called again"
         )
         _state.ready = False
@@ -104,7 +104,7 @@ def build_bm25_index() -> None:
     _state.chunk_metadatas = chunk_metadatas
     _state.ready = True
 
-    logger.info("BM25 index ready — %d chunks indexed", len(chunk_ids))
+    logger.info("BM25 index ready , %d chunks indexed", len(chunk_ids))
 
 
 def search(
@@ -123,7 +123,7 @@ def search(
         ready (no chunks have been ingested yet).
     """
     if not _state.ready or _state.index is None:
-        logger.warning("BM25 search called but index is not ready — returning empty results")
+        logger.warning("BM25 search called but index is not ready , returning empty results")
         return []
 
     tokens = _tokenize(query)

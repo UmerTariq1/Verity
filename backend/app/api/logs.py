@@ -1,9 +1,9 @@
 """Query log routes (admin only).
 
-GET /api/v1/logs                   — paginated log list with filters
-GET /api/v1/logs/export            — CSV download (must come before /{id} route)
-GET /api/v1/logs/low-confidence    — recent logs where avg confidence < threshold
-GET /api/v1/logs/{id}              — log detail with receipt + chunk snippets
+GET /api/v1/logs                   , paginated log list with filters
+GET /api/v1/logs/export            , CSV download (must come before /{id} route)
+GET /api/v1/logs/low-confidence    , recent logs where avg confidence < threshold
+GET /api/v1/logs/{id}              , log detail with receipt + chunk snippets
 """
 import csv
 import io

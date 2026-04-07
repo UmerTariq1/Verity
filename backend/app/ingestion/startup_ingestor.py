@@ -1,4 +1,4 @@
-"""Startup auto-ingestor — runs once on FastAPI container startup.
+"""Startup auto-ingestor , runs once on FastAPI container startup.
 
 Reads data/manifest.json and, for each entry, ingests the PDF into the
 vector store and marks the DB row as "indexed" if it has not been already.
@@ -68,7 +68,7 @@ MANIFEST_PATH = DATA_DIR / "manifest.json"
 def _load_manifest() -> list[dict[str, Any]]:
     if not MANIFEST_PATH.exists():
         logger.warning(
-            "manifest.json not found at %s — startup ingestion skipped", MANIFEST_PATH
+            "manifest.json not found at %s , startup ingestion skipped", MANIFEST_PATH
         )
         return []
     with MANIFEST_PATH.open(encoding="utf-8") as fh:
@@ -116,7 +116,7 @@ def _ingest_one(db: Session, entry: dict[str, Any]) -> None:
     existing = _get_existing_row(db, file_name)
 
     if existing and existing.status == "indexed":
-        logger.info("Already indexed — skipping: %s", file_name)
+        logger.info("Already indexed , skipping: %s", file_name)
         return
 
     effective_date = date.fromisoformat(entry["effective_date"])
@@ -136,7 +136,7 @@ def _ingest_one(db: Session, entry: dict[str, Any]) -> None:
         )
         db.commit()
     else:
-        # Create a new row — uploaded_by_user_id=None marks it as system-seeded
+        # Create a new row , uploaded_by_user_id=None marks it as system-seeded
         doc = PolicyDocument(
             file_name=file_name,
             category=entry["category"],
@@ -167,7 +167,7 @@ def _ingest_one(db: Session, entry: dict[str, Any]) -> None:
 
         if not chunks:
             raise IngestionError(
-                f"No non-empty chunks produced from {file_name} — check PDF content"
+                f"No non-empty chunks produced from {file_name} , check PDF content"
             )
 
         doc_metadata = {
@@ -186,7 +186,7 @@ def _ingest_one(db: Session, entry: dict[str, Any]) -> None:
             .values(status="indexed", chunk_count=chunk_count)
         )
         db.commit()
-        logger.info("Indexed '%s' — %d chunks stored", file_name, chunk_count)
+        logger.info("Indexed '%s' , %d chunks stored", file_name, chunk_count)
 
     except IngestionError as exc:
         logger.error("Ingestion error for '%s': %s", file_name, exc)

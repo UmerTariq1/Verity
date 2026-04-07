@@ -1,5 +1,5 @@
 # ═══════════════════════════════════════════════════════════════════════════════
-# Verity — docker-compose.yml
+# Verity , docker-compose.yml
 # Skeleton created in Phase 1; completed with final service config in Phase 5.
 # Usage: docker compose up --build
 # ═══════════════════════════════════════════════════════════════════════════════

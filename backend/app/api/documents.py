@@ -1,9 +1,9 @@
 """Document management routes.
 
-GET    /api/v1/documents                — list (all authenticated users)
-POST   /api/v1/documents/upload         — upload PDF (admin only)
-DELETE /api/v1/documents/{id}           — delete + remove from vector store (admin only)
-POST   /api/v1/documents/{id}/reindex   — re-embed a single document (admin only)
+GET    /api/v1/documents                , list (all authenticated users)
+POST   /api/v1/documents/upload         , upload PDF (admin only)
+DELETE /api/v1/documents/{id}           , delete + remove from vector store (admin only)
+POST   /api/v1/documents/{id}/reindex   , re-embed a single document (admin only)
 """
 import asyncio
 import logging
@@ -111,7 +111,7 @@ def _ingest_uploaded_pdf(
             .values(status="indexed", chunk_count=chunk_count)
         )
         db.commit()
-        logger.info("Background ingestion complete: %s — %d chunks", file_name, chunk_count)
+        logger.info("Background ingestion complete: %s , %d chunks", file_name, chunk_count)
 
         # Rebuild BM25 so the new document is immediately searchable
         _bm25.build_bm25_index()

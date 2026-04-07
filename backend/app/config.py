@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 from typing import Literal
 
-# Resolve .env relative to THIS package, not the shell cwd — otherwise
+# Resolve .env relative to THIS package, not the shell cwd , otherwise
 # `uvicorn` from `backend/` never sees repo-root `.env` and CORS_* edits there
 # are silently ignored.
 _BACKEND_ROOT = Path(__file__).resolve().parent.parent
@@ -45,7 +45,7 @@ class Settings(BaseSettings):
     # ── JWT ───────────────────────────────────────────────────────────────────
     jwt_secret_key: str = Field(
         default="changeme-use-a-32-byte-random-string-in-production",
-        description="Secret key for signing JWTs — must be 32+ random bytes in production",
+        description="Secret key for signing JWTs , must be 32+ random bytes in production",
     )
     jwt_algorithm: str = Field(default="HS256")
     jwt_expire_minutes: int = Field(default=60, description="Token lifetime in minutes")

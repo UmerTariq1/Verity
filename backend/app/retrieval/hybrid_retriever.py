@@ -1,16 +1,16 @@
 """Hybrid retrieval pipeline: BM25 + dense → RRF fusion → cross-encoder re-ranking.
 
 Pipeline overview:
-  1. BM25 sparse retrieval  — top-20 from the in-memory BM25Okapi index
-  2. Dense retrieval        — top-20 from Chroma / Pinecone via cosine similarity
-  3. RRF fusion             — merge both ranked lists; de-duplicate by chunk_id
-  4. Cross-encoder rerank   — re-score top-20 RRF candidates with ms-marco
-  5. Return top-K           — typically 5 chunks with cross-encoder scores
+  1. BM25 sparse retrieval  , top-20 from the in-memory BM25Okapi index
+  2. Dense retrieval        , top-20 from Chroma / Pinecone via cosine similarity
+  3. RRF fusion             , merge both ranked lists; de-duplicate by chunk_id
+  4. Cross-encoder rerank   , re-score top-20 RRF candidates with ms-marco
+  5. Return top-K           , typically 5 chunks with cross-encoder scores
 
 Why Reciprocal Rank Fusion over weighted-sum score fusion (documented in README):
   BM25 scores and cosine similarities live on different scales and follow
   different distributions depending on query length and corpus size.  Calibrating
-  a weighted sum requires empirical tuning per deployment — brittle and not
+  a weighted sum requires empirical tuning per deployment , brittle and not
   generalisable.  RRF operates on ordinal ranks which are stable across query
   types and vector store implementations.  The k=60 constant smooths out the
   contribution of lower-ranked results without needing any tuning.
@@ -33,7 +33,7 @@ from app.retrieval.vector_store import RetrievalResult, _parse_chunk_index, get_
 
 logger = logging.getLogger(__name__)
 
-_RRF_K = 60          # standard smoothing constant — no need to tune
+_RRF_K = 60          # standard smoothing constant , no need to tune
 _CANDIDATE_POOL = 20  # size of each retrieval list fed into RRF and re-ranker
 _TOP_K_DEFAULT = 5   # final chunks returned to the caller
 
@@ -46,7 +46,7 @@ _RERANK_BOOST_THRESHOLD = 5
 
 try:
     from langsmith import traceable as _traceable  # type: ignore[import]
-except ImportError:  # langsmith not installed — wrap with a no-op
+except ImportError:  # langsmith not installed , wrap with a no-op
     def _traceable(func=None, **_kwargs):  # type: ignore[misc]
         if func is not None:
             return func
@@ -293,7 +293,7 @@ def retrieve(
     rrf_candidates = [result_map[cid] for cid in rrf_top_ids if cid in result_map]
 
     if not rrf_candidates:
-        logger.warning("Hybrid retrieval: RRF produced no candidates — empty result")
+        logger.warning("Hybrid retrieval: RRF produced no candidates , empty result")
         return HybridRetrievalResult(chunks=[], rrf_scores=rrf_scores, reranker_scores={}, trace=[])
 
     # ── 4. Cross-encoder re-ranking (full candidate pool) ────────────────────

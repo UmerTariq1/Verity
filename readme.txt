@@ -1,4 +1,4 @@
-# Verity — Intelligent HR Policy Knowledge Retrieval
+# Verity , Intelligent HR Policy Knowledge Retrieval
 
 > A production-grade Retrieval-Augmented Generation (RAG) system for querying HR policy documents using natural language.
 
@@ -8,20 +8,20 @@ Built as a portfolio project demonstrating real-world hybrid retrieval engineeri
 
 ## Overview
 
-Verity is a production-grade Retrieval-Augmented Generation (RAG) system built for querying internal HR policy documents at Nexora GmbH using natural language. It is designed as a portfolio project to demonstrate end-to-end retrieval engineering — not just "put documents in a vector store and call GPT", but a full hybrid pipeline with measurable precision improvements at each stage.
+Verity is a production-grade Retrieval-Augmented Generation (RAG) system built for querying internal HR policy documents at Nexora GmbH using natural language. It is designed as a portfolio project to demonstrate end-to-end retrieval engineering , not just "put documents in a vector store and call GPT", but a full hybrid pipeline with measurable precision improvements at each stage.
 
 Verity combines:
 - **Unstructured retrieval** over PDF policy documents (via vector embeddings + BM25)
 - **Structured querying** of document metadata (via PostgreSQL + SQLAlchemy)
 - **Hybrid re-ranking** using Reciprocal Rank Fusion and a cross-encoder model
-- **Retrieval explainability** — every answer surface shows which chunks were retrieved, by which method, at what confidence, and which candidates were ranked out
-- **Admin observability** — per-query retrieval receipts, low-confidence query detection, per-document performance tracking, and optional LangSmith trace links
+- **Retrieval explainability** , every answer surface shows which chunks were retrieved, by which method, at what confidence, and which candidates were ranked out
+- **Admin observability** , per-query retrieval receipts, low-confidence query detection, per-document performance tracking, and optional LangSmith trace links
 
 ---
 
 ## Quick Start
 
-**First-time local setup (venv, Docker DB, migrations, ingest, BM25):** see **[docs/DEV_SETUP.md](docs/DEV_SETUP.md)** — step-by-step commands for Windows PowerShell.
+**First-time local setup (venv, Docker DB, migrations, ingest, BM25):** see **[docs/DEV_SETUP.md](docs/DEV_SETUP.md)** , step-by-step commands for Windows PowerShell.
 
 ### Current development workflow (pre–Phase 5 API)
 
@@ -44,7 +44,7 @@ docker compose up --build
 # 3. Seed default accounts (inside the backend container)
 docker compose exec backend python seed.py
 
-# 4. Open the frontend — serve ui/ with any static server (e.g. VS Code Live Server)
+# 4. Open the frontend , serve ui/ with any static server (e.g. VS Code Live Server)
 #    Navigate to ui/login_page/login_page.html
 #
 #    Default credentials:
@@ -76,11 +76,11 @@ docker compose exec backend python seed.py
 
 ### Why Hybrid Retrieval Over Pure Vector Search
 
-Pure dense retrieval fails on exact-match queries — policy names, section numbers, specific dates. BM25 handles those well but struggles with paraphrased or conceptual questions. Running both in parallel and merging with RRF captures the best of both: high recall from dense search, high precision on lexical queries from BM25.
+Pure dense retrieval fails on exact-match queries , policy names, section numbers, specific dates. BM25 handles those well but struggles with paraphrased or conceptual questions. Running both in parallel and merging with RRF captures the best of both: high recall from dense search, high precision on lexical queries from BM25.
 
 ### Chunking Strategy Tradeoffs
 
-Verity uses `RecursiveCharacterTextSplitter` (512 tokens, 64-token overlap) by default. Fixed-size chunking was tried and dropped because HR policy documents have variable sentence lengths — a fixed split often cuts mid-sentence, degrading both retrieval relevance and the readability of source previews shown to users.
+Verity uses `RecursiveCharacterTextSplitter` (512 tokens, 64-token overlap) by default. Fixed-size chunking was tried and dropped because HR policy documents have variable sentence lengths , a fixed split often cuts mid-sentence, degrading both retrieval relevance and the readability of source previews shown to users.
 
 ### What the Cross-Encoder Re-Ranker Adds
 
@@ -152,14 +152,14 @@ User Query → Query Router → Hybrid Retrieval → gpt-5-nano → Answer
 | `policy_documents` | id, file_name, category, owner_department, effective_date, chunk_count, status (`queued`/`processing`/`indexed`/`failed`), created_at, uploaded_by_user_id |
 | `query_logs` | id, user_id, query_text, filter_start_date, filter_end_date, filter_category, retrieved_chunk_ids, relevance_scores, **retrieval_trace**, **langsmith_run_id**, **langsmith_trace_url**, feedback, response_latency_ms, created_at |
 
-`retrieval_trace` is a JSON array of `TraceEntry` objects — one per candidate chunk — storing BM25 score, dense score, RRF score, cross-encoder score, method label (`keyword_match` / `semantic_match` / `top_ranked`), and a `selected` flag indicating whether the chunk was included in the LLM context.
+`retrieval_trace` is a JSON array of `TraceEntry` objects , one per candidate chunk , storing BM25 score, dense score, RRF score, cross-encoder score, method label (`keyword_match` / `semantic_match` / `top_ranked`), and a `selected` flag indicating whether the chunk was included in the LLM context.
 
 ---
 
 ## Security Notes
 
-- JWT stored in `localStorage` — documented tradeoff (XSS risk vs. simplicity for a demo; HttpOnly cookies would be the production choice)
-- Role enforcement is **server-side only** — frontend role checks are UX convenience, never trusted
+- JWT stored in `localStorage` , documented tradeoff (XSS risk vs. simplicity for a demo; HttpOnly cookies would be the production choice)
+- Role enforcement is **server-side only** , frontend role checks are UX convenience, never trusted
 - All admin routes require `role == "admin"` verified from JWT claim in `core/dependencies.py`
 - Self-deletion is blocked server-side; an admin cannot delete their own account
 
@@ -174,7 +174,7 @@ User Query → Query Router → Hybrid Retrieval → gpt-5-nano → Answer
 | Vector Store | Pinecone |
 | Frontend | Netlify / GitHub Pages |
 
-> Render free tier has a ~30s cold start. Render PostgreSQL expires after 90 days — run `python seed.py` to restore default accounts after re-provisioning.
+> Render free tier has a ~30s cold start. Render PostgreSQL expires after 90 days , run `python seed.py` to restore default accounts after re-provisioning.
 
 ---
 
@@ -245,7 +245,7 @@ Do this **10–15 minutes before** a call so you don’t get surprised by free-t
   - Only do this if you changed documents / Pinecone index / ingestion settings
 - **Run 1 test query** (verifies auth + DB + retrieval + LLM)
 
-During the interview/demo, you should not need reindexing — just query normally.
+During the interview/demo, you should not need reindexing , just query normally.
 
 ---
 

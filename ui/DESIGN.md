@@ -15,7 +15,7 @@ To achieve a premium feel, **1px solid borders for sectioning are strictly prohi
 *   **Example:** A `surface-container-low` (`#f3f4f6`) section should sit directly on a `surface` (`#f8f9fb`) background without a stroke.
 
 ### Surface Hierarchy & Nesting
-Treat the UI as physical layers—stacked sheets of frosted glass and fine paper.
+Treat the UI as physical layers,stacked sheets of frosted glass and fine paper.
 - **Surface (Base):** `#f8f9fb`
 - **Surface-Container-Low:** `#f3f4f6` (Use for secondary content areas)
 - **Surface-Container-Lowest:** `#ffffff` (Use for the "active" card or workspace)
@@ -39,7 +39,7 @@ We utilize a dual-font strategy to balance authority with readability.
 Hierarchy is achieved through **Tonal Layering** rather than structural lines.
 
 *   **The Layering Principle:** Place a `surface-container-lowest` card on a `surface-container-low` section. This creates a natural "lift" without the "muddy" look of traditional shadows.
-*   **Ambient Shadows:** If a card must float, use an extra-diffused shadow: `0px 20px 40px rgba(25, 28, 30, 0.06)`. Notice the tint—we use a tiny fraction of the `on-surface` color, never pure black.
+*   **Ambient Shadows:** If a card must float, use an extra-diffused shadow: `0px 20px 40px rgba(25, 28, 30, 0.06)`. Notice the tint,we use a tiny fraction of the `on-surface` color, never pure black.
 *   **The "Ghost Border":** If accessibility requires a container edge, use the `outline-variant` token at **15% opacity**.
 *   **Edge Accents:** Per the brand signature, cards utilize a `4px` solid left-border using semantic tokens (e.g., `primary`, `secondary`, or `tertiary`) to denote status or ownership without cluttering the card face.
 
@@ -62,7 +62,7 @@ Hierarchy is achieved through **Tonal Layering** rather than structural lines.
 - **List Items:** Use `surface-bright` for the hover state to make the item "pop" forward.
 
 ### Signature Component: The Knowledge Leaf
-For the Intelligent Retrieval context, search results should appear as "Leaf" components—cards with an asymmetrical `1.5rem` radius on the top-left and bottom-right corners, and a `0.25rem` radius on the others, creating a custom, organic feel.
+For the Intelligent Retrieval context, search results should appear as "Leaf" components,cards with an asymmetrical `1.5rem` radius on the top-left and bottom-right corners, and a `0.25rem` radius on the others, creating a custom, organic feel.
 
 ---
 

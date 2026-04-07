@@ -1,9 +1,9 @@
 """System health routes.
 
-GET  /api/v1/health                        — key metrics snapshot
-GET  /api/v1/health/activity               — most recent 20 ingestion/query events
-GET  /api/v1/health/document-performance   — per-document retrieval stats
-POST /api/v1/health/reindex                — trigger full re-ingestion of all indexed documents
+GET  /api/v1/health                        , key metrics snapshot
+GET  /api/v1/health/activity               , most recent 20 ingestion/query events
+GET  /api/v1/health/document-performance   , per-document retrieval stats
+POST /api/v1/health/reindex                , trigger full re-ingestion of all indexed documents
 """
 import asyncio
 import logging
@@ -112,7 +112,7 @@ def activity(
     for doc in recent_docs:
         events.append(ActivityEvent(
             event_type="ingestion",
-            description=f"{doc.file_name} — {doc.status}",
+            description=f"{doc.file_name} , {doc.status}",
             created_at=doc.created_at,
         ))
 
@@ -150,7 +150,7 @@ def document_performance(
 
     doc_map = {str(d.id): d.file_name for d in docs}
 
-    # Aggregate from retrieval_trace JSON in Python — avoids complex JSON SQL
+    # Aggregate from retrieval_trace JSON in Python , avoids complex JSON SQL
     logs = db.execute(
         select(QueryLog.retrieval_trace)
         .where(QueryLog.retrieval_trace.isnot(None))
@@ -212,7 +212,7 @@ def _reindex_all_sync() -> int:
         for doc in docs:
             pdf_path = DATA_DIR / doc.file_name
             if not pdf_path.exists():
-                logger.warning("Reindex: PDF not found for %s — skipping", doc.file_name)
+                logger.warning("Reindex: PDF not found for %s , skipping", doc.file_name)
                 continue
 
             db.execute(
@@ -259,7 +259,7 @@ def _reindex_all_sync() -> int:
                     .values(status="indexed", chunk_count=chunk_count)
                 )
                 db.commit()
-                logger.info("Reindex complete: %s — %d chunks", doc.file_name, chunk_count)
+                logger.info("Reindex complete: %s , %d chunks", doc.file_name, chunk_count)
 
             except Exception as exc:
                 logger.error("Reindex failed for %s: %s", doc.file_name, exc, exc_info=True)

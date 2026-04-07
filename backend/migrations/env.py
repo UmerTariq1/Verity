@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app.config import settings
 # Import all models via the package __init__ so their tables are registered
 # on Base.metadata before Alembic compares it to the live schema.
-from app.models import Base  # noqa: F401 — side-effect: registers all tables
+from app.models import Base  # noqa: F401 , side-effect: registers all tables
 
 config = context.config
 

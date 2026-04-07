@@ -1,4 +1,4 @@
-"""Query router — decides between PostgreSQL metadata lookup and hybrid RAG retrieval.
+"""Query router , decides between PostgreSQL metadata lookup and hybrid RAG retrieval.
 
 Routing strategy (keyword heuristic, no LLM call needed):
   Queries that begin with list / show / find all / how many + "document"
@@ -9,7 +9,7 @@ Routing strategy (keyword heuristic, no LLM call needed):
 
 This heuristic is intentionally simple and transparent:
   - Zero latency overhead (no embedding or LLM call)
-  - Easily debuggable — the routing decision is logged at DEBUG level
+  - Easily debuggable , the routing decision is logged at DEBUG level
   - Covers the main admin use-case of listing documents by category/date
   - Documented in README "Retrieval Design Decisions"
 
@@ -84,10 +84,10 @@ class RouteResult:
     to the metadata-query SQL builder.
 
     Keys present in ``filters``:
-      category          — matched category string (may be absent)
-      owner_department  — not extracted at this layer; Phase 5 can extend
-      date_from         — ISO date string (may be absent)
-      date_to           — ISO date string (may be absent)
+      category          , matched category string (may be absent)
+      owner_department  , not extracted at this layer; Phase 5 can extend
+      date_from         , ISO date string (may be absent)
+      date_to           , ISO date string (may be absent)
     """
 
     route: Literal["metadata", "hybrid"]

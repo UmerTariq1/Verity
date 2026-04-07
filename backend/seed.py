@@ -1,4 +1,4 @@
-"""Idempotent seed script — creates default admin and user accounts.
+"""Idempotent seed script , creates default admin and user accounts.
 
 Run after applying migrations:
     python seed.py
@@ -6,7 +6,7 @@ Run after applying migrations:
 Safe to run multiple times: existing rows are left untouched.
 
 Uses the `bcrypt` package directly (not passlib) so seeding works with bcrypt 4.1+.
-Phase 5 login will verify with passlib or bcrypt — standard bcrypt hashes are compatible.
+Phase 5 login will verify with passlib or bcrypt , standard bcrypt hashes are compatible.
 """
 import sys
 import os

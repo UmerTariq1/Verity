@@ -1,5 +1,5 @@
 /**
- * api.js — Shared fetch wrapper for Verity frontend.
+ * api.js , Shared fetch wrapper for Verity frontend.
  *
  * - Reads JWT from localStorage and attaches Authorization header.
  * - On 401 (expired / invalid token), clears storage and redirects to login.
@@ -17,7 +17,7 @@ const API_BASE =
 async function apiFetch(path, options = {}) {
   const token = localStorage.getItem("verity_token");
 
-  // Never set Content-Type for FormData — browser adds boundary automatically.
+  // Never set Content-Type for FormData , browser adds boundary automatically.
   const isFormData = options.body instanceof FormData;
   const headers = { ...(options.headers || {}) };
 
@@ -47,7 +47,7 @@ async function apiFetch(path, options = {}) {
     return null;
   }
 
-  // 204 No Content — successful but nothing to parse.
+  // 204 No Content , successful but nothing to parse.
   if (res.status === 204) return null;
 
   const contentType = res.headers.get("content-type") || "";

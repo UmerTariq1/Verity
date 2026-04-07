@@ -6,6 +6,13 @@ set -eu
 echo "Verity: running Alembic migrations..."
 alembic upgrade head
 
+# Optional: seed default demo accounts.
+# Safe to run multiple times (seed.py uses ON CONFLICT DO NOTHING).
+if [ "${SEED_ON_STARTUP:-false}" = "true" ]; then
+  echo "Verity: seeding default accounts (SEED_ON_STARTUP=true)..."
+  python seed.py
+fi
+
 echo "Verity: starting API server..."
 
 # Render sets PORT; default to 8000 for local Docker runs.

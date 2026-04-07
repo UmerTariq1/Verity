@@ -5,10 +5,10 @@
 env var.  Call ``get_vector_store()`` to obtain the configured instance.
 
 Metadata filtering (passed as the ``filters`` dict):
-  category          — exact-match string
-  owner_department  — exact-match string
-  date_from         — effective_date >= value (ISO date string, e.g. "2024-01-01")
-  date_to           — effective_date <= value (ISO date string)
+  category          , exact-match string
+  owner_department  , exact-match string
+  date_from         , effective_date >= value (ISO date string, e.g. "2024-01-01")
+  date_to           , effective_date <= value (ISO date string)
 
 Unknown filter keys are silently ignored so callers can pass a combined
 RouteResult.filters dict without needing to strip unsupported keys.

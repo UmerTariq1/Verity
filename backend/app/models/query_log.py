@@ -25,7 +25,7 @@ class QueryLog(Base):
     query_text: Mapped[str] = mapped_column(Text, nullable=False)
 
     # Stored as JSON lists so the schema stays simple and we avoid storing the
-    # AI response text (avoids DB bloat — see BRD §7 "Important Decision")
+    # AI response text (avoids DB bloat , see BRD §7 "Important Decision")
     retrieved_chunk_ids: Mapped[list | None] = mapped_column(JSON, nullable=True)
     relevance_scores: Mapped[list | None] = mapped_column(JSON, nullable=True)
 
@@ -34,7 +34,7 @@ class QueryLog(Base):
     #             method, selected (bool)
     retrieval_trace: Mapped[list | None] = mapped_column(JSON, nullable=True)
 
-    # LangSmith observability — null when tracing is disabled or not installed
+    # LangSmith observability , null when tracing is disabled or not installed
     langsmith_run_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
     langsmith_trace_url: Mapped[str | None] = mapped_column(String(2048), nullable=True)
 

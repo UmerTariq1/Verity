@@ -1,10 +1,10 @@
 """JWT creation/verification and password hashing utilities.
 
 JWT payload claims:
-  sub   — user email (string)
-  role  — "admin" | "user"
-  uid   — user UUID as string
-  exp   — expiry timestamp (set automatically by python-jose)
+  sub   , user email (string)
+  role  , "admin" | "user"
+  uid   , user UUID as string
+  exp   , expiry timestamp (set automatically by python-jose)
 
 Password hashing uses passlib[bcrypt] which wraps bcrypt with a
 safe cost-factor and handles the "$2b$" / "$2a$" prefix normalisation.

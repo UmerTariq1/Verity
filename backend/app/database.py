@@ -20,7 +20,7 @@ SessionLocal = sessionmaker(
 
 
 def get_db() -> Generator[Session, None, None]:
-    """FastAPI dependency — yields a DB session and guarantees cleanup."""
+    """FastAPI dependency , yields a DB session and guarantees cleanup."""
     db = SessionLocal()
     try:
         yield db

@@ -1,5 +1,5 @@
 /**
- * toast.js — Lightweight top-right toast notifications.
+ * toast.js , Lightweight top-right toast notifications.
  *
  * Injects a container div into <body> on first call.
  * Matches the existing toast markup in user_management.html.

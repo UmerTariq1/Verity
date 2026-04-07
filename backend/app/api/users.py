@@ -1,9 +1,9 @@
 """User management routes (admin only).
 
-GET    /api/v1/users          — paginated list with search/filter
-POST   /api/v1/users          — create a new user
-PATCH  /api/v1/users/{id}     — update role or status
-DELETE /api/v1/users/{id}     — remove user account
+GET    /api/v1/users          , paginated list with search/filter
+POST   /api/v1/users          , create a new user
+PATCH  /api/v1/users/{id}     , update role or status
+DELETE /api/v1/users/{id}     , remove user account
 """
 import uuid
 

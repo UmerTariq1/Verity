@@ -4,7 +4,7 @@ Tradeoff documentation (referenced in README "Retrieval Design Decisions"):
 
   fixed (CharacterTextSplitter)
     Splits on a single separator ("\n") at a fixed character count.
-    Predictable token budget — useful as a reproducible baseline.
+    Predictable token budget , useful as a reproducible baseline.
     Downside: may split mid-sentence, breaking semantic coherence and
     causing the retriever to surface partial answers.
 

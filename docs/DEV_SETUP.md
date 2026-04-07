@@ -1,8 +1,8 @@
-# Verity — first-time developer setup (local)
+# Verity , first-time developer setup (local)
 
 Commands below assume **Windows** and **PowerShell**. Adjust paths if your clone lives elsewhere.
 
-**What this gets you:** PostgreSQL running in Docker, Python virtualenv with dependencies, database schema + seed users, PDFs ingested into Chroma, BM25 index built — ready to run retrieval smoke tests or future FastAPI (Phase 5).
+**What this gets you:** PostgreSQL running in Docker, Python virtualenv with dependencies, database schema + seed users, PDFs ingested into Chroma, BM25 index built , ready to run retrieval smoke tests or future FastAPI (Phase 5).
 
 ---
 
@@ -149,6 +149,6 @@ When `backend/app/main.py` and the Docker image entrypoint exist, the root **REA
 | Symptom | Check |
 |--------|--------|
 | `ModuleNotFoundError` | Venv activated? `pip install -r requirements.txt` from `backend`? |
-| DB connection errors | `docker compose ps` — is `db` up? `DATABASE_URL` uses `localhost` (not `db`) when Python runs on the host |
+| DB connection errors | `docker compose ps` , is `db` up? `DATABASE_URL` uses `localhost` (not `db`) when Python runs on the host |
 | Empty Chroma / BM25 zero chunks | Ingestion errors in logs; confirm PDF paths and `OPENAI_API_KEY` |
 | `.env` ignored | Run Python from **`backend`** with **`backend\.env`** present, or export variables explicitly |

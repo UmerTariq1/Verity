@@ -22,7 +22,7 @@ def extract_pages(pdf_path: str | Path) -> list[dict[str, Any]]:
     - Encrypted / password-protected PDF
     - PDF that produces no extractable text (scanned / image-only)
     """
-    import pdfplumber  # deferred — avoids import cost when module is imported without extracting
+    import pdfplumber  # deferred , avoids import cost when module is imported without extracting
 
     path = Path(pdf_path)
 
@@ -52,7 +52,7 @@ def extract_pages(pdf_path: str | Path) -> list[dict[str, Any]]:
             all_text = "".join(p["text"] for p in pages)
             if not all_text.strip():
                 raise IngestionError(
-                    f"PDF produced no extractable text — "
+                    f"PDF produced no extractable text , "
                     f"it may be scanned or image-only: {path.name}"
                 )
 

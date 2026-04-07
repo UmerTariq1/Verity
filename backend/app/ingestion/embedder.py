@@ -2,15 +2,15 @@
 
 Supports Chroma (local dev) and Pinecone (production), switched via the
 VECTOR_STORE env var.  The vector store abstraction used here is intentionally
-minimal — Phase 4 introduces the full VectorStore interface for retrieval.
+minimal , Phase 4 introduces the full VectorStore interface for retrieval.
 
 Chunk metadata stored alongside every vector:
-  doc_id            — PolicyDocument.id (UUID as string); used by Phase 4 retrieval
-  file_name         — original PDF filename
-  category          — policy category
-  owner_department  — owning department
-  effective_date    — ISO date string
-  page_number       — source page inside the PDF
+  doc_id            , PolicyDocument.id (UUID as string); used by Phase 4 retrieval
+  file_name         , original PDF filename
+  category          , policy category
+  owner_department  , owning department
+  effective_date    , ISO date string
+  page_number       , source page inside the PDF
 
 After all chunks are stored, chunk_count is written back to the
 policy_documents row so the DB stays in sync with the vector store.
@@ -141,7 +141,7 @@ def embed_and_store(
         Number of chunks stored (may be 0 if chunks list is empty).
 
     Raises:
-        Any exception from the embedding model or vector store — caller handles
+        Any exception from the embedding model or vector store , caller handles
         the status transition to "failed".
     """
     if not chunks:

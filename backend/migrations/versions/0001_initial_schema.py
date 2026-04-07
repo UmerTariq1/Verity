@@ -1,4 +1,4 @@
-"""Initial schema — users, policy_documents, query_logs
+"""Initial schema , users, policy_documents, query_logs
 
 Revision ID: 0001
 Revises:
@@ -18,7 +18,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def _create_enum_if_missing(name: str, *values: str) -> None:
-    """PostgreSQL has no CREATE TYPE IF NOT EXISTS — check pg_catalog first."""
+    """PostgreSQL has no CREATE TYPE IF NOT EXISTS , check pg_catalog first."""
     # Inside EXECUTE '...', every literal single-quote must be doubled ('').
     labels_sql = ", ".join(f"''{v}''" for v in values)
     op.execute(

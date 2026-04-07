@@ -1,8 +1,8 @@
 """Query routes.
 
-GET  /api/v1/query/history              — current user's own query history
-POST /api/v1/query                      — hybrid RAG query
-POST /api/v1/query/{log_id}/feedback    — thumbs up/down on a previous answer
+GET  /api/v1/query/history              , current user's own query history
+POST /api/v1/query                      , hybrid RAG query
+POST /api/v1/query/{log_id}/feedback    , thumbs up/down on a previous answer
 """
 import math
 import logging
@@ -35,7 +35,7 @@ _REJECTED_SOURCES_COUNT = 5
 
 
 def _sigmoid(x: float) -> float:
-    """Sigmoid normalisation — maps cross-encoder logits to [0, 1]."""
+    """Sigmoid normalisation , maps cross-encoder logits to [0, 1]."""
     return 1.0 / (1.0 + math.exp(-x))
 
 

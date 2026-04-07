@@ -1,5 +1,5 @@
 /**
- * auth.js — Authentication helpers for Verity frontend.
+ * auth.js , Authentication helpers for Verity frontend.
  *
  * Token contract (set by login_page.html on successful login):
  *   localStorage["verity_token"] = "<jwt string>"
@@ -161,19 +161,19 @@ function showProfileModal() {
              class="w-20 h-20 rounded-2xl bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-3xl mb-4">
           …
         </div>
-        <h3 id="pm-name" class="text-xl font-bold text-on-surface font-headline">—</h3>
-        <p id="pm-email" class="text-sm text-on-surface-variant mt-1">—</p>
+        <h3 id="pm-name" class="text-xl font-bold text-on-surface font-headline">,</h3>
+        <p id="pm-email" class="text-sm text-on-surface-variant mt-1">,</p>
         <span id="pm-role"
-              class="mt-3 px-4 py-1 bg-teal-50 text-teal-700 rounded-full text-xs font-bold uppercase tracking-widest">—</span>
+              class="mt-3 px-4 py-1 bg-teal-50 text-teal-700 rounded-full text-xs font-bold uppercase tracking-widest">,</span>
       </div>
       <div class="grid grid-cols-2 gap-4 mb-8">
         <div class="p-4 bg-surface-container-low rounded-xl">
           <p class="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider mb-1">Account Status</p>
-          <p id="pm-status" class="text-sm font-semibold text-on-surface">—</p>
+          <p id="pm-status" class="text-sm font-semibold text-on-surface">,</p>
         </div>
         <div class="p-4 bg-surface-container-low rounded-xl">
           <p class="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider mb-1">Last Active</p>
-          <p id="pm-last-active" class="text-sm font-semibold text-on-surface">—</p>
+          <p id="pm-last-active" class="text-sm font-semibold text-on-surface">,</p>
         </div>
       </div>
       <button id="pm-logout-btn"
@@ -197,8 +197,8 @@ function showProfileModal() {
       ? data.name.trim().split(/\s+/).map(w => w[0]).join("").toUpperCase().slice(0, 2)
       : "?";
     modal.querySelector("#pm-avatar").textContent = initials;
-    modal.querySelector("#pm-name").textContent   = data.name || "—";
-    modal.querySelector("#pm-email").textContent  = data.email || "—";
+    modal.querySelector("#pm-name").textContent   = data.name || ",";
+    modal.querySelector("#pm-email").textContent  = data.email || ",";
     modal.querySelector("#pm-role").textContent   = data.role === "admin" ? "Administrator" : "User";
     modal.querySelector("#pm-status").textContent = data.status === "active" ? "Active" : "Suspended";
     modal.querySelector("#pm-last-active").textContent = data.last_active_at
