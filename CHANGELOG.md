@@ -128,7 +128,59 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ---
 
 ## [Phase 5] — FastAPI Backend
-*(to be completed)*
+
+### Added
+- `backend/app/main.py` — FastAPI app factory with `asynccontextmanager` lifespan;
+  calls `run_startup_ingestion()` then `build_bm25_index()` in the correct order;
+  registers CORS middleware (origins from `CORS_ORIGINS` env var), exception handlers,
+  and all six API routers under `/api/v1`; root `GET /` ping endpoint
+- `backend/app/core/security.py` — `hash_password()`, `verify_password()` (passlib/bcrypt);
+  `create_access_token()` and `decode_access_token()` (python-jose HS256);
+  JWT payload carries `sub` (email), `role`, and `uid` (UUID string)
+- `backend/app/core/dependencies.py` — `get_current_user()` FastAPI dependency (validates
+  Bearer JWT, fetches User from DB, raises 401/403 on invalid or suspended account);
+  `require_admin()` extends it with a role check; role is always verified server-side
+- `backend/app/core/exceptions.py` — `VerityError`, `NotFoundError`, `ConflictError`,
+  `ValidationError` hierarchy; `register_exception_handlers()` wires them to JSON responses
+- `backend/app/schemas/` — Pydantic v2 request/response models:
+  `auth.py` (LoginRequest, TokenResponse, MeResponse),
+  `query.py` (QueryRequest, SourceChunk, QueryResponse, FeedbackRequest),
+  `document.py` (DocumentResponse, DocumentUploadResponse, DocumentListResponse),
+  `user.py` (UserCreateRequest, UserPatchRequest, UserResponse, UserListResponse),
+  `log.py` (LogSummary, LogDetail, LogChunkSnippet, LogListResponse),
+  `health.py` (HealthResponse, ActivityEvent, ActivityResponse, ReindexResponse)
+- `backend/app/api/auth.py` — `POST /api/v1/auth/login` (returns JWT + user info,
+  updates `last_active_at`); `GET /api/v1/auth/me` (current user profile)
+- `backend/app/api/query.py` — `POST /api/v1/query` calls `route_query()` then
+  either a PostgreSQL metadata query or `hybrid_retriever.retrieve()`; persists
+  `retrieved_chunk_ids`, `relevance_scores`, and `response_latency_ms` to `query_logs`;
+  sets `low_confidence: true` when top chunk cross-encoder score < 0.0; calls GPT-4o
+  with policy context and system prompt; `POST /api/v1/query/{log_id}/feedback`
+- `backend/app/api/documents.py` — `GET /api/v1/documents` (paginated, search, category
+  filter); `POST /api/v1/documents/upload` (PDF MIME validation, creates DB row at
+  `queued`, fires `asyncio.create_task` for background ingestion, rebuilds BM25 on
+  completion); `GET /api/v1/documents/{id}` (status polling); `DELETE /api/v1/documents/{id}`
+  (removes vectors via `delete_chunks()` then DB row, rebuilds BM25);
+  `POST /api/v1/documents/{id}/reindex` (deletes vectors, resets to queued, re-ingests
+  from data/ directory in background)
+- `backend/app/api/users.py` — `GET /api/v1/users` (search by name/email, role/status
+  filter, paginated); `POST /api/v1/users` (create with bcrypt hash, 409 on duplicate email);
+  `PATCH /api/v1/users/{id}` (update role and/or status); `DELETE /api/v1/users/{id}`
+  (blocks self-deletion)
+- `backend/app/api/logs.py` — `GET /api/v1/logs` (filtered, paginated);
+  `GET /api/v1/logs/export` (streaming CSV — route registered before `/{id}` to avoid
+  path conflict); `GET /api/v1/logs/{id}` (returns `LogDetail` with live chunk text
+  snippets fetched from Chroma — AI response text is deliberately not stored)
+- `backend/app/api/health.py` — `GET /api/v1/health` (total_documents, total_chunks,
+  avg_relevance_score, queries_today, index_status, vector_store_type, last_indexed_at);
+  `GET /api/v1/health/activity` (20 most recent ingestion + query events, merged and
+  sorted descending); `POST /api/v1/health/reindex` (full re-embed of all indexed
+  documents in background, rebuilds BM25 after completion)
+
+### Changed
+- `docker-compose.yml` — fixed `DATABASE_URL` override: was `@localhost:5432`, corrected
+  to `@db:5432` so the backend container resolves PostgreSQL via the Docker Compose
+  service name rather than loopback
 
 ---
 

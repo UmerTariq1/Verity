@@ -30,8 +30,8 @@ services:
         condition: service_healthy
     env_file: .env
     environment:
-      # Override DATABASE_URL so the backend can reach the 'db' service by name
-      DATABASE_URL: postgresql://verity:verity@localhost:5432/verity
+      # Override DATABASE_URL so the backend reaches the 'db' container by its service name
+      DATABASE_URL: postgresql://verity:verity@db:5432/verity
     volumes:
       - ./data:/app/data          # HR PDFs + manifest.json auto-ingested on startup
       - chroma_data:/app/chroma_db
