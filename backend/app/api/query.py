@@ -61,7 +61,7 @@ def _build_gpt_answer(query: str, sources: list[SourceChunk]) -> str:
 
         client = OpenAI(api_key=settings.openai_api_key)
         response = client.chat.completions.create(
-            model="gpt-5-nano",
+            model="gpt-5-nano-2025-08-07",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_message},
@@ -69,9 +69,12 @@ def _build_gpt_answer(query: str, sources: list[SourceChunk]) -> str:
             temperature=0.2,
             max_tokens=1024,
         )
+        if not response.choices[0].message.content:
+            logger.error("gpt-5-nano-2025-08-07 response: %s", response.choices[0].message.content)
+
         return response.choices[0].message.content or "No answer generated."
     except Exception as exc:
-        logger.error("gpt-5-nano call failed: %s", exc)
+        logger.error("gpt-5-nano-2025-08-07 call failed: %s", exc)
         return (
             "I was unable to generate an answer at this time. "
             "Please review the source excerpts below."
