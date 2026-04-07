@@ -78,12 +78,25 @@ def health(
         .where(func.date(QueryLog.created_at) == today)
     ).scalar_one()
 
+    # Determine index status: BM25 readiness is authoritative when Chroma is
+    # the vector store, but when using Pinecone BM25 is intentionally skipped
+    # so we fall back to checking whether any documents are indexed in the DB.
+    total_indexed = db.execute(
+        select(func.count()).select_from(PolicyDocument)
+        .where(PolicyDocument.status == "indexed")
+    ).scalar_one()
+
+    if _bm25.is_ready() or total_indexed > 0:
+        index_status = "ready"
+    else:
+        index_status = "empty"
+
     return HealthResponse(
         total_documents=total_documents,
         total_chunks=total_chunks,
         avg_relevance_score=_avg_relevance(db),
         queries_today=queries_today,
-        index_status="ready" if _bm25.is_ready() else "empty",
+        index_status=index_status,
         vector_store_type=settings.vector_store,
         last_indexed_at=_last_indexed_at(db),
     )

@@ -23,20 +23,28 @@ from app.models import User
 DEFAULT_ACCOUNTS = [
     {
         "id": uuid.UUID("00000000-0000-0000-0000-000000000001"),
-        "name": "Verity Admin",
-        "email": "admin@verity.internal",
+        "name": "Albus",
+        "email": "albus@verity.internal",
         "password": "Admin1234!",
         "role": "admin",
         "status": "active",
     },
     {
         "id": uuid.UUID("00000000-0000-0000-0000-000000000002"),
-        "name": "Verity User",
-        "email": "user@verity.internal",
+        "name": "Alice",
+        "email": "Alice@verity.internal",
         "password": "User1234!",
         "role": "user",
         "status": "active",
     },
+    {
+        "id": uuid.UUID("00000000-0000-0000-0000-000000000003"),
+        "name": "Bob",
+        "email": "bob@verity.internal",
+        "password": "User1234!",
+        "role": "user",
+        "status": "active",
+    },    
 ]
 
 
@@ -67,8 +75,9 @@ def seed() -> None:
         db.commit()
 
     print("Done.")
-    print("  Admin:  admin@verity.internal / Admin1234!")
-    print("  User:   user@verity.internal  / User1234!")
+    print("  Admin:  albus@verity.internal / Admin1234!")
+    print("  User:   Alice@verity.internal  / User1234!")
+    print("  User:   bob@verity.internal  / User1234!")
 
 
 if __name__ == "__main__":

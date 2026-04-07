@@ -50,12 +50,13 @@ Admins get a full observability layer: per-query retrieval traces, confidence mo
 
 ## Default Demo Credentials
 
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | `admin@verity.internal` | `Admin1234!` |
-| User | `user@verity.internal` | `User1234!` |
+| Role | Name | Email | Password |
+|------|------|-------|----------|
+| Admin | Albus | `albus@verity.internal` | `Admin1234!` |
+| User | Alice | `Alice@verity.internal` | `User1234!` |
+| User | Bob | `bob@verity.internal` | `User1234!` |
 
-> These are created by `seed.py`. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for setup.
+> These are created by `seed.py` (idempotent — safe to run multiple times). See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for setup.
 
 ---
 

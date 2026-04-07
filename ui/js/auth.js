@@ -92,7 +92,15 @@ function wireNav(activePage) {
   // Wire all elements that carry a data-nav attribute.
   document.querySelectorAll("[data-nav]").forEach((el) => {
     const key = el.dataset.nav;
-    if (links[key]) el.href = links[key];
+    if (links[key]) {
+      if (el.tagName === "A") {
+        el.href = links[key];
+      } else {
+        // Non-anchor elements (e.g. logo div): make them navigable on click.
+        el.style.cursor = "pointer";
+        el.addEventListener("click", () => { window.location.href = links[key]; });
+      }
+    }
 
     // Apply active highlight.
     if (key === activePage) {
