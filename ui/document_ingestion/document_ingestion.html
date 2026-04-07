@@ -213,6 +213,28 @@
   </div>
 </main>
 
+<!-- Modal (shared) -->
+<div id="modal-overlay" class="hidden fixed inset-0 z-[10000]">
+  <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+  <div class="relative h-full w-full flex items-center justify-center p-4">
+    <div id="modal-panel"
+         class="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-surface-container overflow-hidden">
+      <div class="px-6 py-5 border-b border-surface-container flex items-start justify-between gap-4">
+        <div>
+          <h3 id="modal-title" class="text-lg font-extrabold tracking-tight text-on-surface">Modal</h3>
+          <p id="modal-subtitle" class="text-xs text-on-surface-variant mt-1"></p>
+        </div>
+        <button id="modal-close"
+                class="p-2 rounded-xl hover:bg-surface-container-low transition-colors text-on-surface-variant">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div id="modal-body" class="px-6 py-5"></div>
+      <div id="modal-footer" class="px-6 py-5 border-t border-surface-container flex items-center justify-end gap-3"></div>
+    </div>
+  </div>
+</div>
+
 <!-- Shared JS -->
 <script src="../js/api.js"></script>
 <script src="../js/auth.js"></script>
@@ -234,6 +256,42 @@ document.addEventListener("DOMContentLoaded", async () => {
   const docTable         = document.getElementById("doc-table");
   const docCountBadge    = document.getElementById("doc-count-badge");
   const ingestionLabel   = document.getElementById("ingestion-btn-label");
+
+  // Modal elements
+  const modalOverlay = document.getElementById("modal-overlay");
+  const modalTitle = document.getElementById("modal-title");
+  const modalSubtitle = document.getElementById("modal-subtitle");
+  const modalBody = document.getElementById("modal-body");
+  const modalFooter = document.getElementById("modal-footer");
+  const modalClose = document.getElementById("modal-close");
+
+  function closeModal() {
+    modalOverlay.classList.add("hidden");
+    modalTitle.textContent = "";
+    modalSubtitle.textContent = "";
+    modalBody.innerHTML = "";
+    modalFooter.innerHTML = "";
+  }
+
+  function openModal({ title, subtitle = "", bodyHtml = "", footerHtml = "" }) {
+    modalTitle.textContent = title;
+    modalSubtitle.textContent = subtitle;
+    modalSubtitle.classList.toggle("hidden", !subtitle);
+    modalBody.innerHTML = bodyHtml;
+    modalFooter.innerHTML = footerHtml;
+    modalOverlay.classList.remove("hidden");
+    // focus first focusable control for better UX
+    const first = modalOverlay.querySelector("input,select,textarea,button");
+    if (first) first.focus();
+  }
+
+  modalClose.addEventListener("click", closeModal);
+  modalOverlay.addEventListener("click", (e) => {
+    if (e.target === modalOverlay || e.target === modalOverlay.firstElementChild) closeModal();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !modalOverlay.classList.contains("hidden")) closeModal();
+  });
 
   // Staging array — upload only happens when "Start Ingestion" is clicked.
   let stagedFiles = [];
@@ -313,9 +371,41 @@ document.addEventListener("DOMContentLoaded", async () => {
     let successCount = 0;
     let failCount    = 0;
 
+    const defaultMeta = {
+      category: "General",
+      owner_department: "HR",
+      effective_date: new Date().toISOString().slice(0, 10), // YYYY-MM-DD
+    };
+
+    async function parseUploadError(res) {
+      // Prefer JSON; fall back to text.
+      const data = await res.json().catch(() => null);
+      if (!data) return `HTTP ${res.status}`;
+
+      const detail = data.detail ?? data.message ?? data.error ?? null;
+      if (typeof detail === "string" && detail.trim()) return detail;
+
+      // FastAPI validation errors: detail=[{loc, msg, ...}, ...]
+      if (Array.isArray(detail)) {
+        const parts = detail
+          .map((e) => {
+            const loc = Array.isArray(e?.loc) ? e.loc[e.loc.length - 1] : "";
+            const msg = e?.msg || "Invalid input";
+            return loc ? `${loc}: ${msg}` : msg;
+          })
+          .filter(Boolean);
+        if (parts.length) return parts.join("; ");
+      }
+
+      return "Upload failed";
+    }
+
     for (const file of stagedFiles) {
       const fd = new FormData();
       fd.append("file", file);
+      fd.append("category", defaultMeta.category);
+      fd.append("owner_department", defaultMeta.owner_department);
+      fd.append("effective_date", defaultMeta.effective_date);
       try {
         const token = localStorage.getItem("verity_token");
         const res   = await fetch("http://localhost:8000/api/v1/documents/upload", {
@@ -324,8 +414,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           body: fd,
         });
         if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          throw new Error(err.detail || "Upload failed");
+          throw new Error(await parseUploadError(res));
         }
         successCount++;
       } catch (err) {
@@ -372,8 +461,142 @@ document.addEventListener("DOMContentLoaded", async () => {
             <p class="text-sm font-semibold text-on-surface truncate">${escHtml(d.file_name || d.name || "Unknown")}</p>
             <p class="text-[10px] text-on-surface-variant">${d.chunk_count ?? "?"} chunks · ${d.created_at ? new Date(d.created_at).toLocaleDateString() : ""}</p>
           </div>
-          <span class="px-3 py-1 text-[10px] font-bold ${d.status === "ready" ? "bg-teal-50 text-teal-700" : "bg-amber-50 text-amber-700"} rounded-full capitalize">${d.status || "—"}</span>
+          <span class="px-4 py-1.5 text-[11px] font-extrabold tracking-wider uppercase ${
+            d.status === "indexed" ? "bg-teal-50 text-teal-700"
+            : d.status === "failed" ? "bg-rose-50 text-rose-700"
+            : d.status === "processing" ? "bg-sky-50 text-sky-700"
+            : "bg-amber-50 text-amber-700"
+          } rounded-full shadow-sm">${d.status || "—"}</span>
+          <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
+            <button class="doc-reindex px-3 py-2 text-xs font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 rounded-lg"
+                    data-id="${escHtml(d.id)}" data-name="${escHtml(d.file_name || "")}">
+              Reindex
+            </button>
+            <button class="doc-delete px-3 py-2 text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 rounded-lg"
+                    data-id="${escHtml(d.id)}" data-name="${escHtml(d.file_name || "")}">
+              Delete
+            </button>
+          </div>
         </div>`).join("");
+
+      docTable.querySelectorAll(".doc-delete").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const id = btn.dataset.id;
+          const name = btn.dataset.name || "document";
+          if (!id) return;
+          openModal({
+            title: "Delete document",
+            subtitle: "This removes the document and its chunks from the index.",
+            bodyHtml: `
+              <div class="bg-surface-container-low rounded-xl p-4 border border-surface-container">
+                <p class="text-sm font-semibold text-on-surface">Are you sure?</p>
+                <p class="text-xs text-on-surface-variant mt-1 break-words">${escHtml(name)}</p>
+              </div>
+            `,
+            footerHtml: `
+              <button id="modal-cancel" class="px-4 py-2 rounded-xl text-sm font-bold text-on-surface-variant hover:bg-surface-container-low transition-colors">Cancel</button>
+              <button id="modal-confirm" class="px-4 py-2 rounded-xl text-sm font-extrabold bg-[#ba1a1a] text-white hover:brightness-110 transition-all shadow-md shadow-[#ba1a1a]/20">Delete</button>
+            `,
+          });
+
+          document.getElementById("modal-cancel").addEventListener("click", closeModal);
+          document.getElementById("modal-confirm").addEventListener("click", async () => {
+            const confirmBtn = document.getElementById("modal-confirm");
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = "Deleting…";
+            try {
+              await apiFetch(`/documents/${id}`, { method: "DELETE" });
+              closeModal();
+              showToast(`Deleted: ${name}`, "success");
+              loadDocuments();
+            } catch (err) {
+              confirmBtn.disabled = false;
+              confirmBtn.textContent = "Delete";
+              showToast(`Delete failed: ${name}`, "error", err.message);
+            }
+          });
+        });
+      });
+
+      docTable.querySelectorAll(".doc-reindex").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const id = btn.dataset.id;
+          const name = btn.dataset.name || "document";
+          if (!id) return;
+          openModal({
+            title: "Reindex document",
+            subtitle: "Optional: override chunking parameters for this reindex.",
+            bodyHtml: `
+              <div class="space-y-4">
+                <div class="bg-surface-container-low rounded-xl p-4 border border-surface-container">
+                  <p class="text-sm font-semibold text-on-surface">Target</p>
+                  <p class="text-xs text-on-surface-variant mt-1 break-words">${escHtml(name)}</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <label class="block">
+                    <span class="text-[11px] font-extrabold uppercase tracking-wider text-on-surface-variant">Strategy</span>
+                    <select id="reindex-strategy" class="mt-1 w-full rounded-xl border-surface-container bg-white text-sm">
+                      <option value="">Default</option>
+                      <option value="recursive">recursive</option>
+                      <option value="fixed">fixed</option>
+                    </select>
+                  </label>
+                  <label class="block">
+                    <span class="text-[11px] font-extrabold uppercase tracking-wider text-on-surface-variant">Chunk size</span>
+                    <input id="reindex-chunk-size" inputmode="numeric" placeholder="default"
+                           class="mt-1 w-full rounded-xl border-surface-container bg-white text-sm" />
+                    <span class="text-[10px] text-on-surface-variant">64–4096</span>
+                  </label>
+                  <label class="block">
+                    <span class="text-[11px] font-extrabold uppercase tracking-wider text-on-surface-variant">Overlap</span>
+                    <input id="reindex-chunk-overlap" inputmode="numeric" placeholder="default"
+                           class="mt-1 w-full rounded-xl border-surface-container bg-white text-sm" />
+                    <span class="text-[10px] text-on-surface-variant">0–512</span>
+                  </label>
+                </div>
+
+                <div class="bg-surface-container-low rounded-xl p-4 border border-surface-container">
+                  <p class="text-xs text-on-surface-variant">
+                    Tip: keep overlap smaller than chunk size. Leave fields blank to use server defaults.
+                  </p>
+                </div>
+              </div>
+            `,
+            footerHtml: `
+              <button id="modal-cancel" class="px-4 py-2 rounded-xl text-sm font-bold text-on-surface-variant hover:bg-surface-container-low transition-colors">Cancel</button>
+              <button id="modal-confirm" class="px-4 py-2 rounded-xl text-sm font-extrabold bg-gradient-to-r from-tertiary to-tertiary-container text-white hover:scale-[1.01] active:scale-95 transition-all shadow-md shadow-tertiary/20">Queue reindex</button>
+            `,
+          });
+
+          document.getElementById("modal-cancel").addEventListener("click", closeModal);
+          document.getElementById("modal-confirm").addEventListener("click", async () => {
+            const confirmBtn = document.getElementById("modal-confirm");
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = "Queuing…";
+
+            try {
+              const fd = new FormData();
+              const chunkSize = (document.getElementById("reindex-chunk-size").value || "").trim();
+              const chunkOverlap = (document.getElementById("reindex-chunk-overlap").value || "").trim();
+              const strategy = (document.getElementById("reindex-strategy").value || "").trim();
+
+              if (chunkSize) fd.append("chunk_size", chunkSize);
+              if (chunkOverlap) fd.append("chunk_overlap", chunkOverlap);
+              if (strategy) fd.append("chunking_strategy", strategy);
+
+              await apiFetch(`/documents/${id}/reindex`, { method: "POST", body: fd });
+              closeModal();
+              showToast(`Reindex queued: ${name}`, "success");
+              loadDocuments();
+            } catch (err) {
+              confirmBtn.disabled = false;
+              confirmBtn.textContent = "Queue reindex";
+              showToast(`Reindex failed: ${name}`, "error", err.message);
+            }
+          });
+        });
+      });
     } catch (err) {
       docTable.innerHTML = `<div class="px-8 py-6 text-sm text-error">Failed to load: ${escHtml(err.message)}</div>`;
     }
@@ -392,6 +615,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   loadDocuments();
+  // Keep statuses (queued/processing/indexed/failed) fresh while this page is open.
+  setInterval(loadDocuments, 4000);
 });
 </script>
 </body>

@@ -45,6 +45,7 @@ def _ingest_uploaded_pdf(
     category: str,
     owner_department: str,
     effective_date: date,
+    splitter_overrides: dict | None = None,
 ) -> None:
     """Run ingestion pipeline in a background thread-pool task.
 
@@ -54,6 +55,7 @@ def _ingest_uploaded_pdf(
     """
     db: Session = SessionLocal()
     try:
+        logger.info("Ingestion starting: %s (%s)", file_name, doc_id)
         # queued → processing
         db.execute(
             update(PolicyDocument)
@@ -75,7 +77,12 @@ def _ingest_uploaded_pdf(
         finally:
             tmp_path.unlink(missing_ok=True)
 
-        splitter = get_splitter()
+        splitter_overrides = splitter_overrides or {}
+        splitter = get_splitter(
+            strategy=splitter_overrides.get("strategy"),
+            chunk_size=splitter_overrides.get("chunk_size"),
+            chunk_overlap=splitter_overrides.get("chunk_overlap"),
+        )
         chunks: list[dict] = []
         for page in pages:
             if not page["text"]:
@@ -136,9 +143,10 @@ async def _run_ingestion_async(
     category: str,
     owner_department: str,
     effective_date: date,
+    splitter_overrides: dict | None = None,
 ) -> None:
     """Wrap the blocking ingestion call so it runs in the default thread pool."""
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
     await loop.run_in_executor(
         None,
         _ingest_uploaded_pdf,
@@ -148,6 +156,7 @@ async def _run_ingestion_async(
         category,
         owner_department,
         effective_date,
+        splitter_overrides,
     )
 
 
@@ -191,9 +200,9 @@ def list_documents(
 @router.post("/upload", response_model=DocumentUploadResponse, status_code=status.HTTP_202_ACCEPTED)
 async def upload_document(
     file: UploadFile = File(...),
-    category: Annotated[str, Form()] = ...,
-    owner_department: Annotated[str, Form()] = ...,
-    effective_date: Annotated[str, Form()] = ...,
+    category: str = Form(...),
+    owner_department: str = Form(...),
+    effective_date: str = Form(...),
     current_user: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> DocumentUploadResponse:
@@ -224,6 +233,25 @@ async def upload_document(
 
     file_bytes = await file.read()
     file_name = file.filename or f"upload_{uuid.uuid4()}.pdf"
+    logger.info(
+        "Upload received: %s | bytes=%d | category=%s | owner_department=%s | effective_date=%s | user=%s",
+        file_name,
+        len(file_bytes or b""),
+        category,
+        owner_department,
+        effective_date,
+        getattr(current_user, "id", "unknown"),
+    )
+
+    # Prevent duplicate filenames (case-insensitive) to avoid ambiguous policies.
+    existing = db.execute(
+        select(PolicyDocument.id).where(func.lower(PolicyDocument.file_name) == file_name.lower())
+    ).scalar_one_or_none()
+    if existing is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"A document named '{file_name}' already exists.",
+        )
 
     doc = PolicyDocument(
         file_name=file_name,
@@ -241,7 +269,7 @@ async def upload_document(
     # Fire-and-forget background task
     asyncio.create_task(
         _run_ingestion_async(
-            doc.id, file_bytes, file_name, category, owner_department, parsed_date
+            doc.id, file_bytes, file_name, category, owner_department, parsed_date, None
         )
     )
 
@@ -297,6 +325,9 @@ async def reindex_document(
     doc_id: uuid.UUID,
     _: User = Depends(require_admin),
     db: Session = Depends(get_db),
+    chunking_strategy: str | None = Form(None),
+    chunk_size: int | None = Form(None),
+    chunk_overlap: int | None = Form(None),
 ) -> dict:
     """Delete existing chunks and re-embed the document from the stored file bytes.
 
@@ -342,6 +373,12 @@ async def reindex_document(
 
     file_bytes = pdf_path.read_bytes()
 
+    splitter_overrides = {
+        "strategy": chunking_strategy,
+        "chunk_size": chunk_size,
+        "chunk_overlap": chunk_overlap,
+    }
+
     asyncio.create_task(
         _run_ingestion_async(
             doc_id,
@@ -350,6 +387,7 @@ async def reindex_document(
             doc.category,
             doc.owner_department,
             doc.effective_date,
+            splitter_overrides,
         )
     )
 
