@@ -10,7 +10,9 @@
  *   const data = await apiFetch("/query", { method: "POST", body: JSON.stringify(payload) });
  */
 
-const API_BASE = "http://localhost:8000/api/v1";
+const API_BASE =
+  (typeof window !== "undefined" && window.VERITY_API_BASE) ||
+  "http://localhost:8000/api/v1";
 
 async function apiFetch(path, options = {}) {
   const token = localStorage.getItem("verity_token");
@@ -32,7 +34,7 @@ async function apiFetch(path, options = {}) {
     res = await fetch(`${API_BASE}${path}`, { ...options, headers });
   } catch {
     throw new Error(
-      "Cannot reach the backend. Make sure the server is running on port 8000."
+      "Cannot reach the backend. Check VERITY_API_BASE (ui/js/config.js) and ensure the backend is running."
     );
   }
 

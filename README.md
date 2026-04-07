@@ -88,9 +88,6 @@ After BM25 and dense retrieval are fused with **Reciprocal Rank Fusion (RRF)**, 
 
 Every chunk's source (BM25-dominant, dense-dominant, or re-ranker-promoted) is tracked and surfaced in both the user UI (method badge per source) and the admin retrieval receipt.
 
-### What Was Tried and Dropped
-
----
 
 ## Architecture
 
@@ -178,3 +175,80 @@ User Query → Query Router → Hybrid Retrieval → GPT-4o → Answer
 | Frontend | Netlify / GitHub Pages |
 
 > Render free tier has a ~30s cold start. Render PostgreSQL expires after 90 days — run `python seed.py` to restore default accounts after re-provisioning.
+
+---
+
+## Demo Deployment Playbook (Render + Netlify)
+
+This app is designed to be demoed (portfolio/interview) on free tiers. The goal is **predictable demos** with a simple “warm up” routine.
+
+### First-time setup (do this once)
+
+#### 1) Deploy the backend on Render (Docker)
+
+- **Service type**: Web Service
+- **Runtime**: Docker
+- **Root directory**: `backend/`
+- **Health check**: `GET /api/v1/health`
+
+Set these **Render environment variables** (minimum):
+
+- **`OPENAI_API_KEY`**: required for ingestion/reindex
+- **`DATABASE_URL`**: from your Render Postgres instance (Render will provide this)
+- **`JWT_SECRET`** (or whatever your `.env.example` calls it): a long random string
+- **`CORS_ORIGINS`**: your Netlify site URL, plus local dev if you want (comma-separated)
+  - Example: `https://your-site.netlify.app,http://localhost:8080`
+
+Recommended for hosted demos:
+
+- **`VECTOR_STORE=pinecone`** (vectors persist across restarts)
+- **Pinecone env vars** (as defined in `.env.example`) so retrieval works after sleep/redeploy
+
+After the backend is live:
+
+- **Run DB migrations**: open a Render shell for the service and run `alembic upgrade head`
+- **Seed default accounts**: in the same shell run `python seed.py`
+
+You should now be able to visit `GET /api/v1/health` and see a JSON response.
+
+#### 2) Deploy the frontend on Netlify (static)
+
+Netlify should publish the `ui/` folder as static files.
+
+##### Configure the UI to talk to your Render backend
+
+The UI reads the backend base URL from the browser via `localStorage`.
+
+On your deployed Netlify site, open the browser console and run:
+
+```js
+localStorage.setItem("verity_api_base", "https://YOUR-RENDER-SERVICE.onrender.com/api/v1");
+location.reload();
+```
+
+That’s it — you only need to do this once per browser/profile (unless you clear storage).
+
+---
+
+### “Interview warm-up” checklist (every time)
+
+Do this **10–15 minutes before** a call so you don’t get surprised by free-tier cold starts.
+
+- **Open the Netlify site** (instant)
+- **Wake the backend** by loading the Search page (or hit `GET /api/v1/health`)
+  - Render free tier may take ~30s the first time
+- **Sign in as admin**
+  - Default: `admin@verity.internal` / `Admin1234!` (if you ran `seed.py`)
+- **(Optional) Fresh rebuild**: go to **System Health → Reindex** and confirm
+  - Only do this if you changed documents / Pinecone index / ingestion settings
+- **Run 1 test query** (verifies auth + DB + retrieval + LLM)
+
+During the interview/demo, you should not need reindexing — just query normally.
+
+---
+
+### Troubleshooting (fast)
+
+- **UI loads but API calls fail**: re-check `localStorage.verity_api_base` and make sure it ends with `/api/v1`
+- **CORS error in browser console**: update Render `CORS_ORIGINS` to include your Netlify URL
+- **Reindex fails immediately**: confirm `OPENAI_API_KEY` is set in Render env vars

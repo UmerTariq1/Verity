@@ -151,6 +151,8 @@
 <div class="fixed top-0 right-0 -z-10 w-1/3 h-1/2 bg-gradient-to-b from-primary/5 to-transparent blur-3xl opacity-50 pointer-events-none"></div>
 <div class="fixed bottom-0 left-0 -z-10 w-1/4 h-1/3 bg-gradient-to-t from-tertiary/5 to-transparent blur-3xl opacity-50 pointer-events-none"></div>
 
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   // Already logged in — go to dashboard.
@@ -199,18 +201,10 @@ document.addEventListener("DOMContentLoaded", () => {
     errorCard.classList.add("hidden");
 
     try {
-      const res = await fetch("http://localhost:8000/api/v1/auth/register", {
+      const data = await apiFetch("/auth/register", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
       });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.detail || "Registration failed. Please try again.");
-      }
-
-      const data = await res.json();
       localStorage.setItem("verity_token", data.access_token);
       localStorage.setItem("verity_user", JSON.stringify({
         name: data.name,
