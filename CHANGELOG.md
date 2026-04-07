@@ -85,7 +85,45 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ---
 
 ## [Phase 4] — Hybrid Retrieval Layer
-*(to be completed)*
+
+### Added
+- `backend/app/retrieval/__init__.py` — package init; documents the public surface
+  of the retrieval layer for Phase 5 callers
+- `backend/app/retrieval/bm25_index.py` — module-level `_BM25State` singleton;
+  `build_bm25_index()` fetches all chunks from the Chroma "policy_documents"
+  collection via `collection.get(include=["documents","metadatas"])` and builds a
+  `BM25Okapi` index using whitespace tokenisation; `search(query, top_n)` returns
+  `(chunk_id, bm25_score, text, metadata)` tuples ordered descending; `is_ready()`
+  and `chunk_count()` helpers for Phase 5 health endpoint
+- `backend/app/retrieval/vector_store.py` — `RetrievalResult` dataclass (shared
+  type across the whole retrieval layer); `VectorStoreBase` ABC; `ChromaVectorStore`
+  with `_build_where()` for `$and`-composed Chroma filter clauses; `PineconeVectorStore`
+  with matching Pinecone metadata filter builder; `get_vector_store()` factory;
+  Chroma cosine distances converted to similarities (`1.0 − distance`)
+- `backend/app/retrieval/reranker.py` — lazy `CrossEncoder` singleton
+  (`cross-encoder/ms-marco-MiniLM-L-6-v2`); `rerank(query, candidates, top_k)`
+  returns candidates with `score` replaced by cross-encoder logit; model downloaded
+  on first call (~100 MB — Dockerfile pre-bake noted as Phase 5 follow-up)
+- `backend/app/retrieval/hybrid_retriever.py` — `HybridRetrievalResult` dataclass;
+  `_reciprocal_rank_fusion()` with k=60; `_build_result_map()` merges BM25 and
+  dense hits; `retrieve(query, top_k, filters)` decorated with `@_traceable` for
+  LangSmith; graceful no-op if `langsmith` is not installed; returns final chunks
+  plus `rrf_scores` and `reranker_scores` dicts for query-log persistence
+- `backend/app/retrieval/query_router.py` — `RouteResult` dataclass; `route_query()`
+  heuristic (no LLM call); routes to `"metadata"` only when query starts with
+  list/show/find all/how many **and** contains the word "document"; `_extract_dates()`
+  handles ISO, quarter (Q1–Q4 YYYY), and year-only patterns; `_extract_category()`
+  case-insensitive substring match against `known_categories`; falls back to static
+  default category list when caller passes `None`
+
+### Design decisions recorded
+- RRF over weighted-sum fusion: ranks are scale-invariant across BM25 and cosine
+  similarity; no per-deployment calibration needed; documented in module docstring
+  (referenced from README "Retrieval Design Decisions")
+- Cross-encoder adds ~200–400 ms CPU latency for a meaningful precision gain over
+  the bi-encoder retrieval stage; latency tradeoff documented in `reranker.py`
+- Query router uses zero-latency keyword heuristic; routing decision is always
+  logged at DEBUG level for auditability
 
 ---
 
