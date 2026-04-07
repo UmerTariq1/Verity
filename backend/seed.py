@@ -32,7 +32,7 @@ DEFAULT_ACCOUNTS = [
     {
         "id": uuid.UUID("00000000-0000-0000-0000-000000000002"),
         "name": "Alice",
-        "email": "Alice@verity.internal",
+        "email": "alice@verity.internal",
         "password": "User1234!",
         "role": "user",
         "status": "active",

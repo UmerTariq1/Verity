@@ -53,7 +53,7 @@ Admins get a full observability layer: per-query retrieval traces, confidence mo
 | Role | Name | Email | Password |
 |------|------|-------|----------|
 | Admin | Albus | `albus@verity.internal` | `Admin1234!` |
-| User | Alice | `Alice@verity.internal` | `User1234!` |
+| User | Alice | `alice@verity.internal` | `User1234!` |
 | User | Bob | `bob@verity.internal` | `User1234!` |
 
 > These are created by `seed.py` (idempotent — safe to run multiple times). See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for setup.
