@@ -54,7 +54,7 @@ A production-grade Retrieval-Augmented Generation (RAG) application that enables
   - Cross-encoder re-ranking
 
 ### LLM
-- GPT-4o
+- gpt-5-nano
 
 ### Backend
 - FastAPI (Dockerised)

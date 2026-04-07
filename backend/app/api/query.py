@@ -40,7 +40,7 @@ def _sigmoid(x: float) -> float:
 
 
 def _build_gpt_answer(query: str, sources: list[SourceChunk]) -> str:
-    """Call GPT-4o and return the answer string."""
+    """Call gpt-5-nano and return the answer string."""
     try:
         from openai import OpenAI
         from app.config import settings
@@ -55,13 +55,13 @@ def _build_gpt_answer(query: str, sources: list[SourceChunk]) -> str:
             "You are Verity, an intelligent HR policy assistant for Nexora GmbH. "
             "Answer the user's question using only the provided policy excerpts. "
             "Cite sources by their bracket number when referencing specific policies. "
-            "If the answer cannot be determined from the excerpts, say so clearly."
+            "If the answer cannot be determined from the excerpts, say so clearly. "
         )
         user_message = f"Context:\n{context}\n\nQuestion: {query}"
 
         client = OpenAI(api_key=settings.openai_api_key)
         response = client.chat.completions.create(
-            model="gpt-4o",
+            model="gpt-5-nano",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_message},
@@ -71,7 +71,7 @@ def _build_gpt_answer(query: str, sources: list[SourceChunk]) -> str:
         )
         return response.choices[0].message.content or "No answer generated."
     except Exception as exc:
-        logger.error("GPT-4o call failed: %s", exc)
+        logger.error("gpt-5-nano call failed: %s", exc)
         return (
             "I was unable to generate an answer at this time. "
             "Please review the source excerpts below."
@@ -131,7 +131,7 @@ def query(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> QueryResponse:
-    """Run the hybrid retrieval pipeline and return a GPT-4o answer with sources."""
+    """Run the hybrid retrieval pipeline and return a gpt-5-nano answer with sources."""
     start_ms = time.monotonic()
 
     # ── Fetch known categories for the router ─────────────────────────────────

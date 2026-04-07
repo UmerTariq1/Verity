@@ -92,7 +92,7 @@ Every chunk's source (BM25-dominant, dense-dominant, or re-ranker-promoted) is t
 ## Architecture
 
 ```
-User Query → Query Router → Hybrid Retrieval → GPT-4o → Answer
+User Query → Query Router → Hybrid Retrieval → gpt-5-nano → Answer
                                 │
                     ┌───────────┴──────────────┐
                     ▼                          ▼
@@ -206,8 +206,8 @@ Recommended for hosted demos:
 
 After the backend is live:
 
-- **Run DB migrations**: open a Render shell for the service and run `alembic upgrade head`
-- **Seed default accounts**: in the same shell run `python seed.py`
+- **DB migrations run automatically on startup** (see `backend/entrypoint.sh`)
+- **Seed default accounts** (optional): if you want the default demo users, run `python seed.py` once (locally against Render Postgres, or in any environment where you can reach the DB)
 
 You should now be able to visit `GET /api/v1/health` and see a JSON response.
 

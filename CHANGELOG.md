@@ -223,7 +223,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `backend/app/api/query.py` — `POST /api/v1/query` calls `route_query()` then
   either a PostgreSQL metadata query or `hybrid_retriever.retrieve()`; persists
   `retrieved_chunk_ids`, `relevance_scores`, and `response_latency_ms` to `query_logs`;
-  sets `low_confidence: true` when top chunk cross-encoder score < 0.0; calls GPT-4o
+  sets `low_confidence: true` when top chunk cross-encoder score < 0.0; calls gpt-5-nano
   with policy context and system prompt; `POST /api/v1/query/{log_id}/feedback`
 - `backend/app/api/documents.py` — `GET /api/v1/documents` (paginated, search, category
   filter); `POST /api/v1/documents/upload` (PDF MIME validation, creates DB row at
