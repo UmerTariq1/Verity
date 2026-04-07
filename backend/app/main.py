@@ -40,7 +40,7 @@ def _configure_logging() -> None:
 
 _configure_logging()
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
@@ -135,3 +135,9 @@ app.include_router(health_router, prefix=_PREFIX)
 def root() -> dict:
     """Health-check endpoint , no authentication required."""
     return {"status": "ok", "service": "verity"}
+
+
+@app.head("/", tags=["meta"], include_in_schema=False)
+def root_head() -> Response:
+    # Some platforms probe services with HEAD instead of GET.
+    return Response(status_code=200)

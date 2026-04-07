@@ -10,7 +10,7 @@ import logging
 import math
 from datetime import date, datetime, timezone
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Response
 from sqlalchemy import func, select, update
 from sqlalchemy.orm import Session
 
@@ -87,6 +87,12 @@ def health(
         vector_store_type=settings.vector_store,
         last_indexed_at=_last_indexed_at(db),
     )
+
+
+@router.head("", include_in_schema=False)
+def health_head() -> Response:
+    # Render (and some reverse proxies) use HEAD for health checks.
+    return Response(status_code=200)
 
 
 @router.get("/activity", response_model=ActivityResponse)
