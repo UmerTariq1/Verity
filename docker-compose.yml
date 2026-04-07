@@ -4,8 +4,6 @@
 # Usage: docker compose up --build
 # ═══════════════════════════════════════════════════════════════════════════════
 
-version: "3.9"
-
 services:
   db:
     image: postgres:15-alpine
@@ -33,7 +31,7 @@ services:
     env_file: .env
     environment:
       # Override DATABASE_URL so the backend can reach the 'db' service by name
-      DATABASE_URL: postgresql://verity:verity@db:5432/verity
+      DATABASE_URL: postgresql://verity:verity@localhost:5432/verity
     volumes:
       - ./data:/app/data          # HR PDFs + manifest.json auto-ingested on startup
       - chroma_data:/app/chroma_db
