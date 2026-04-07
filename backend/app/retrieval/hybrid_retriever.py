@@ -29,7 +29,7 @@ from typing import Any
 
 from app.retrieval import bm25_index as _bm25
 from app.retrieval.reranker import rerank
-from app.retrieval.vector_store import RetrievalResult, get_vector_store
+from app.retrieval.vector_store import RetrievalResult, _parse_chunk_index, get_vector_store
 
 logger = logging.getLogger(__name__)
 
@@ -68,6 +68,8 @@ class TraceEntry:
     doc_id: str
     file_name: str
     page_number: int
+    chunk_index: int           # 1-based position within the parent document
+    chunk_total: int | None    # total chunks for this document (None for legacy chunks)
     preview: str               # first 120 chars of chunk text
     bm25_score: float | None
     dense_score: float | None
@@ -82,6 +84,8 @@ class TraceEntry:
             "doc_id": self.doc_id,
             "file_name": self.file_name,
             "page_number": self.page_number,
+            "chunk_index": self.chunk_index,
+            "chunk_total": self.chunk_total,
             "preview": self.preview,
             "scores": {
                 "bm25": self.bm25_score,
@@ -146,6 +150,9 @@ def _build_result_map(
     result_map: dict[str, RetrievalResult] = {}
 
     for chunk_id, bm25_score, text, meta in bm25_hits:
+        raw_index = meta.get("chunk_index")
+        raw_total = meta.get("chunk_total")
+
         result_map[chunk_id] = RetrievalResult(
             chunk_id=chunk_id,
             doc_id=meta.get("doc_id", ""),
@@ -156,6 +163,8 @@ def _build_result_map(
             owner_department=meta.get("owner_department", ""),
             effective_date=meta.get("effective_date", ""),
             score=bm25_score,
+            chunk_index=int(raw_index) if raw_index is not None else _parse_chunk_index(chunk_id),
+            chunk_total=int(raw_total) if raw_total is not None else None,
         )
 
     # Dense results overwrite BM25-only entries so scores reflect cosine similarity
@@ -214,6 +223,8 @@ def _build_trace(
             doc_id=base.doc_id,
             file_name=base.file_name,
             page_number=base.page_number,
+            chunk_index=base.chunk_index,
+            chunk_total=base.chunk_total,
             preview=(base.text or "")[:120],
             bm25_score=bm25_score,
             dense_score=base.score if dense_r is not None else None,

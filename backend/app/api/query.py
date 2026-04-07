@@ -31,7 +31,7 @@ router = APIRouter(prefix="/query", tags=["query"])
 _LOW_CONFIDENCE_THRESHOLD = 0.60
 
 # Number of "rejected" chunks to surface in the explainability panel.
-_REJECTED_SOURCES_COUNT = 3
+_REJECTED_SOURCES_COUNT = 5
 
 
 def _sigmoid(x: float) -> float:
@@ -184,7 +184,7 @@ def query(
         low_confidence = False
     else:
         # ── Hybrid retrieval ──────────────────────────────────────────────────
-        result = retrieve(body.query_text, top_k=5, filters=filters)
+        result = retrieve(body.query_text, top_k=3, filters=filters)
 
         langsmith_run_id, langsmith_trace_url = _try_get_langsmith_run()
 
@@ -200,6 +200,8 @@ def query(
                 score=round(e.rerank_score, 4),
                 text_snippet=e.preview,
                 method=e.method,
+                chunk_index=e.chunk_index,
+                chunk_total=e.chunk_total,
             )
             for e in selected_entries
         ]
@@ -212,6 +214,8 @@ def query(
                 score=round(e.rerank_score, 4),
                 text_snippet=e.preview,
                 method=e.method,
+                chunk_index=e.chunk_index,
+                chunk_total=e.chunk_total,
             )
             for e in rejected_entries[:_REJECTED_SOURCES_COUNT]
         ]

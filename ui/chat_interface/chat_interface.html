@@ -438,16 +438,24 @@ document.addEventListener("DOMContentLoaded", async () => {
       return `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full ${cls}">${pct}%</span>`;
     };
 
+    const chunkLabel = (s) => {
+      if (!s.chunk_index) return "";
+      const label = s.chunk_total
+        ? `Part ${s.chunk_index} of ${s.chunk_total}`
+        : `Part ${s.chunk_index}`;
+      return `<span class="text-[9px] font-semibold bg-surface-container text-on-surface-variant px-1.5 py-0.5 rounded">${label}</span>`;
+    };
+
     const renderSourceCard = (s) => `
       <div class="p-3 bg-surface-container-low rounded-xl border border-outline-variant/10 flex flex-col gap-1.5">
         <div class="flex items-center gap-1.5 flex-wrap">
           <span class="material-symbols-outlined text-primary text-sm">description</span>
           <span class="text-[11px] font-semibold text-on-surface">${escHtml(s.file_name)}</span>
+          ${chunkLabel(s)}
           <span class="text-[10px] bg-primary-container/20 text-primary px-1.5 py-0.5 rounded">p.${s.page}</span>
           ${methodBadge(s.method || "semantic_match")}
           ${confBadge(s.score)}
         </div>
-        <p class="text-[11px] text-on-surface-variant italic leading-relaxed">"${escHtml((s.text_snippet || "").slice(0, 120))}…"</p>
       </div>`;
 
     const sourcesHtml = sources.length ? `

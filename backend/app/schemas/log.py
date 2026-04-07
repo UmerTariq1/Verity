@@ -19,6 +19,8 @@ class LogReceiptEntry(BaseModel):
     doc_id: str
     file_name: str
     page_number: int
+    chunk_index: int = 0            # 1-based position within the parent document
+    chunk_total: int | None = None  # total chunks for this document
     preview: str
     confidence_pct: float   # sigmoid-normalised rerank score × 100
     method: str             # "keyword_match" | "semantic_match" | "top_ranked"

@@ -47,7 +47,9 @@ class RetrievalResult:
     category: str
     owner_department: str
     effective_date: str
-    score: float  # higher = more relevant (cosine similarity or cross-encoder logit)
+    score: float              # higher = more relevant (cosine similarity or cross-encoder logit)
+    chunk_index: int = 0      # 1-based position within the parent document
+    chunk_total: int | None = None  # total chunks for the parent document (None for legacy chunks)
 
 
 # ── Internal helpers ──────────────────────────────────────────────────────────
@@ -60,12 +62,33 @@ def _get_embeddings() -> OpenAIEmbeddings:
     )
 
 
+def _parse_chunk_index(chunk_id: str) -> int:
+    """Parse 1-based chunk index from the stable ID format ``<doc_id>__chunk_<i>``.
+
+    Falls back to 0 for any chunk whose ID does not follow this pattern (e.g.
+    chunks ingested before this convention was introduced).
+    """
+    try:
+        suffix = chunk_id.split("__chunk_")[-1]
+        return int(suffix) + 1
+    except (ValueError, IndexError):
+        return 0
+
+
 def _row_to_result(
     chunk_id: str,
     text: str,
     metadata: dict,
     score: float,
 ) -> RetrievalResult:
+    # chunk_index / chunk_total are stored in metadata for newly ingested docs.
+    # For legacy chunks that predate this field, fall back to parsing the chunk_id.
+    raw_index = metadata.get("chunk_index")
+    chunk_index = int(raw_index) if raw_index is not None else _parse_chunk_index(chunk_id)
+
+    raw_total = metadata.get("chunk_total")
+    chunk_total = int(raw_total) if raw_total is not None else None
+
     return RetrievalResult(
         chunk_id=chunk_id,
         doc_id=metadata.get("doc_id", ""),
@@ -76,6 +99,8 @@ def _row_to_result(
         owner_department=metadata.get("owner_department", ""),
         effective_date=metadata.get("effective_date", ""),
         score=score,
+        chunk_index=chunk_index,
+        chunk_total=chunk_total,
     )
 
 

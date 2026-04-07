@@ -76,11 +76,24 @@ def _build_receipt(trace: list | None) -> list[LogReceiptEntry]:
     for item in trace:
         rerank_score = item.get("scores", {}).get("rerank", 0.0) or 0.0
         confidence_pct = round(_sigmoid(rerank_score) * 100, 1)
+
+        raw_index = item.get("chunk_index")
+        raw_total = item.get("chunk_total")
+        # Fallback: parse chunk_index from the stable chunk_id format if not stored.
+        if raw_index is None:
+            cid = item.get("chunk_id", "")
+            try:
+                raw_index = int(cid.split("__chunk_")[-1]) + 1
+            except (ValueError, IndexError):
+                raw_index = 0
+
         entries.append(LogReceiptEntry(
             chunk_id=item.get("chunk_id", ""),
             doc_id=item.get("doc_id", ""),
             file_name=item.get("file_name", ""),
             page_number=item.get("page_number", 0),
+            chunk_index=int(raw_index),
+            chunk_total=int(raw_total) if raw_total is not None else None,
             preview=item.get("preview", ""),
             confidence_pct=confidence_pct,
             method=item.get("method", "semantic_match"),

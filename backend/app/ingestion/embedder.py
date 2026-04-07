@@ -62,6 +62,7 @@ def _build_metadatas(
     chunks: list[dict[str, Any]],
     doc_metadata: dict[str, Any],
 ) -> list[dict[str, Any]]:
+    total = len(chunks)
     return [
         {
             "doc_id": str(doc_id),
@@ -70,8 +71,10 @@ def _build_metadatas(
             "owner_department": doc_metadata["owner_department"],
             "effective_date": str(doc_metadata["effective_date"]),
             "page_number": chunk["page_number"],
+            "chunk_index": i + 1,   # 1-based position within this document
+            "chunk_total": total,   # total chunks for this document
         }
-        for chunk in chunks
+        for i, chunk in enumerate(chunks)
     ]
 
 

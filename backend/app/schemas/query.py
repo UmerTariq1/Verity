@@ -20,6 +20,8 @@ class SourceChunk(BaseModel):
     score: float
     text_snippet: str
     method: str = "semantic_match"  # "keyword_match" | "semantic_match" | "top_ranked"
+    chunk_index: int = 0            # 1-based position within the parent document
+    chunk_total: int | None = None  # total chunks for this document
 
 
 class QueryResponse(BaseModel):

@@ -421,8 +421,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           const detail = await apiFetch(`/logs/${log.id}`);
           if (!detail) return;
           const receipt = detail.retrieval_receipt || [];
-          const selected = receipt.filter(c => c.selected);
-          const rejected = receipt.filter(c => !c.selected);
+          const selected = receipt.filter(c => c.selected).slice(0, 3);
+          const rejected = receipt.filter(c => !c.selected).slice(0, 5);
 
           const confidenceBadge = (pct) => {
             if (pct >= 75) return `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-50 text-green-700">${pct}%</span>`;
@@ -446,17 +446,25 @@ document.addEventListener("DOMContentLoaded", async () => {
               <span class="material-symbols-outlined text-[12px]">${icon}</span>${label}</span>`;
           };
 
+          const chunkPartLabel = (c) => {
+            if (!c.chunk_index) return "";
+            const label = c.chunk_total
+              ? `Part ${c.chunk_index} of ${c.chunk_total}`
+              : `Part ${c.chunk_index}`;
+            return `<span class="text-[9px] font-semibold bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded">${label}</span>`;
+          };
+
           const renderChunks = (items) => items.map(c => `
             <div class="p-3 bg-white rounded-lg border border-surface-container flex flex-col gap-2">
               <div class="flex items-center gap-2 flex-wrap">
                 <span class="text-[10px] font-bold text-slate-500">${escH(c.file_name || "—")} · p.${c.page_number ?? "?"}</span>
+                ${chunkPartLabel(c)}
                 ${methodBadge(c.method)}
                 ${confidenceBadge(c.confidence_pct)}
               </div>
               <div class="flex items-center gap-2">
                 ${confidenceBar(c.confidence_pct)}
               </div>
-              <p class="text-[11px] text-slate-600 italic leading-relaxed">"${escH((c.preview || "").slice(0,120))}…"</p>
             </div>`).join("");
 
           const traceBtn = detail.langsmith_trace_url
