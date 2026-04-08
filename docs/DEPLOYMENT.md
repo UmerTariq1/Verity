@@ -84,3 +84,8 @@ Redeploy Netlify after saving. This proxy setup means the browser always calls y
 | CORS error in browser console | If calling Render directly (not via Netlify proxy), add your Netlify URL to `CORS_ORIGINS` |
 | Reindex fails immediately | Confirm `OPENAI_API_KEY` is set in Render env vars |
 | Login fails after Postgres expiry | Re-provision Postgres on Render; run `python seed.py` to restore accounts |
+
+## Quick Run
+If you have render and netlify running then just run this command : from backend folder :
+`$env:DATABASE_URL="<external database url from render db service>"; python .\seed.py`
+It will create the seed users.

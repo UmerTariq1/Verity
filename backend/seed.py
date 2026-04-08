@@ -15,10 +15,11 @@ import uuid
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import bcrypt
+from sqlalchemy import delete
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 
 from app.database import SessionLocal
-from app.models import User
+from app.models import QueryLog, User
 
 DEFAULT_ACCOUNTS = [
     {
@@ -58,6 +59,14 @@ def seed() -> None:
 
     with SessionLocal() as db:
         for account in DEFAULT_ACCOUNTS:
+            # If a user already exists with this seed UUID, delete it first so the
+            # seed is deterministic (IDs and credentials match this file).
+            existing = db.get(User, account["id"])
+            if existing is not None:
+                db.execute(delete(QueryLog).where(QueryLog.user_id == account["id"]))
+                db.execute(delete(User).where(User.id == account["id"]))
+                db.flush()
+
             stmt = (
                 pg_insert(User)
                 .values(
@@ -76,7 +85,7 @@ def seed() -> None:
 
     print("Done.")
     print("  Admin:  albus@verity.internal / Admin1234!")
-    print("  User:   Alice@verity.internal  / User1234!")
+    print("  User:   alice@verity.internal  / User1234!")
     print("  User:   bob@verity.internal  / User1234!")
 
 
